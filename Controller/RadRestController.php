@@ -14,7 +14,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Symfony\Component\Form\AbstractType;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
-use vierbergenlars\Bundle\RadRestBundle\Model\ResourceManagerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;

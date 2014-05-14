@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace vierbergenlars\Bundle\RadRestBundle\Model;
+namespace vierbergenlars\Bundle\RadRestBundle\Manager;
 
 /**
  * Manager interface for all objects controlled by the REST controller
@@ -32,22 +32,6 @@ interface ResourceManagerInterface
 	 * @return object
 	*/
 	public function find($id);
-
-	/**
-	 * Finds the object by its canonical name
-	 *
-	 * @param string $cname
-	 * @return object
-	*/
-	public function findByCanonicalName($cname);
-
-	/**
-	 * Gets the canonical name of an object
-	 *
-	 * @param object $object
-	 * @return string
-	*/
-	public function getCanonicalName($object);
 
 	/**
 	 * Creates a new object, does not persist it to the database yet.
