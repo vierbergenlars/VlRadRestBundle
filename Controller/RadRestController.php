@@ -99,7 +99,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
 	private function getObject($cname)
 	{
-		$object = $this->resourceManager->findByCanonicalName($cname);
+		$object = $this->resourceManager->find($cname);
 
 		if(!$object) {
 			throw $this->createNotFoundException();
@@ -153,7 +153,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
 		if($form->isValid()) {
 			$this->resourceManager->update($object);
-			return $this->redirectTo('get', array('cname'=>$this->resourceManager->getCanonicalName($object)));
+			return $this->redirectTo('get', array('cname'=>$object->getId()));
 		}
 
 		$view = $this->view($form, Codes::HTTP_BAD_REQUEST)->setTemplate('form');
@@ -187,7 +187,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
 		if($form->isValid()) {
 			$this->resourceManager->update($object);
-			return $this->redirectTo('get', array('cname'=>$this->resourceManager->getCanonicalName($object)));
+			return $this->redirectTo('get', array('cname'=>$object->getId()));
 		}
 
 		$view = $this->view($form, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');

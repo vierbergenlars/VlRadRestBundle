@@ -118,43 +118,5 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 
 		$this->repository->delete($object);
 	}
-
-	public function testGetCanonicalName()
-	{
-		$object = new User();
-		$refl = new \ReflectionClass($object);
-		$prop = $refl->getProperty('id');
-		$prop->setAccessible(true);
-		$prop->setValue($object, 1);
-
-		$this->assertEquals(1, $this->repository->getCanonicalName($object));
-	}
-
-	/**
-	 * @expectedException LogicException
-	 */
-	public function testGetCanonicalNameWrongType()
-	{
-		$object = new \stdClass();
-		$this->repository->getCanonicalName($object);
-	}
-
-	public function testFindByCanonicalName()
-	{
-		$object = new User();
-		$refl = new \ReflectionClass($object);
-		$prop = $refl->getProperty('id');
-		$prop->setAccessible(true);
-		$prop->setValue($object, 25);
-
-		$this->em->expects($this->any())
-		->method('find')
-		->with('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 25, $this->anything(), $this->anything())
-		->willReturn($object);
-
-		$this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', $this->repository->findByCanonicalName(25));
-		$this->assertEquals(25, $this->repository->findByCanonicalName(25)->getId());
-	}
-
 }
 
