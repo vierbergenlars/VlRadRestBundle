@@ -22,122 +22,122 @@ use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInterface
 {
 
-	/**
-	 *
-	 * @var SecurityContextInterface
-	 */
-	private $context;
+    /**
+     *
+     * @var SecurityContextInterface
+     */
+    private $context;
 
-	/**
-	 *
-	 * @var AuthenticationTrustResolverInterface
-	 */
-	private $trustResolver;
+    /**
+     *
+     * @var AuthenticationTrustResolverInterface
+     */
+    private $trustResolver;
 
-	/**
-	 *
-	 * @var RoleHierarchyInterface
-	 */
-	private $roleHierarchy;
+    /**
+     *
+     * @var RoleHierarchyInterface
+     */
+    private $roleHierarchy;
 
-	/**
-	 * Cache for roles that have been converted to strings
-	 *
-	 * @var array
-	 */
-	private $_cached_role_strings;
+    /**
+     * Cache for roles that have been converted to strings
+     *
+     * @var array
+     */
+    private $_cached_role_strings;
 
-	final public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
-	{
-		$this->context = $context;
-		$this->trustResolver = $trustResolver;
-		$this->roleHierarchy = $roleHierarchy;
-	}
+    final public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
+    {
+        $this->context = $context;
+        $this->trustResolver = $trustResolver;
+        $this->roleHierarchy = $roleHierarchy;
+    }
 
-	/**
-	 *
-	 * @return SecurityContextInterface|null
-	 */
-	protected function getSecurityContext()
-	{
-		return $this->context;
-	}
+    /**
+     *
+     * @return SecurityContextInterface|null
+     */
+    protected function getSecurityContext()
+    {
+        return $this->context;
+    }
 
-	/**
-	 *
-	 * @return AuthenticationTrustResolverInterface|null
-	 */
-	protected function getTrustResolver()
-	{
-		return $this->trustResolver;
-	}
+    /**
+     *
+     * @return AuthenticationTrustResolverInterface|null
+     */
+    protected function getTrustResolver()
+    {
+        return $this->trustResolver;
+    }
 
-	/**
-	 *
-	 * @return RoleHierarchyInterface|null
-	 */
-	protected function getRoleHierarchy()
-	{
-		return $this->roleHierarchy;
-	}
+    /**
+     *
+     * @return RoleHierarchyInterface|null
+     */
+    protected function getRoleHierarchy()
+    {
+        return $this->roleHierarchy;
+    }
 
-	/**
-	 *
-	 * @return \Symfony\Component\Security\Core\Authentication\Token\TokenInterface|null
-	 */
-	protected function getToken()
-	{
-		if(($securityContext = $this->getSecurityContext())) {
-			return $securityContext->getToken();
-		}
-		return null;
-	}
+    /**
+     *
+     * @return \Symfony\Component\Security\Core\Authentication\Token\TokenInterface|null
+     */
+    protected function getToken()
+    {
+        if(($securityContext = $this->getSecurityContext())) {
+            return $securityContext->getToken();
+        }
+        return null;
+    }
 
-	/**
-	 *
-	 * @return \Symfony\Component\Security\Core\Role\RoleInterface[]
-	 */
-	protected function getRoles()
-	{
-		if(($token = $this->getToken())) {
-			$roles = $token->getRoles();
+    /**
+     *
+     * @return \Symfony\Component\Security\Core\Role\RoleInterface[]
+     */
+    protected function getRoles()
+    {
+        if(($token = $this->getToken())) {
+            $roles = $token->getRoles();
 
-			if(($roleHierarchy = $this->getRoleHierarchy())) {
-				return $roleHierarchy->getReachableRoles($roles);
-			}
+            if(($roleHierarchy = $this->getRoleHierarchy())) {
+                return $roleHierarchy->getReachableRoles($roles);
+            }
 
-			return $roles;
-		}
+            return $roles;
+        }
 
-		return array();
-	}
+        return array();
+    }
 
-	/**
-	 *
-	 * @return UserInterface|string|null
-	 */
-	protected function getUser()
-	{
-		if(($token = $this->getToken())) {
-			return $token->getUser();
-		}
+    /**
+     *
+     * @return UserInterface|string|null
+     */
+    protected function getUser()
+    {
+        if(($token = $this->getToken())) {
+            return $token->getUser();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 *
-	 * @param string $role
-	 * @return boolean
-	 */
-	protected function hasRole($role)
-	{
-		if (! $this->_cached_role_strings) {
-			$this->_cached_role_strings = array_map(function ($role)
-			{
-				return $role->getRole();
-			}, $this->getRoles());
-		}
-		return in_array($role, $this->_cached_role_strings);
-	}
+    /**
+     *
+     * @param string $role
+     * @return boolean
+     */
+    protected function hasRole($role)
+    {
+        if (! $this->_cached_role_strings) {
+            $this->_cached_role_strings = array_map(function ($role)
+            {
+                return $role->getRole();
+            }, $this->getRoles());
+        }
+        return in_array($role, $this->_cached_role_strings);
+    }
 }

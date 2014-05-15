@@ -18,39 +18,39 @@ namespace vierbergenlars\Bundle\RadRestBundle\Security;
 interface AuthorizationCheckerInterface
 {
 
-	/**
-	 * Checks authorization to list all objects
-	 *
-	 * @return bool
-	 */
-	public function mayList();
+    /**
+     * Checks authorization to list all objects
+     *
+     * @return bool
+     */
+    public function mayList();
 
-	/**
-	 * Checks authorization to create new objects
-	 *
-	 * @return bool
-	*/
-	public function mayCreate();
+    /**
+     * Checks authorization to create new objects
+     *
+     * @return bool
+    */
+    public function mayCreate();
 
-	/**
-	 * Checks authorization to view a specific object
-	 *
-	 * @param object $object
-	 * @return bool
-	*/
-	public function mayView($object);
+    /**
+     * Checks authorization to view a specific object
+     *
+     * @param object $object
+     * @return bool
+    */
+    public function mayView($object);
 
-	/**
-	 * Checks authorization to edit a specific object
-	 * @param object $object
-	 * @return bool
-	*/
-	public function mayEdit($object);
+    /**
+     * Checks authorization to edit a specific object
+     * @param object $object
+     * @return bool
+    */
+    public function mayEdit($object);
 
-	/**
-	 * Checks authorization to delete a specific object
-	 * @param object $object
-	 * @return bool
-	*/
-	public function mayDelete($object);
+    /**
+     * Checks authorization to delete a specific object
+     * @param object $object
+     * @return bool
+    */
+    public function mayDelete($object);
 }
