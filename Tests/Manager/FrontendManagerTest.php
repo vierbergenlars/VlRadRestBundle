@@ -104,10 +104,10 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function setUpAuthenticationChecker($auths)
+    private function setUpAuthenticationChecker($auths, $any = false)
     {
         foreach($auths as $fn=>$auth) {
-            $this->authorizationChecker->expects($this->atLeastOnce())->method($fn)->will($this->returnValue($auth));
+            $this->authorizationChecker->expects($any?$this->any():$this->atLeastOnce())->method($fn)->will($this->returnValue($auth));
         }
         foreach(explode(' ', 'mayList mayView mayCreate mayEdit mayDelete') as $fn) {
             if(!array_key_exists($fn, $auths)) {
@@ -116,11 +116,15 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function setUpResourceManager()
+    private function setUpResourceManager($withUser = true)
     {
-        $fakeUser = User::create('aaa', 1);
+        if($withUser) {
+            $fakeUser = User::create('aaa', 1);
+        } else {
+            $fakeUser = null;
+        }
         $this->resourceManager->expects($this->any())->method('find')->will($this->returnValue($fakeUser));
-        $this->resourceManager->expects($this->any())->method('findAll')->will($this->returnValue(array($fakeUser)));
+        $this->resourceManager->expects($this->any())->method('findAll')->will($this->returnValue($withUser?array($fakeUser):array()));
         $this->resourceManager->expects($this->any())->method('create')->will($this->returnValue($fakeUser));
         return $fakeUser;
     }
@@ -128,7 +132,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider authenticationCheckProvider
      */
-    public function testAuthenticationChecksGet($auths, $method, $expectException)
+    public function testGets($auths, $method, $expectException)
     {
         $this->setUpAuthenticationChecker($auths);
         $fakeUser = $this->setUpResourceManager();
@@ -161,7 +165,124 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider authenticationCheckProvider
      */
-    public function testAuthenticationChecksModify($auths, $method, $expectAuthException)
+    public function testGetsNotFound($auths, $method, $expectAuthException)
+    {
+        $this->setUpAuthenticationChecker($auths, true);
+        $fakeUser = $this->setUpResourceManager(false);
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, $this->formType, $this->formFactory);
+        if($expectAuthException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array(), $frontendManager->getList());
+                break;
+            case 'getResource':
+                $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                $frontendManager->getResource(1);
+                break;
+            case 'createResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->createResource(new Request()));
+                break;
+            case 'editResource':
+                $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                $frontendManager->editResource(1, new Request());
+                break;
+            case 'deleteResource':
+                $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                $frontendManager->deleteResource(1, new Request());
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+    }
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
+    public function testGetsNoFormFactory($auths, $method, $expectAuthException)
+    {
+        $this->setUpAuthenticationChecker($auths);
+        $fakeUser = $this->setUpResourceManager();
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, $this->formType);
+        if($expectAuthException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'getResource':
+                $this->assertSame($fakeUser, $frontendManager->getResource(1));
+                break;
+            case 'createResource':
+                if(!$expectAuthException) {
+                    $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                }
+                $frontendManager->createResource(new Request());
+                break;
+            case 'editResource':
+                if(!$expectAuthException) {
+                    $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                }
+                $frontendManager->editResource(1, new Request());
+                break;
+            case 'deleteResource':
+                if(!$expectAuthException) {
+                    $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                }
+                $frontendManager->deleteResource(1, new Request());
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+    }
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
+    public function testGetsNoForm($auths, $method, $expectAuthException)
+    {
+        $this->setUpAuthenticationChecker($auths);
+        $fakeUser = $this->setUpResourceManager();
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, null, $this->formFactory);
+        if($expectAuthException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'getResource':
+                $this->assertSame($fakeUser, $frontendManager->getResource(1));
+                break;
+            case 'createResource':
+                if(!$expectAuthException) {
+                    $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                }
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->createResource(new Request()));
+                break;
+            case 'editResource':
+                if(!$expectAuthException) {
+                    $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+                }
+                $frontendManager->editResource(1, new Request());
+                break;
+            case 'deleteResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->deleteResource(1, new Request()));
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+    }
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
+    public function testModify($auths, $method, $expectAuthException)
     {
         $this->setUpAuthenticationChecker($auths);
         $fakeUser = $this->setUpResourceManager();
@@ -219,10 +340,11 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
                 $this->fail('$frontendManager->'.$method.' should not be tested');
         }
     }
+
     /**
      * @dataProvider authenticationCheckProvider
      */
-    public function testAuthenticationChecksModifyFail($auths, $method, $expectAuthException)
+    public function testModifyFail($auths, $method, $expectAuthException)
     {
         $this->setUpAuthenticationChecker($auths);
         $fakeUser = $this->setUpResourceManager();
@@ -266,5 +388,4 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
                 $this->fail('$frontendManager->'.$method.' should not be tested');
         }
     }
-
 }
