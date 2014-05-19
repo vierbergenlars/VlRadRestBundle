@@ -13,6 +13,8 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationRequestHandler;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
@@ -20,7 +22,7 @@ class UserType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder
-		->add('username')
+		->add('username', 'text', array('constraints'=>new NotBlank()))
 		;
 	}
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
