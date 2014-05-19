@@ -47,15 +47,4 @@ class EntityRepository extends DoctrineRepository implements ResourceManagerInte
         $this->getEntityManager()->remove($object);
         $this->getEntityManager()->flush($object);
     }
-
-    public function findByCanonicalName($cname)
-    {
-        return $this->find($cname);
-    }
-
-    public function getCanonicalName($object)
-    {
-        $this->_validateObject($object, 'getCanonicalName');
-        return $object->getId();
-    }
 }
