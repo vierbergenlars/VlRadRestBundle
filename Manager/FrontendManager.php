@@ -116,13 +116,11 @@ class FrontendManager
         ->setMethod($method)
         ->getForm();
 
-        if($request->getMethod() == $method) {
-            $form->handleRequest($request);
+        $form->handleRequest($request);
 
-            if($form->isValid()) {
-                $this->resourceManager->update($object);
-                return $object;
-            }
+        if($form->isValid()) {
+            $this->resourceManager->update($object);
+            return $object;
         }
 
         return $form;
@@ -189,13 +187,11 @@ class FrontendManager
         ->add('submit')
         ->getForm();
 
-        if($request->getMethod() == 'DELETE') {
-            $deleteForm->handleRequest($request);
+        $deleteForm->handleRequest($request);
 
-            if($deleteForm->isValid()) {
-                $this->resourceManager->delete($object);
-                return true;
-            }
+        if($deleteForm->isValid()) {
+            $this->resourceManager->delete($object);
+            return true;
         }
 
         return $deleteForm;
