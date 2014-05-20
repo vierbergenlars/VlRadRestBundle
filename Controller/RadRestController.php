@@ -12,210 +12,119 @@ namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use Symfony\Component\Form\AbstractType;
-use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
-use vierbergenlars\Bundle\RadRestBundle\Model\ResourceManagerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Util\Codes;
+use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
+use Symfony\Component\Form\Form;
+use FOS\RestBundle\View\View;
 
 /**
  * Base Controller for Controllers using the RAD Rest functionality
  *
  * @author Lars Vierbergen <vierbergenlars@gmail.com>
  */
-
 class RadRestController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     *
-     * @var AbstractType|null
+     * @var FrontendManager
      */
-    private $formType = null;
+    private $frontendManager;
 
-    /**
-     *
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-
-    /**
-     *
-     * @var ResourceManagerInterface
-     */
-    private $resourceManager;
-
-    public function setFormType(AbstractType $formType = null)
+    public function setFrontendManager(FrontendManager $frontendManager)
     {
-        $this->formType = $formType;
-    }
-
-    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
-    {
-        $this->authorizationChecker = $authorizationChecker;
-    }
-
-    public function setResourceManager(ResourceManagerInterface $resourceManager)
-    {
-        $this->resourceManager = $resourceManager;
+        $this->frontendManager = $frontendManager;
     }
 
     /**
      * Redirects to another action on the same controller
      * @param string $nextAction The action name to redirect to
      * @param array $params Parameters to pass to the route generator
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return View|null
      */
-    private function redirectTo($nextAction, array $params = array())
+    protected function redirectTo($nextAction, array $params = array())
     {
-        $controller = get_class().'::'.$nextAction.'Action';
+        $controller = get_class($this).'::'.$nextAction.'Action';
         $routes = $this->get('router')->getRouteCollection()->all();
         // FIXME: Get rid of O(n) performance on routes
         foreach($routes as $routeName => $route)
         {
-            if($route->hasDefault('_controller')&&$route->getDefault('_controller') == $controller)
-                break;
+            if($route->hasDefault('_controller')&&$route->getDefault('_controller') == $controller) {
+                return $this->routeRedirectView($routeName, $params);
+            }
         }
-
-        $view = $this->routeRedirectView($routeName, $params);
-        return $this->handleView($view);
-    }
-
-    /**
-     * Create a form for this resource
-     * @param object $data The data to prepopulate the form with
-     * @throws NotFoundHttpException
-     * @return \Symfony\Component\Form\Form
-     */
-    private function getForm($data = null)
-    {
-        if($this->formType === null) {
-            throw $this->createNotFoundException();
-        }
-
-        return $this->createForm($this->formType, $data);
-    }
-
-    private function getObject($cname)
-    {
-        $object = $this->resourceManager->find($cname);
-
-        if(!$object) {
-            throw $this->createNotFoundException();
-        }
-
-        if(!$this->authorizationChecker->mayView($object)) {
-            throw new AccessDeniedException();
-        }
-
-        return $object;
+        return null;
     }
 
     public function cgetAction()
     {
-        if(!$this->authorizationChecker->mayList()) {
-            throw new AccessDeniedException();
-        }
-
-        $view = $this->view($this->resourceManager->findAll())->setTemplateVar('list');
+        $view = $this->view($this->frontendManager->getList());
         return $this->handleView($view);
     }
 
-    public function getAction($cname)
+    public function getAction($id)
     {
-        $object = $this->getObject($cname);
+        $object = $this->frontendManager->getResource($id);
         $view = $this->view($object);
         return $this->handleView($view);
     }
 
     public function newAction()
     {
-        if(!$this->authorizationChecker->mayCreate()) {
-            throw new AccessDeniedException();
-        }
-
-        $object = $this->resourceManager->create();
-        $form = $this->getForm($object);
+        $form = $this->frontendManager->createResource(new Request());
         $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }
 
     public function postAction(Request $request)
     {
-        if(!$this->authorizationChecker->mayCreate()) {
-            throw new AccessDeniedException();
+        $ret = $this->frontendManager->createResource($request);
+
+        if($ret instanceof Form) {
+            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        } else {
+            $view = $this->redirectTo('get', array('id'=>$ret->getId()));
         }
 
-        $object = $this->resourceManager->create();
-        $form = $this->getForm($object);
-        $form->handleRequest($request);
-
-        if($form->isValid()) {
-            $this->resourceManager->update($object);
-            return $this->redirectTo('get', array('cname'=>$object->getId()));
-        }
-
-        $view = $this->view($form, Codes::HTTP_BAD_REQUEST)->setTemplate('form');
         return $this->handleView($view);
     }
 
-    public function editAction($cname)
+    public function editAction($id)
     {
-        $object = $this->getObject($cname);
-
-        if(!$this->authorizationChecker->mayEdit($object)) {
-            throw new AccessDeniedException();
-        }
-
-        $form = $this->getForm($object);
-
+        $form = $this->frontendManager->editResource($id,new Request());
         $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }
 
-    public function putAction(Request $request, $cname)
+    public function putAction(Request $request, $id)
     {
-        $object = $this->getObject($cname);
+        $ret = $this->frontendManager->editResource($id, $request);
 
-        if(!$this->authorizationChecker->mayEdit($object)) {
-            throw new AccessDeniedException();
+        if($ret instanceof Form) {
+            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        } else {
+            $view = $this->redirectTo('get', array('id'=>$ret->getId()));
         }
 
-        $form = $this->getForm($object);
-        $form->submit($request);
-
-        if($form->isValid()) {
-            $this->resourceManager->update($object);
-            return $this->redirectTo('get', array('cname'=>$object->getId()));
-        }
-
-        $view = $this->view($form, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
         return $this->handleView($view);
     }
 
-    public function removeAction($cname)
+    public function removeAction($id)
     {
-        $object = $this->getObject($cname);
-
-        if(!$this->authorizationChecker->mayDelete($object)) {
-            throw new AccessDeniedException();
-        }
-
-        $view = $this->view($object);
+        $form = $this->frontendManager->deleteResource($id, new Request());
+        $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }
 
-    public function deleteAction($cname)
+    public function deleteAction(Request $request, $id)
     {
-        $object = $this->getObject($cname);
+        $ret = $this->frontendManager->deleteResource($id, $request);
 
-        if(!$this->authorizationChecker->mayDelete($object)) {
-            throw new AccessDeniedException();
+        if($ret instanceof Form) {
+            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        } else {
+            $view = $this->redirectTo('cget');
         }
 
-        $this->resourceManager->delete($object);
-        return $this->redirectTo('cget');
-
+        return $this->handleView($view);
     }
 }

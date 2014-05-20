@@ -11,7 +11,7 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository as DoctrineRepository;
-use vierbergenlars\Bundle\RadRestBundle\Model\ResourceManagerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 
 class EntityRepository extends DoctrineRepository implements ResourceManagerInterface
 {

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace vierbergenlars\Bundle\RadRestBundle\Model;
+namespace vierbergenlars\Bundle\RadRestBundle\Manager;
 
 /**
  * Manager interface for all objects controlled by the REST controller
