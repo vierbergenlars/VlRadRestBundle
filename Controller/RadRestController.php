@@ -39,7 +39,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
      * Redirects to another action on the same controller
      * @param string $nextAction The action name to redirect to
      * @param array<string> $params Parameters to pass to the route generator
-     * @return View|null
+     * @return View
      */
     protected function redirectTo($nextAction, array $params = array())
     {
@@ -52,7 +52,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
                 return $this->routeRedirectView($routeName, $params);
             }
         }
-        return null;
+        throw new \LogicException('No route found for controller '.$controller);
     }
 
     public function cgetAction()
