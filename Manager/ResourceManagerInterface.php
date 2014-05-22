@@ -21,14 +21,14 @@ interface ResourceManagerInterface
     /**
      * Gets the whole collection of objects
      *
-     * @return array
+     * @return array<object>
      */
     public function findAll();
 
     /**
      * Finds the object by its database ID
      *
-     * @param int $id
+     * @param string|int $id
      * @return object|null
     */
     public function find($id);

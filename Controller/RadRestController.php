@@ -12,11 +12,11 @@ namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Util\Codes;
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
-use Symfony\Component\Form\Form;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
+use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 
 /**
  * Base Controller for Controllers using the RAD Rest functionality
@@ -38,7 +38,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     /**
      * Redirects to another action on the same controller
      * @param string $nextAction The action name to redirect to
-     * @param array $params Parameters to pass to the route generator
+     * @param array<string> $params Parameters to pass to the route generator
      * @return View|null
      */
     protected function redirectTo($nextAction, array $params = array())

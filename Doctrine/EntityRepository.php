@@ -15,6 +15,9 @@ use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 
 class EntityRepository extends DoctrineRepository implements ResourceManagerInterface
 {
+    /**
+     * @param string $calledMethod
+     */
     private function _validateObject($object, $calledMethod)
     {
         $expected_class = $this->getEntityName();
