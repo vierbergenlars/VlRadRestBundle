@@ -56,10 +56,10 @@ class FrontendManager
      */
     public function __construct(ResourceManagerInterface $resourceManager, AuthorizationCheckerInterface $authorizationChecker, AbstractType $formType = null, FormFactoryInterface $formFactory = null)
     {
-        $this->resourceManager = $resourceManager;
+        $this->resourceManager      = $resourceManager;
         $this->authorizationChecker = $authorizationChecker;
-        $this->formType = $formType;
-        $this->formFactory = $formFactory;
+        $this->formType             = $formType;
+        $this->formFactory          = $formFactory;
     }
 
     /**
@@ -108,7 +108,7 @@ class FrontendManager
      */
     private function handleResourceForm($object, Request $request, $method)
     {
-        if(!$this->formType||!$this->formFactory) {
+        if($this->formType === null || $this->formFactory === null) {
             throw new NotFoundHttpException();
         }
 
@@ -178,7 +178,7 @@ class FrontendManager
             throw new AccessDeniedException();
         }
 
-        if(!$this->formFactory) {
+        if($this->formFactory === null) {
             throw new NotFoundHttpException();
         }
 

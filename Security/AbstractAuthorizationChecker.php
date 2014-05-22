@@ -49,7 +49,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
 
     final public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
     {
-        $this->context = $context;
+        $this->context       = $context;
         $this->trustResolver = $trustResolver;
         $this->roleHierarchy = $roleHierarchy;
     }
@@ -87,7 +87,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function getToken()
     {
-        if(($securityContext = $this->getSecurityContext())) {
+        if(($securityContext = $this->getSecurityContext()) !== null) {
             return $securityContext->getToken();
         }
         return null;
@@ -99,10 +99,10 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function getRoles()
     {
-        if(($token = $this->getToken())) {
+        if(($token = $this->getToken()) !== null) {
             $roles = $token->getRoles();
 
-            if(($roleHierarchy = $this->getRoleHierarchy())) {
+            if(($roleHierarchy = $this->getRoleHierarchy()) !== null) {
                 return $roleHierarchy->getReachableRoles($roles);
             }
 
@@ -118,7 +118,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function getUser()
     {
-        if(($token = $this->getToken())) {
+        if(($token = $this->getToken()) !== null) {
             return $token->getUser();
         }
 

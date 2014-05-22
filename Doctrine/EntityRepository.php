@@ -16,17 +16,17 @@ use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 class EntityRepository extends DoctrineRepository implements ResourceManagerInterface
 {
     /**
-     * @param string $calledMethod
+     * @param string $calledMethod Method that was called on this object, to create a nice exception message.
      */
-    private function _validateObject($object, $calledMethod)
+    private function validateObject($object, $calledMethod)
     {
-        $expected_class = $this->getEntityName();
-        if(!is_a($object, $expected_class)) {
+        $expectedClass = $this->getEntityName();
+        if(!is_a($object, $expectedClass)) {
             throw new \LogicException(sprintf(
                 '%s::%s() requires its first argument to be an instance of %s, got an instance of %s.',
                 get_class(),
                 $calledMethod,
-                $expected_class,
+                $expectedClass,
                 get_class($object)
             ));
         }
@@ -39,14 +39,14 @@ class EntityRepository extends DoctrineRepository implements ResourceManagerInte
 
     public function update($object)
     {
-        $this->_validateObject($object, 'update');
+        $this->validateObject($object, 'update');
         $this->getEntityManager()->persist($object);
         $this->getEntityManager()->flush($object);
     }
 
     public function delete($object)
     {
-        $this->_validateObject($object, 'delete');
+        $this->validateObject($object, 'delete');
         $this->getEntityManager()->remove($object);
         $this->getEntityManager()->flush($object);
     }

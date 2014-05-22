@@ -42,7 +42,7 @@ class AuthorizationCheckerFactory
 
     public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
     {
-        $this->context = $context;
+        $this->context       = $context;
         $this->trustResolver = $trustResolver;
         $this->roleHierarchy = $roleHierarchy;
     }
