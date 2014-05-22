@@ -2,6 +2,10 @@ VlRadRestBundle
 =============
 
 [![Build Status](https://secure.travis-ci.org/vierbergenlars/VlRadRestBundle.png?branch=master)](http://travis-ci.org/vierbergenlars/VlRadRestBundle)
+[![Code Coverage](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/v/stable.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
+[![License](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/license.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
 
 Documentation
 -------------
