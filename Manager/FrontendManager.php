@@ -10,13 +10,13 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Manager;
 
-use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
 
 /**
  *
@@ -51,21 +51,21 @@ class FrontendManager
      *
      * @param ResourceManagerInterface $resourceManager
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param AbstractType $formType
-     * @param FormFactoryInterface $formFactory
+     * @param AbstractType|null $formType
+     * @param FormFactoryInterface|null $formFactory
      */
     public function __construct(ResourceManagerInterface $resourceManager, AuthorizationCheckerInterface $authorizationChecker, AbstractType $formType = null, FormFactoryInterface $formFactory = null)
     {
-        $this->resourceManager = $resourceManager;
+        $this->resourceManager      = $resourceManager;
         $this->authorizationChecker = $authorizationChecker;
-        $this->formType = $formType;
-        $this->formFactory = $formFactory;
+        $this->formType             = $formType;
+        $this->formFactory          = $formFactory;
     }
 
     /**
      * Gets a list of all resources of this type
      * @throws AccessDeniedException When access to list the resources is disallowed by the AuthorizationChecker
-     * @return array
+     * @return array<object>
      */
     public function getList()
     {
@@ -78,7 +78,7 @@ class FrontendManager
 
     /**
      * Gets a resource by its id
-     * @param mixed $id The id of the object
+     * @param string|int $id The id of the object
      * @throws NotFoundHttpException When the resource does not exists
      * @throws AccessDeniedException When access to this resource is disallowed by the AuthorizationChecker
      * @return object The object representing the resource
@@ -108,7 +108,7 @@ class FrontendManager
      */
     private function handleResourceForm($object, Request $request, $method)
     {
-        if(!$this->formType||!$this->formFactory) {
+        if($this->formType === null || $this->formFactory === null) {
             throw new NotFoundHttpException();
         }
 
@@ -146,7 +146,7 @@ class FrontendManager
 
     /**
      * Modifies an existing resource, or shows a prepopulated form to modify an existing resource
-     * @param mixed $id The id of the resource to modify
+     * @param string|int $id The id of the resource to modify
      * @param Request $request HTTP Request
      * @throws AccessDeniedException When modifying this resource is disallowed by the AuthorizationChecker
      * @return Form|object Returns the modified object when the form has been submitted, and it was valid. Return a Form when no form has yet been submitted, or the submitted form was invalid.
@@ -164,7 +164,7 @@ class FrontendManager
 
     /**
      * Deletes an existing resource, or shows a form to delete the resource
-     * @param mixed $id The id of the resource to delete
+     * @param string|int $id The id of the resource to delete
      * @param Request $request HTTP Request
      * @throws NotFoundHttpException When the form factory do not exist
      * @throws AccessDeniedException When deleting this resource is disallowed by the AuthorizationChecker
@@ -178,7 +178,7 @@ class FrontendManager
             throw new AccessDeniedException();
         }
 
-        if(!$this->formFactory) {
+        if($this->formFactory === null) {
             throw new NotFoundHttpException();
         }
 

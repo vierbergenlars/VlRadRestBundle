@@ -10,9 +10,9 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Security;
 
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 /**
  * Abstract baseclass for authorization checkers that contains commonly used functions
@@ -40,16 +40,9 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     private $roleHierarchy;
 
-    /**
-     * Cache for roles that have been converted to strings
-     *
-     * @var array
-     */
-    private $_cached_role_strings;
-
     final public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
     {
-        $this->context = $context;
+        $this->context       = $context;
         $this->trustResolver = $trustResolver;
         $this->roleHierarchy = $roleHierarchy;
     }
@@ -87,7 +80,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function getToken()
     {
-        if(($securityContext = $this->getSecurityContext())) {
+        if(($securityContext = $this->getSecurityContext()) !== null) {
             return $securityContext->getToken();
         }
         return null;
@@ -99,10 +92,10 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function getRoles()
     {
-        if(($token = $this->getToken())) {
+        if(($token = $this->getToken()) !== null) {
             $roles = $token->getRoles();
 
-            if(($roleHierarchy = $this->getRoleHierarchy())) {
+            if(($roleHierarchy = $this->getRoleHierarchy()) !== null) {
                 return $roleHierarchy->getReachableRoles($roles);
             }
 
@@ -118,7 +111,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function getUser()
     {
-        if(($token = $this->getToken())) {
+        if(($token = $this->getToken()) !== null) {
             return $token->getUser();
         }
 
@@ -132,12 +125,10 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function hasRole($role)
     {
-        if (! $this->_cached_role_strings) {
-            $this->_cached_role_strings = array_map(function ($role)
-            {
-                return $role->getRole();
-            }, $this->getRoles());
-        }
-        return in_array($role, $this->_cached_role_strings);
+        $roleStrings = array_map(function ($role)
+        {
+            return $role->getRole();
+        }, $this->getRoles());
+        return in_array($role, $roleStrings);
     }
 }
