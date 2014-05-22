@@ -29,7 +29,7 @@ interface ResourceManagerInterface
      * Finds the object by its database ID
      *
      * @param int $id
-     * @return object
+     * @return object|null
     */
     public function find($id);
 
