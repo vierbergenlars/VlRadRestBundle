@@ -40,13 +40,6 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     private $roleHierarchy;
 
-    /**
-     * Cache for roles that have been converted to strings
-     *
-     * @var array
-     */
-    private $_cached_role_strings;
-
     final public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
     {
         $this->context       = $context;
@@ -132,12 +125,10 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     protected function hasRole($role)
     {
-        if (! $this->_cached_role_strings) {
-            $this->_cached_role_strings = array_map(function ($role)
-            {
-                return $role->getRole();
-            }, $this->getRoles());
-        }
-        return in_array($role, $this->_cached_role_strings);
+        $roleStrings = array_map(function ($role)
+        {
+            return $role->getRole();
+        }, $this->getRoles());
+        return in_array($role, $roleStrings);
     }
 }
