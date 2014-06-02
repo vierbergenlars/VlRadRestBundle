@@ -70,7 +70,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
     public function newAction()
     {
-        $form = $this->frontendManager->createResource(new Request());
+        $form = $this->frontendManager->createResource();
         $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }
@@ -90,7 +90,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
     public function editAction($id)
     {
-        $form = $this->frontendManager->editResource($id,new Request());
+        $form = $this->frontendManager->editResource($id);
         $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }
@@ -110,7 +110,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
     public function removeAction($id)
     {
-        $form = $this->frontendManager->deleteResource($id, new Request());
+        $form = $this->frontendManager->deleteResource($id);
         $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }

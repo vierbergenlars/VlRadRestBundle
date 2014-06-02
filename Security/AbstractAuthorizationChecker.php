@@ -51,7 +51,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      *
      * @return SecurityContextInterface|null
      */
-    protected function getSecurityContext()
+    final protected function getSecurityContext()
     {
         return $this->context;
     }
@@ -60,7 +60,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      *
      * @return AuthenticationTrustResolverInterface|null
      */
-    protected function getTrustResolver()
+    final protected function getTrustResolver()
     {
         return $this->trustResolver;
     }
@@ -69,7 +69,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      *
      * @return RoleHierarchyInterface|null
      */
-    protected function getRoleHierarchy()
+    final protected function getRoleHierarchy()
     {
         return $this->roleHierarchy;
     }
@@ -78,7 +78,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      *
      * @return \Symfony\Component\Security\Core\Authentication\Token\TokenInterface|null
      */
-    protected function getToken()
+    final protected function getToken()
     {
         if(($securityContext = $this->getSecurityContext()) !== null) {
             return $securityContext->getToken();
@@ -90,7 +90,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      *
      * @return \Symfony\Component\Security\Core\Role\RoleInterface[]
      */
-    protected function getRoles()
+    final protected function getRoles()
     {
         if(($token = $this->getToken()) !== null) {
             $roles = $token->getRoles();
@@ -109,7 +109,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      *
      * @return UserInterface|string|null
      */
-    protected function getUser()
+    final protected function getUser()
     {
         if(($token = $this->getToken()) !== null) {
             return $token->getUser();
@@ -123,7 +123,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      * @param string $role
      * @return boolean
      */
-    protected function hasRole($role)
+    final protected function hasRole($role)
     {
         $roleStrings = array_map(function ($role)
         {

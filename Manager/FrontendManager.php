@@ -101,12 +101,12 @@ class FrontendManager
     /**
      * Internally handles resource creation & modification from a form
      * @param object $object The object to modify
-     * @param Request $request HTTP Request
+     * @param Request|null $request HTTP Request
      * @param string $method HTTP method the form should be submitted with
      * @throws NotFoundHttpException When the form or the form factory do not exist
      * @return Form|object Returns the modified object when the resource has been updated, or a Form instance when it has not yet been updated
      */
-    private function handleResourceForm($object, Request $request, $method)
+    private function handleResourceForm($object, Request $request = null, $method)
     {
         if($this->formType === null || $this->formFactory === null) {
             throw new NotFoundHttpException();
@@ -116,24 +116,25 @@ class FrontendManager
         ->setMethod($method)
         ->getForm();
 
-        $form->handleRequest($request);
+        if($request !== null) {
+            $form->handleRequest($request);
 
-        if($form->isValid()) {
-            $this->resourceManager->update($object);
-            return $object;
+            if($form->isValid()) {
+                $this->resourceManager->update($object);
+                return $object;
+            }
         }
 
         return $form;
-
     }
 
     /**
      * Creates a new resource, or shows a form to create a new resource
-     * @param Request $request Current HTTP request
+     * @param Request|null $request Current HTTP request
      * @throws AccessDeniedException When creating a new resource is disallowed by the AuthorizationChecker
      * @return Form|object Returns the created object when the form has been submitted, and it was valid. Return a Form when no form has yet been submitted, or the submitted form was invalid.
      */
-    public function createResource(Request $request)
+    public function createResource(Request $request = null)
     {
         if(!$this->authorizationChecker->mayCreate()) {
             throw new AccessDeniedException();
@@ -147,11 +148,11 @@ class FrontendManager
     /**
      * Modifies an existing resource, or shows a prepopulated form to modify an existing resource
      * @param string|int $id The id of the resource to modify
-     * @param Request $request HTTP Request
+     * @param Request|null $request HTTP Request
      * @throws AccessDeniedException When modifying this resource is disallowed by the AuthorizationChecker
      * @return Form|object Returns the modified object when the form has been submitted, and it was valid. Return a Form when no form has yet been submitted, or the submitted form was invalid.
      */
-    public function editResource($id, Request $request)
+    public function editResource($id, Request $request = null)
     {
         $object = $this->getResource($id);
 
@@ -165,12 +166,12 @@ class FrontendManager
     /**
      * Deletes an existing resource, or shows a form to delete the resource
      * @param string|int $id The id of the resource to delete
-     * @param Request $request HTTP Request
+     * @param Request|null $request HTTP Request
      * @throws NotFoundHttpException When the form factory do not exist
      * @throws AccessDeniedException When deleting this resource is disallowed by the AuthorizationChecker
      * @return boolean|Form Returns true when the resource has been deleted. Returns a confirmation
      */
-    public function deleteResource($id, Request $request)
+    public function deleteResource($id, Request $request = null)
     {
         $object = $this->getResource($id);
 
@@ -186,12 +187,14 @@ class FrontendManager
         ->setMethod('DELETE')
         ->add('submit')
         ->getForm();
+        
+        if($request !== null) {
+            $deleteForm->handleRequest($request);
 
-        $deleteForm->handleRequest($request);
-
-        if($deleteForm->isValid()) {
-            $this->resourceManager->delete($object);
-            return true;
+            if($deleteForm->isValid()) {
+                $this->resourceManager->delete($object);
+                return null;
+            }
         }
 
         return $deleteForm;
