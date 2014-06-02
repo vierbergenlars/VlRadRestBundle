@@ -90,7 +90,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
 
     public function editAction($id)
     {
-        $form = $this->frontendManager->editResource($id,new Request());
+        $form = $this->frontendManager->editResource($id, new Request());
         $view = $this->view($form)->setTemplateVar('form');
         return $this->handleView($view);
     }

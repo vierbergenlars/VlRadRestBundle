@@ -191,7 +191,7 @@ class FrontendManager
 
         if($deleteForm->isValid()) {
             $this->resourceManager->delete($object);
-            return true;
+            return null;
         }
 
         return $deleteForm;

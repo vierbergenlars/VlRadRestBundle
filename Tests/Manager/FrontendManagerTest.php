@@ -334,7 +334,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
                     $this->resourceManager->expects($this->never())->method('delete');
                 }
                 $retval = $frontendManager->deleteResource(1, $request);
-                $this->assertTrue($retval);
+                $this->assertNull($retval);
                 break;
             default:
                 $this->fail('$frontendManager->'.$method.' should not be tested');
