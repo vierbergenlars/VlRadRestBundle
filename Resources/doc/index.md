@@ -14,3 +14,4 @@ This bundle contains many features that are loosely coupled so you may or may no
 them. This bundle is just a tool to help you create a REST API rapidly.
 
 - [The Resource Manager](2-resource_manager.md)
+- [The Authorization Checker](3-authorization_checker.md)
