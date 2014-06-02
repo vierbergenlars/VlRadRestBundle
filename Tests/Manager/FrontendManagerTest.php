@@ -161,6 +161,40 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
                 $this->fail('$frontendManager->'.$method.' should not be tested');
         }
     }
+    
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
+    public function testGetsNullRequest($auths, $method, $expectException)
+    {
+        $this->setUpAuthenticationChecker($auths);
+        $fakeUser = $this->setUpResourceManager();
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, $this->formType, $this->formFactory);
+        if($expectException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'getResource':
+                $this->assertSame($fakeUser, $frontendManager->getResource(1));
+                break;
+            case 'createResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->createResource());
+                break;
+            case 'editResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->editResource(1));
+                break;
+            case 'deleteResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->deleteResource(1));
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+    }
+
 
     /**
      * @dataProvider authenticationCheckProvider
