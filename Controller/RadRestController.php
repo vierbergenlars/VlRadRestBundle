@@ -10,10 +10,12 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
+use FOS\RestBundle\Controller\Annotations\View as AView;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
@@ -55,12 +57,20 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         throw new \LogicException('No route found for controller '.$controller);
     }
 
+    /**
+     * @ApiDoc
+     * @AView
+     */
     public function cgetAction()
     {
         $view = $this->view($this->frontendManager->getList());
         return $this->handleView($view);
     }
 
+    /**
+     * @ApiDoc
+     * @AView
+     */
     public function getAction($id)
     {
         $object = $this->frontendManager->getResource($id);
@@ -75,6 +85,10 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @ApiDoc
+     * @AView
+     */
     public function postAction(Request $request)
     {
         $ret = $this->frontendManager->createResource($request);
@@ -95,6 +109,10 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @ApiDoc
+     * @AView
+     */
     public function putAction(Request $request, $id)
     {
         $ret = $this->frontendManager->editResource($id, $request);
@@ -115,6 +133,10 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @ApiDoc
+     * @AView
+     */
     public function deleteAction(Request $request, $id)
     {
         $ret = $this->frontendManager->deleteResource($id, $request);
