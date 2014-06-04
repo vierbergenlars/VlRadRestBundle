@@ -185,7 +185,7 @@ class FrontendManager
 
         $deleteForm = $this->formFactory->createBuilder()
         ->setMethod('DELETE')
-        ->add('submit')
+        ->add('submit', 'submit')
         ->getForm();
         
         if($request !== null) {
