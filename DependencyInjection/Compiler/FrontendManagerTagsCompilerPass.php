@@ -39,20 +39,18 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
                }
                
                // Create a new definition for a frontend manager
-               $definition = new Definition();
-               $definition->setClass('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager');
-               $definition->setArguments(array(
+               $definition = new Definition('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager', array(
                    new Reference($resourceManagerId),
                    new Reference($authorizationCheckerId),
                    new Reference($formId, ContainerInterface::NULL_ON_INVALID_REFERENCE),
                    new Reference('form.factory', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)
                ));
                $definition->addTag('radrest.frontend_manager', array('resource'=>$resourceId));
-               $container->createService($definition, 'radrest.frontend_manager.compiled.'.$resourceId);
+               $container->setDefinition('radrest.frontend_manager.compiled.'.$resourceId, $definition);
                
                // Register an alias if possible
                $aliasBase = $this->findAliasBaseName(array($resourceManagerId, $authorizationCheckerId, $formId));
-               if($aliasBase) {
+               if($aliasBase !== false && !$container->has($aliasBase.'.frontend_manager')) {
                    $container->setAlias($aliasBase.'.frontend_manager', 'radrest.frontend_manager.compiled.'.$resourceId);
                }
             }
