@@ -78,6 +78,9 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @AView
+     */
     public function newAction()
     {
         $form = $this->frontendManager->createResource();
@@ -102,6 +105,9 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @AView
+     */
     public function editAction($id)
     {
         $form = $this->frontendManager->editResource($id);
@@ -126,6 +132,9 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @AView
+     */
     public function removeAction($id)
     {
         $form = $this->frontendManager->deleteResource($id);
