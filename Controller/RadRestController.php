@@ -126,6 +126,23 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         return $this->handleView($view);
     }
 
+    /**
+     * @ApiDoc
+     * @AView
+     */
+    public function patchAction(Request $request, $id)
+    {
+        $ret = $this->frontendManager->editResource($id, $request, true);
+
+        if($ret instanceof Form) {
+            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        } else {
+            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
+        }
+
+        return $this->handleView($view);
+    }
+
     public function removeAction($id)
     {
         $form = $this->frontendManager->deleteResource($id);
