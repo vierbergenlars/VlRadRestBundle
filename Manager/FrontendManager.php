@@ -149,10 +149,11 @@ class FrontendManager
      * Modifies an existing resource, or shows a prepopulated form to modify an existing resource
      * @param string|int $id The id of the resource to modify
      * @param Request|null $request HTTP Request
+     * @param boolean $patch Patch the resource instead of fully replacing it
      * @throws AccessDeniedException When modifying this resource is disallowed by the AuthorizationChecker
      * @return Form|object Returns the modified object when the form has been submitted, and it was valid. Return a Form when no form has yet been submitted, or the submitted form was invalid.
      */
-    public function editResource($id, Request $request = null)
+    public function editResource($id, Request $request = null, $patch = false)
     {
         $object = $this->getResource($id);
 
@@ -160,7 +161,7 @@ class FrontendManager
             throw new AccessDeniedException();
         }
 
-        return $this->handleResourceForm($object, $request, 'PUT');
+        return $this->handleResourceForm($object, $request, $patch?'PATCH':'PUT');
     }
 
     /**
@@ -185,7 +186,7 @@ class FrontendManager
 
         $deleteForm = $this->formFactory->createBuilder()
         ->setMethod('DELETE')
-        ->add('submit')
+        ->add('submit', 'submit')
         ->getForm();
         
         if($request !== null) {

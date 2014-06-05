@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationRequestHandler;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
 
 class UserType extends AbstractType
 {
@@ -23,6 +24,7 @@ class UserType extends AbstractType
     {
         $builder
         ->add('username', 'text', array('constraints'=>new NotBlank()))
+        ->add('email', 'text', array('constraints'=>array(new Email, new NotBlank)))
         ;
     }
     public function setDefaultOptions(OptionsResolverInterface $resolver)
