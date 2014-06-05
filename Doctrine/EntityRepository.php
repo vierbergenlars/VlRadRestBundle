@@ -21,21 +21,13 @@ class EntityRepository extends DoctrineRepository implements ResourceManagerInte
     private function validateObject($object, $calledMethod)
     {
         $expectedClass = $this->getEntityName();
-        if(!is_a($object, $expectedClass)&&is_object($object)) {
+        if(!is_a($object, $expectedClass)) {
             throw new \LogicException(sprintf(
                 '%s::%s() requires its first argument to be an instance of %s, got an instance of %s.',
                 get_class(),
                 $calledMethod,
                 $expectedClass,
                 get_class($object)
-            ));
-        } else {
-            throw new \LogicException(sprintf(
-                '%s::%s() requires its first argument to be an instance of %s, got a %s.',
-                get_class(),
-                $calledMethod,
-                $expectedClass,
-                gettype($object)
             ));
         }
     }
