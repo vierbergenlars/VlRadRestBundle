@@ -335,7 +335,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             case 'createResource':
                 $request = new Request();
                 $request->setMethod('POST');
-                $request->request->add(array('user'=>array('username'=>'abc')));
+                $request->request->add(array('user'=>array('username'=>'abc', 'email'=>'abc@example.com')));
                 if(!$expectAuthException) {
                     $this->resourceManager->expects($this->once())->method('update')->with($fakeUser);
                 } else {
@@ -348,7 +348,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             case 'editResource':
                 $request = new Request();
                 $request->setMethod('PUT');
-                $request->request->add(array('user'=>array('username'=>'abc')));
+                $request->request->add(array('user'=>array('username'=>'abc', 'email'=>'abc@example.com')));
                 if(!$expectAuthException) {
                     $this->resourceManager->expects($this->once())->method('update')->with($fakeUser);
                 } else {

@@ -26,6 +26,8 @@ class User
 	 * @ORM\Column(type="text")
 	 */
 	private $username;
+	
+	private $email;
 
 	public function getId()
 	{
@@ -41,11 +43,22 @@ class User
 	{
 		$this->username = $username;
 	}
+	
+	public function getEmail()
+	{
+	    return $this->email;
+	}
+	
+	public function setEmail($email)
+	{
+	    $this->email = $email;
+	}
 
 	public static function create($username, $id = null)
 	{
 		$user = new self();
 		$user->setUsername($username);
+		$user->setEmail($username.'@example.com');
 
 		$refl = new \ReflectionClass($user);
 		$prop = $refl->getProperty('id');

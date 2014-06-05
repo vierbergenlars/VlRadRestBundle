@@ -56,6 +56,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->routeCollection->add('post_user', $this->route('/users', 'post', 'POST'));
         $this->routeCollection->add('edit_user', $this->route('/users/{id}/edit', 'edit', 'GET'));
         $this->routeCollection->add('put_user', $this->route('/users/{id}', 'put', 'PUT'));
+        $this->routeCollection->add('patch_user', $this->route('/users/{id}', 'patch', 'PATCH'));
         $this->routeCollection->add('remove_user', $this->route('/users/{id}/remove', 'remove', 'GET'));
         $this->routeCollection->add('delete_user', $this->route('/users/{id}', 'delete', 'DELETE'));
     }
@@ -144,7 +145,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $request = new Request();
         $request->setMethod('POST');
-        $request->request->add(array('user'=>array('username'=>'abc', '_token'=>'abcd')));
+        $request->request->add(array('user'=>array('username'=>'abc', 'email'=>'abc@example.com', '_token'=>'abcd')));
         $retval = $controller->postAction($request);
 
         $this->assertNotInstanceOf('Symfony\Component\Form\Form', $retval->getData());
@@ -163,7 +164,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $request = new Request();
         $request->setMethod('POST');
-        $request->request->add(array('user'=>array('username'=>'', '_token'=>'abcd')));
+        $request->request->add(array('user'=>array('username'=>'', 'email'=>'abc@example.com', '_token'=>'abcd')));
         $retval = $controller->postAction($request);
 
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
@@ -199,7 +200,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $request = new Request();
         $request->setMethod('PUT');
-        $request->request->add(array('user'=>array('username'=>'abc', '_token'=>'abcd')));
+        $request->request->add(array('user'=>array('username'=>'abc', 'email'=>'abc@example.com', '_token'=>'abcd')));
         $retval = $controller->putAction($request, 90);
 
         $this->assertNotInstanceOf('Symfony\Component\Form\Form', $retval->getData());
@@ -218,7 +219,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
 
         $request = new Request();
         $request->setMethod('PUT');
-        $request->request->add(array('user'=>array('username'=>'', '_token'=>'abcd')));
+        $request->request->add(array('user'=>array('username'=>'sfe', '_token'=>'abcd')));
         $retval = $controller->putAction($request, 90);
 
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
@@ -227,7 +228,47 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
+    
+    public function testPatch()
+    {
+        $controller = new UserController();
+        $controller->setContainer($this->container);
+        $controller->setFrontendManager($this->frontendManager);
 
+        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
+        $this->frontendManager->expects($this->once())->method('editResource');
+
+        $request = new Request();
+        $request->setMethod('PATCH');
+        $request->request->add(array('user'=>array('username'=>'abc', '_token'=>'abcd')));
+        $retval = $controller->patchAction($request, 90);
+
+        $this->assertNotInstanceOf('Symfony\Component\Form\Form', $retval->getData());
+        $this->assertSame('get_user', $retval->getRoute());
+        $this->assertSame(array('id'=>90), $retval->getRouteParameters());
+    }
+    
+    public function testPatchBad()
+    {
+        $controller = new UserController();
+        $controller->setContainer($this->container);
+        $controller->setFrontendManager($this->frontendManager);
+    
+        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
+        $this->frontendManager->expects($this->once())->method('editResource');
+    
+        $request = new Request();
+        $request->setMethod('PATCH');
+        $request->request->add(array('user'=>array('email'=>'abcef')));
+        $retval = $controller->patchAction($request, 90);
+    
+        $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
+        $this->assertTrue($retval->getData()->isSubmitted());
+        $this->assertFalse($retval->getData()->isValid());
+        $this->assertSame('form', $retval->getTemplateVar());
+        $this->assertSame(400, $retval->getStatusCode());
+    }
+    
     public function testRemove()
     {
         $controller = new UserController();
