@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
  *
  * @author Lars Vierbergen <vierbergenlars@gmail.com>
  */
-final class AuthorizationCheckerFactory
+class AuthorizationCheckerFactory
 {
 
     /**
