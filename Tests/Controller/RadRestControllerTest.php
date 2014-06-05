@@ -150,6 +150,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertSame('get_user', $retval->getRoute());
         $this->assertSame(array('id'=>90), $retval->getRouteParameters());
+        $this->assertSame(201, $retval->getStatusCode());
     }
 
     public function testPostBad()
@@ -205,6 +206,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertSame('get_user', $retval->getRoute());
         $this->assertSame(array('id'=>90), $retval->getRouteParameters());
+        $this->assertSame(204, $retval->getStatusCode());
     }
 
     public function testPutBad()
@@ -261,6 +263,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertSame('get_users', $retval->getRoute());
         $this->assertSame(array(), $retval->getRouteParameters());
+        $this->assertSame(204, $retval->getStatusCode());
     }
 
     public function testDeleteBad()
