@@ -38,6 +38,13 @@ class RadRestHandler implements HandlerInterface
         }
         $controllerInst->setContainer($this->container);
         $frontendManager = $controllerInst->getFrontendManager();
+        $serializationGroups = $controllerInst->getSerializationGroups();
+        if(!isset($serializationGroups['object'])) {
+            $serializationGroups['object'] = array('Default');
+        }
+        if(!isset($serializationGroups['list'])) {
+            $serializationGroups['list'] = array('Default');
+        }
         
         $resourceManager = $this->getObjectProperty($frontendManager, 'resourceManager');
         $formType = $this->getObjectProperty($frontendManager, 'formType');
@@ -51,7 +58,17 @@ class RadRestHandler implements HandlerInterface
                 }
                 break;
             case 'getAction':
-                $this->setObjectProperty($annotation, 'output', get_class($resourceManager->create()));
+                $this->setObjectProperty($annotation, 'output', array(
+                    'class'=>get_class($resourceManager->create()),
+                    'groups'=>$serializationGroups['object'],
+                ));
+                break;
+            case 'cgetAction':
+                $this->setObjectProperty($annotation, 'output', array(
+                    'class'=>get_class($resourceManager->create()),
+                    'groups'=>$serializationGroups['list'],
+                ));
+                
         }
     }
     
