@@ -11,11 +11,16 @@
 namespace vierbergenlars\Bundle\RadRestBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass;
 
 /**
  * @author Lars Vierbergen <vierbergenlars@gmail.com>
  */
 class VlRadRestBundle extends Bundle
 {
-
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new FrontendManagerTagsCompilerPass());
+    }
 }
