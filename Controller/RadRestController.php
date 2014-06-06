@@ -37,6 +37,11 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         $this->frontendManager = $frontendManager;
     }
 
+    /**
+     * Returns a list of serializer groups for each type of GET request (list & single object view)
+     * @codeCoverageIgnore
+     * @return array
+     */
     public function getSerializationGroups()
     {
         return array(
