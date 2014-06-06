@@ -88,7 +88,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     }
 
     /**
-     * @ApiDoc
+     * @ApiDoc(resource=true)
      * @AView
      */
     public function cgetAction()
@@ -99,7 +99,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     }
 
     /**
-     * @ApiDoc
+     * @ApiDoc(resource=true)
      * @AView
      */
     public function getAction($id)
