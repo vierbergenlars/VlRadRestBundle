@@ -42,7 +42,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
                $definition = new Definition('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager', array(
                    new Reference($resourceManagerId),
                    new Reference($authorizationCheckerId),
-                   new Reference($formId, ContainerInterface::NULL_ON_INVALID_REFERENCE),
+                   $formId===null?null:new Reference($formId),
                    new Reference('form.factory', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)
                ));
                $definition->addTag('radrest.frontend_manager', array('resource'=>$resourceId));
@@ -82,10 +82,6 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
      */
     private function findAliasBaseName($serviceIds)
     {
-        if(count($serviceIds) == 0) {
-            return false;
-        }
-        
         $pieces = explode('.', $serviceIds[0]);
         array_pop($pieces);
         $base = implode('.', $pieces);
