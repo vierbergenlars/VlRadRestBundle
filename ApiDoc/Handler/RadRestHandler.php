@@ -26,16 +26,23 @@ class RadRestHandler implements HandlerInterface
     
     public function handle(ApiDoc $annotation, array $annotations, Route $route, \ReflectionMethod $reflMethod)
     {
+
+        if($reflMethod->getDeclaringClass()->getName() !== 'vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController') {
+            /*
+             * No touching!
+             * This method is not ours (either completely unrelated class or overriden from RadRestController)
+             * The developer is responsible for his own documentation on that method.
+             */
+            return;
+        }
+
         $controller = $route->getDefault('_controller');
         
         $controllerPieces = explode('::', $controller);
         $controllerClass = $controllerPieces[0];
         $controllerMethod = $controllerPieces[1];
-        
-        $controllerInst = new $controllerClass();
-        if(!($controllerInst instanceof RadRestController)) {
-            return;
-        }
+
+        $controllerInst = new $controllerClass(); // Must be RadRestController, because the method we got came from there
         $controllerInst->setContainer($this->container);
         $frontendManager = $controllerInst->getFrontendManager();
         $serializationGroups = $controllerInst->getSerializationGroups();
