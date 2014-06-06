@@ -26,37 +26,37 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
         $taggedResourceManagers = $container->findTaggedServiceIds('radrest.resource_manager');
         $taggedForms = $container->findTaggedServiceIds('radrest.form');
         $taggedAuthorizationCheckers = $container->findTaggedServiceIds('radrest.authorization_checker');
-        
+
         foreach($taggedResourceManagers as $resourceManagerId => $tagAttributes) {
             foreach($tagAttributes as $attributes) {
-               $resourceId = $attributes['resource'];
-               // Find the other services tagged with this resource id
-               $formId = $this->findTaggedServicesByResource($taggedForms, $resourceId);
-               $authorizationCheckerId = $this->findTaggedServicesByResource($taggedAuthorizationCheckers, $resourceId);
-               
-               if($authorizationCheckerId === null) {
-                   throw new \LogicException('There is no service tagged radrest.authorization_checker for resource "'.$resourceId.'"');
-               }
-               
-               // Create a new definition for a frontend manager
-               $definition = new Definition('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager', array(
-                   new Reference($resourceManagerId),
-                   new Reference($authorizationCheckerId),
-                   $formId===null?null:new Reference($formId),
-                   new Reference('form.factory', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)
-               ));
-               $definition->addTag('radrest.frontend_manager', array('resource'=>$resourceId));
-               $container->setDefinition('radrest.frontend_manager.compiled.'.$resourceId, $definition);
-               
-               // Register an alias if possible
-               $aliasBase = $this->findAliasBaseName(array($resourceManagerId, $authorizationCheckerId, $formId));
-               if($aliasBase !== false && !$container->has($aliasBase.'.frontend_manager')) {
-                   $container->setAlias($aliasBase.'.frontend_manager', 'radrest.frontend_manager.compiled.'.$resourceId);
-               }
+                $resourceId = $attributes['resource'];
+                // Find the other services tagged with this resource id
+                $formId = $this->findTaggedServicesByResource($taggedForms, $resourceId);
+                $authorizationCheckerId = $this->findTaggedServicesByResource($taggedAuthorizationCheckers, $resourceId);
+                 
+                if($authorizationCheckerId === null) {
+                    throw new \LogicException('There is no service tagged radrest.authorization_checker for resource "'.$resourceId.'"');
+                }
+                 
+                // Create a new definition for a frontend manager
+                $definition = new Definition('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager', array(
+                    new Reference($resourceManagerId),
+                    new Reference($authorizationCheckerId),
+                    $formId===null?null:new Reference($formId),
+                    new Reference('form.factory', ContainerInterface::IGNORE_ON_INVALID_REFERENCE)
+                ));
+                $definition->addTag('radrest.frontend_manager', array('resource'=>$resourceId));
+                $container->setDefinition('radrest.frontend_manager.compiled.'.$resourceId, $definition);
+                 
+                // Register an alias if possible
+                $aliasBase = $this->findAliasBaseName(array($resourceManagerId, $authorizationCheckerId, $formId));
+                if($aliasBase !== false && !$container->has($aliasBase.'.frontend_manager')) {
+                    $container->setAlias($aliasBase.'.frontend_manager', 'radrest.frontend_manager.compiled.'.$resourceId);
+                }
             }
         }
     }
-    
+
     /**
      * Finds a service which is tagged with a specific resource id in the array of tagged services
      * @param array $taggedServices
@@ -74,7 +74,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
         }
         return null;
     }
-    
+
     /**
      * Finds a common basename for all defined service ids
      * @param array $serviceIds
@@ -96,7 +96,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
                 return false;
             }
         }
-        
+
         return $base;
     }
 }
