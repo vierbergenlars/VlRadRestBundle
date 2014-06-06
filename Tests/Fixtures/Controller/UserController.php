@@ -28,4 +28,9 @@ class UserController extends RadRestController
     {
         return $this->redirectTo($nextAction, $params);
     }
+    
+    public function getSerializationGroups()
+    {
+        return array('list'=>array('abc', 'def'));
+    }
 }

@@ -103,6 +103,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array($fakeUser), $retval->getData());
         $this->assertSame('data', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
+        $this->assertSame(array('abc', 'def'), $retval->getSerializationContext()->attributes->get('groups')->get());
     }
 
     public function testGet()
@@ -116,6 +117,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($fakeUser, $retval->getData());
         $this->assertSame('data', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
+        $this->assertSame(array('Default'), $retval->getSerializationContext()->attributes->get('groups')->get());
     }
 
     public function testNew()

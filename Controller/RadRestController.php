@@ -38,6 +38,25 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     }
 
     /**
+     * Returns a list of serializer groups for each type of GET request (list & single object view)
+     * @codeCoverageIgnore
+     * @return array
+     */
+    public function getSerializationGroups()
+    {
+        return array(
+            'list'   => array('Default'),
+            'object' => array('Default'),
+        );
+    }
+    
+    private function getSerializationGroup($type)
+    {
+        $sg = (array)$this->getSerializationGroups();
+        return isset($sg[$type])?$sg[$type]:array('Default');
+    }
+
+    /**
      * Redirects to another action on the same controller
      * @param string $nextAction The action name to redirect to
      * @param array<string> $params Parameters to pass to the route generator
@@ -67,6 +86,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     public function cgetAction()
     {
         $view = $this->view($this->frontendManager->getList());
+        $view->getSerializationContext()->setGroups($this->getSerializationGroup('list'));
         return $this->handleView($view);
     }
 
@@ -78,6 +98,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     {
         $object = $this->frontendManager->getResource($id);
         $view = $this->view($object);
+        $view->getSerializationContext()->setGroups($this->getSerializationGroup('object'));
         return $this->handleView($view);
     }
 
