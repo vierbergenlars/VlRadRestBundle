@@ -54,7 +54,10 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
                 return $this->routeRedirectView($routeName, $params);
             }
         }
+        
+        // @codeCoverageIgnoreStart
         throw new \LogicException('No route found for controller '.$controller);
+        // @codeCoverageIgnoreEnd
     }
 
     /**
