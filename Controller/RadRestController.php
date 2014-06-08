@@ -50,6 +50,9 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         );
     }
     
+    /**
+     * @param string $type
+     */
     private function getSerializationGroup($type)
     {
         $sg = (array)$this->getSerializationGroups();

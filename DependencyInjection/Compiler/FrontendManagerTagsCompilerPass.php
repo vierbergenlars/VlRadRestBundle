@@ -12,9 +12,9 @@ namespace vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Resolves tagged services to a frontend manager
@@ -61,7 +61,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
      * Finds a service which is tagged with a specific resource id in the array of tagged services
      * @param array $taggedServices
      * @param string $resourceId
-     * @return string|NULL
+     * @return string
      */
     private function findTaggedServicesByResource($taggedServices, $resourceId)
     {
@@ -78,7 +78,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
     /**
      * Finds a common basename for all defined service ids
      * @param array $serviceIds
-     * @return boolean|string
+     * @return false|string
      */
     private function findAliasBaseName($serviceIds)
     {
