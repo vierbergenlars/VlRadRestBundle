@@ -14,6 +14,9 @@ use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Security\AuthorizationChecker;
 use Symfony\Component\Security\Core\Role\Role;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Security\AbstractAuthorizationChecker
+ */
 class AbstractAuthorizationCheckerTest extends \PHPUnit_Framework_TestCase
 {
     private $securityContext;

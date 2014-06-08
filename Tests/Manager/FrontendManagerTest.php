@@ -19,6 +19,9 @@ use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Validator\Validation;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
+ */
 class FrontendManagerTest extends \PHPUnit_Framework_TestCase
 {
     private $resourceManager;
@@ -161,7 +164,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
                 $this->fail('$frontendManager->'.$method.' should not be tested');
         }
     }
-    
+
     /**
      * @dataProvider authenticationCheckProvider
      */

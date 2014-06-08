@@ -14,6 +14,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
+ */
 class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     protected $em;
