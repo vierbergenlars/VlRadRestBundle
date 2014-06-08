@@ -12,6 +12,7 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
 use FOS\RestBundle\View\View;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserController extends RadRestController
 {
@@ -23,10 +24,18 @@ class UserController extends RadRestController
     {
         return $view;
     }
-    
+
     public function _redirectTo($nextAction, array $params = array())
     {
         return $this->redirectTo($nextAction, $params);
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        if($container->has('frontend_manager')) {
+            $this->setFrontendManager($container->get('frontend_manager'));
+        }
     }
     
     public function getSerializationGroups()
