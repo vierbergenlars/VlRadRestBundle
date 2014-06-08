@@ -14,22 +14,8 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class UserController extends RadRestController
+class OverriddenMethodController extends RadRestController
 {
-    /**
-     * Override view handler to just return the view
-     * @return View
-     */
-    protected function handleView(View $view)
-    {
-        return $view;
-    }
-
-    public function _redirectTo($nextAction, array $params = array())
-    {
-        return $this->redirectTo($nextAction, $params);
-    }
-
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
@@ -37,9 +23,9 @@ class UserController extends RadRestController
             $this->setFrontendManager($container->get('frontend_manager'));
         }
     }
-    
-    public function getSerializationGroups()
+
+    public function getAction($id)
     {
-        return array('list'=>array('abc', 'def'));
+        return null;
     }
 }

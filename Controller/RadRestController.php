@@ -37,6 +37,11 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         $this->frontendManager = $frontendManager;
     }
 
+    public function getFrontendManager()
+    {
+        return $this->frontendManager;
+    }
+
     /**
      * Returns a list of serializer groups for each type of GET request (list & single object view)
      * @codeCoverageIgnore
@@ -83,7 +88,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     }
 
     /**
-     * @ApiDoc
+     * @ApiDoc(resource=true)
      * @AView
      */
     public function cgetAction()
@@ -94,7 +99,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     }
 
     /**
-     * @ApiDoc
+     * @ApiDoc(resource=true)
      * @AView
      */
     public function getAction($id)
