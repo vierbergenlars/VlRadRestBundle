@@ -13,6 +13,9 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Security;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerFactory;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerFactory
+ */
 class AuthorizationCheckerFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $securityContext;

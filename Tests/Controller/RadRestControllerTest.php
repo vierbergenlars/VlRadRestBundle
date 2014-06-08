@@ -29,6 +29,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfTokenManager;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController
+ */
 class RadRestControllerTest extends \PHPUnit_Framework_TestCase
 {
     private $frontendManager;
@@ -232,7 +235,7 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
-    
+
     public function testPatch()
     {
         $controller = new UserController();
@@ -251,28 +254,28 @@ class RadRestControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('get_user', $retval->getRoute());
         $this->assertSame(array('id'=>90), $retval->getRouteParameters());
     }
-    
+
     public function testPatchBad()
     {
         $controller = new UserController();
         $controller->setContainer($this->container);
         $controller->setFrontendManager($this->frontendManager);
-    
+
         $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
         $this->frontendManager->expects($this->once())->method('editResource');
-    
+
         $request = new Request();
         $request->setMethod('PATCH');
         $request->request->add(array('user'=>array('email'=>'abcef')));
         $retval = $controller->patchAction($request, 90);
-    
+
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertTrue($retval->getData()->isSubmitted());
         $this->assertFalse($retval->getData()->isValid());
         $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
-    
+
     public function testRemove()
     {
         $controller = new UserController();
