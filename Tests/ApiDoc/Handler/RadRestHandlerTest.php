@@ -20,6 +20,9 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\UserType;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestHandler
+ */
 class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
 {
     private $handler;
@@ -40,6 +43,18 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->handler->handle($apiDoc, array(), $route, $reflMethod);
 
+        $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('abc', 'def')), $apiDoc->getOutput());
+        $this->assertNull($apiDoc->getInput());
+    }
+
+    public function testHandleCGetDefaultSerialization()
+    {
+        $apiDoc = new ApiDoc(array('resource'=>true));
+        $route = $this->route('/users', 'cget', 'GET', 'SwitchedSerializationController');
+        $reflMethod = $this->getReflectionMethod($route);
+
+        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
+
         $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('Default')), $apiDoc->getOutput());
         $this->assertNull($apiDoc->getInput());
     }
@@ -54,6 +69,30 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('Default')), $apiDoc->getOutput());
         $this->assertNull($apiDoc->getInput());
+    }
+
+    public function testHandleGetCustomSerialization()
+    {
+        $apiDoc = new ApiDoc(array('resource'=>true));
+        $route = $this->route('/users/{id}', 'get', 'GET', 'SwitchedSerializationController');
+        $reflMethod = $this->getReflectionMethod($route);
+
+        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
+
+        $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('abc', 'def')), $apiDoc->getOutput());
+        $this->assertNull($apiDoc->getInput());
+    }
+
+    public function testHandleGetOverriddenMethod()
+    {
+        $apiDoc = new ApiDoc(array('resource'=>true));
+        $route = $this->route('/users/{id}', 'get', 'GET', 'OverriddenMethodController');
+        $reflMethod = $this->getReflectionMethod($route);
+
+        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
+
+        $this->assertNull($apiDoc->getInput());
+        $this->assertNull($apiDoc->getOutput());
     }
 
     public function testHandlePost()
@@ -110,9 +149,9 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
         return new \ReflectionMethod($route->getDefault('_controller'));
     }
 
-    private function route($path, $action, $method = null)
+    private function route($path, $action, $method = null, $class = 'UserController')
     {
-        $route = new Route($path, array('_controller'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserController::'.$action.'Action'));
+        $route = new Route($path, array('_controller'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\\'.$class.'::'.$action.'Action'));
         $route->setMethods($method);
         return $route;
     }
