@@ -20,10 +20,11 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
 class RadRestHandler implements HandlerInterface
 {
     private $container;
-    public function __construct(ContainerInterface $container) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
     }
-    
+
     public function handle(ApiDoc $annotation, array $annotations, Route $route, \ReflectionMethod $reflMethod)
     {
 
@@ -36,15 +37,14 @@ class RadRestHandler implements HandlerInterface
             return;
         }
 
-        $controller = $route->getDefault('_controller');
-        
+        $controller       = $route->getDefault('_controller');
         $controllerPieces = explode('::', $controller);
-        $controllerClass = $controllerPieces[0];
+        $controllerClass  = $controllerPieces[0];
         $controllerMethod = $controllerPieces[1];
 
         $controllerInst = new $controllerClass(); // Must be RadRestController, because the method we got came from there
         $controllerInst->setContainer($this->container);
-        $frontendManager = $controllerInst->getFrontendManager();
+        $frontendManager     = $controllerInst->getFrontendManager();
         $serializationGroups = $controllerInst->getSerializationGroups();
         if(!isset($serializationGroups['object'])) {
             $serializationGroups['object'] = array('Default');
@@ -52,10 +52,10 @@ class RadRestHandler implements HandlerInterface
         if(!isset($serializationGroups['list'])) {
             $serializationGroups['list'] = array('Default');
         }
-        
+
         $resourceManager = $this->getObjectProperty($frontendManager, 'resourceManager');
-        $formType = $this->getObjectProperty($frontendManager, 'formType');
-        
+        $formType        = $this->getObjectProperty($frontendManager, 'formType');
+
         switch($controllerMethod) {
             case 'putAction':
             case 'postAction':
@@ -75,17 +75,17 @@ class RadRestHandler implements HandlerInterface
                     'class'=>get_class($resourceManager->create()),
                     'groups'=>$serializationGroups['list'],
                 ));
-                
+
         }
     }
-    
+
     private function setObjectProperty($object, $property, $value)
     {
         $refl = new \ReflectionProperty($object, $property);
         $refl->setAccessible(true);
         $refl->setValue($object, $value);
     }
-    
+
     private function getObjectProperty($object, $property)
     {
         $refl = new \ReflectionProperty($object, $property);

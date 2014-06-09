@@ -45,7 +45,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     /**
      * Returns a list of serializer groups for each type of GET request (list & single object view)
      * @codeCoverageIgnore
-     * @return array
+     * @return array<string, string[]>
      */
     public function getSerializationGroups()
     {
@@ -54,7 +54,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
             'object' => array('Default'),
         );
     }
-    
+
     /**
      * @param string $type
      */
@@ -73,15 +73,15 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     protected function redirectTo($nextAction, array $params = array())
     {
         $controller = get_class($this).'::'.$nextAction.'Action';
-        $routes = $this->get('router')->getRouteCollection()->all();
+        $routes     = $this->get('router')->getRouteCollection()->all();
         // FIXME: Get rid of O(n) performance on routes
         foreach($routes as $routeName => $route)
         {
-            if($route->hasDefault('_controller')&&$route->getDefault('_controller') == $controller) {
+            if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
                 return $this->routeRedirectView($routeName, $params);
             }
         }
-        
+
         // @codeCoverageIgnoreStart
         throw new \LogicException('No route found for controller '.$controller);
         // @codeCoverageIgnoreEnd
@@ -105,7 +105,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     public function getAction($id)
     {
         $object = $this->frontendManager->getResource($id);
-        $view = $this->view($object);
+        $view   = $this->view($object);
         $view->getSerializationContext()->setGroups($this->getSerializationGroup('object'));
         return $this->handleView($view);
     }

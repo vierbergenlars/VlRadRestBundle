@@ -188,7 +188,7 @@ class FrontendManager
         ->setMethod('DELETE')
         ->add('submit', 'submit')
         ->getForm();
-        
+
         if($request !== null) {
             $deleteForm->handleRequest($request);
 
