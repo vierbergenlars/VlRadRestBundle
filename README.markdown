@@ -14,6 +14,7 @@ The bulk of the documentation is stored in the `Resources/doc/index.md`
 file in this bundle:
 
 [Read the Documentation for master](https://github.com/vierbergenlars/VlRadRestBundle/blob/master/Resources/doc/index.md)
+[Read the Documentation for develop](https://github.com/vierbergenlars/VlRadRestBundle/blob/develop/Resources/doc/index.md)
 
 Installation
 ------------
