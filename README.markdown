@@ -2,9 +2,10 @@ VlRadRestBundle
 =============
 
 [![Build Status](https://secure.travis-ci.org/vierbergenlars/VlRadRestBundle.png?branch=master)](http://travis-ci.org/vierbergenlars/VlRadRestBundle)
-[![Code Coverage](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=develop)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=develop)
 [![Latest Stable Version](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/v/stable.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/v/unstable.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
 [![License](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/license.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
 
 Documentation
@@ -14,6 +15,7 @@ The bulk of the documentation is stored in the `Resources/doc/index.md`
 file in this bundle:
 
 [Read the Documentation for master](https://github.com/vierbergenlars/VlRadRestBundle/blob/master/Resources/doc/index.md)
+
 [Read the Documentation for develop](https://github.com/vierbergenlars/VlRadRestBundle/blob/develop/Resources/doc/index.md)
 
 Installation
