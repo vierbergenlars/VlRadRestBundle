@@ -15,4 +15,7 @@ them. This bundle is just a tool to help you create a REST API rapidly.
 
 - [The Resource Manager](2-resource_manager.md)
 - [The Authorization Checker](3-authorization_checker.md)
-- [The Frontend Manager](4-frontend_manager.md)
+
+## Technical documenation
+
+- [The Frontend Manager](tech-frontend_manager.md)
