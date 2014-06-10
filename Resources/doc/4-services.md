@@ -10,7 +10,13 @@ But writing these service definitions is a boring and tedious job. Especially th
 
 ### Dependency injection tags
 
-All services can be assigned one or more tags in the service definition. If you tag your resource manager, authorization checker and form with `radrest.resource_manager`, `radrest.authorization_checker` and `radrest.form`, the frontend manager will be automagically be created for you. The tags also need a `resource` attribute that defines a unique resource name across the whole application. It will be used to match up the resource manager, authorization checker and form.
+All services can be assigned one or more tags in the service definition.
+If you tag your resource manager, authorization checker and form with `radrest.resource_manager`, `radrest.authorization_checker` and `radrest.form`, the frontend manager will be automagically be created for you.
+The tags also need a `resource` attribute that defines a unique resource name across the whole application. It will be used to match up the resource manager, authorization checker and form.
+
+The tag `radrest.authorization_checker` will automatically construct the authorization checker with the default factory. To prevent this, add a factory class or factory service yourself, of add a `factory=false` attribute to the tag.
+
+Additionally, the `radrest.entity_repository` tag will create an entity repository for the Doctrine entity.
 
 The resource manager and the authorization checker are required, the form may be omitted (keep in mind POST, PUT and PATCH actions will be disabled if no form is registered).
 
@@ -19,13 +25,12 @@ Here is a simple example in XML format:
 ```xml
 <!-- Resources/config/services.xml -->
 <services>
-    <service id="acme.demo.user.resource_manager" class="vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository" factory-service="doctrine.orm.entity_manager" factory-method="getRepository">
-        <argument type="string">AcmeDemoBundle:User</argument>
+    <service id="acme.demo.user.resource_manager" class="AcmeDemoBundle:User">
         <tag name="radrest.resource_manager" resource="user" />
+        <tag name="radrest.entity_repository" />
     </service>
 
-    <service id="acme.demo.user.authorization_checker" class="Acme\DemoBundle\Security\UserAuthorizationChecker" factory-service="radrest.authorization_checker.factory" factory-method="createChecker">
-        <argument type="string">Acme\DemoBundle\Security\UserAuthorizationChecker</argument>
+    <service id="acme.demo.user.authorization_checker" class="Acme\DemoBundle\Security\UserAuthorizationChecker">
         <tag name="radrest.authorization_checker" resource="user" />
     </service>
 
@@ -42,19 +47,12 @@ Or if you prefer YAML:
 ---
 services:
     acme.demo.user.resource_manager:
-        class: vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
-        factory_service: doctrine.orm.entity_manager
-        factory_method: getRepository
-        arguments:
-            - AcmeDemoBundle:User
+        class: AcmeDemoBundle:User
         tags:
             - { name: radrest.resource_manager, resource: user }
+            - { name: radrest.entity_repository }
     acme.demo.user.authorization_checker:
         class: Acme\DemoBundle\Security\UserAuthorizationChecker
-        factory_service: radrest.authorization_checker.factory
-        factory_method: createChecker
-        arguments:
-            - Acme\DemoBundle\Security\UserAuthorizationChecker
         tags:
             - { name: radrest.authorization_checker, resource: user }
     acme.demo.user.form:
@@ -68,6 +66,16 @@ Please also note the naming of the services: `{bundle}.{resource}.(resource_mana
 If this naming pattern is followed, the frontend manager will be registered as `{bundle}.{resource}.frontend_manager`.
 
 The frontend manager will always be registered as `radrest.frontend_manager.compiled.{resource}`, and will be tagged with `radrest.frontend_manager` and a resource attribute the same as the services the frontend manager depends on.
+
+#### Tags summary
+
+| Tag name                        | Attributes                                                                        | Description                                                                                                                                                                                                                                  |
+| ------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `radrest.resource_manager`      | `resource=<string>` (required)                                                    | Defines a resource manager for the resource set in the resource attribute. Tag is required to be present for each resource.                                                                                                                  |
+| `radrest.authorization_checker` | `resource=<string>` (required), `factory=<true|false>` (optional, default=`true`) | Defines an authorization checker for the resource set in the resource attribute. A factory that injects the required services is automatically set for the service, unless `factory=false`. Tag is required to be present for each resource. |
+| `radrest.form`                  | `resource=<string>` (required)                                                    | Defines a form for the resource set in the resource attribute. Tag is optional.                                                                                                                                                              |
+| `radrest.frontend_manager`      | `resource=<string>` (required)                                                    | Defines a frontend manager for the resource set in the resource attribute. Service and tag will be automatically generated.                                                                                                                  |
+| `radrest.entity_repository`     | `entity_manager=<service_id>` (optional, default=`doctrine.orm.entity_manager`)   | Sets up the service as an entity repository for the entity given in the class.                                                                                                                                                               |
 
 ### Loading in the controller
 
