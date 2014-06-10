@@ -71,5 +71,5 @@ The resource manager has 5 methods:
 
 If used together with the default controller, the resource object requires a `getId()` method, that will always return the primary identifier of the resource.
 
-[Return to the index.](index.md)
-
+[Next chapter: The Authorization Checker](3-authorization_checker.md)
+[Index](index.md)

@@ -36,4 +36,7 @@ public function registerBundles()
 
 ## That's it!
 
-Have a look at the docs for information on how to use this bundle. [Return to the index.](index.md)
+Have a look at the docs for information on how to use this bundle.
+
+[Next chapter: The Resource Manager](2-resource_manager.md)
+[Index](index.md)

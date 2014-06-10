@@ -21,7 +21,7 @@ The class must implement the [`AuthorizationCheckerInterface`](../../Security/Au
  * `mayCreate()`: The user is allowed to create a new resource of this type
  * `mayEdit($object)`: The user is allowed to modify the details of the resource `$object`
  * `mayDelete($object)`: The user is allowed to delete the resource `$object`
- 
+
 If you choose to extend [`AbstractAuthorizationChecker`](../../Security/AbstractAuthorizationChecker.php), you can make use of a couple of convenience methods, documented below.
 
 ### Convenience methods provided by `AbstractAuthorizationChecker`
@@ -32,3 +32,6 @@ If you choose to extend [`AbstractAuthorizationChecker`](../../Security/Abstract
 * `getToken()`: returns the authorization token for the current session.
 
 Less frequently used methods are `getSecurityContext()`, `getTrustResolver()` and `getRoleHierarchy()`.
+
+[Next chapter: Registering Services](4-services.md)
+[Index](index.md)
