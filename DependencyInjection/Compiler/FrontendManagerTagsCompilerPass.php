@@ -23,16 +23,15 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
+        $helper = new Helpers($container);
         $taggedResourceManagers      = $container->findTaggedServiceIds('radrest.resource_manager');
-        $taggedForms                 = $container->findTaggedServiceIds('radrest.form');
-        $taggedAuthorizationCheckers = $container->findTaggedServiceIds('radrest.authorization_checker');
 
         foreach($taggedResourceManagers as $resourceManagerId => $tagAttributes) {
             foreach($tagAttributes as $attributes) {
                 $resourceId             = $attributes['resource'];
                 // Find the other services tagged with this resource id
-                $formId                 = $this->findTaggedServicesByResource($taggedForms, $resourceId);
-                $authorizationCheckerId = $this->findTaggedServicesByResource($taggedAuthorizationCheckers, $resourceId);
+                $formId                 = $helper->findTaggedServiceIdByAttributes('radrest.form', array('resource'=>$attributes['resource']));
+                $authorizationCheckerId = $helper->findTaggedServiceIdByAttributes('radrest.authorization_checker', array('resource'=>$attributes['resource']));
 
                 if($authorizationCheckerId === null) {
                     throw new \LogicException('There is no service tagged radrest.authorization_checker for resource "'.$resourceId.'"');
@@ -50,29 +49,11 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
 
                 // Register an alias if possible
                 $aliasBase = $this->findAliasBaseName(array($resourceManagerId, $authorizationCheckerId, $formId));
-                if($aliasBase !== false && !$container->has($aliasBase.'.frontend_manager')) {
-                    $container->setAlias($aliasBase.'.frontend_manager', 'radrest.frontend_manager.compiled.'.$resourceId);
+                if($aliasBase !== false) {
+                    $helper->registerAliasIfNotExists($aliasBase.'.frontend_manager', 'radrest.frontend_manager.compiled.'.$resourceId);
                 }
             }
         }
-    }
-
-    /**
-     * Finds a service which is tagged with a specific resource id in the array of tagged services
-     * @param array<string,string[]> $taggedServices
-     * @param string $resourceId
-     * @return string|integer|null
-     */
-    private function findTaggedServicesByResource($taggedServices, $resourceId)
-    {
-        foreach($taggedServices as $id =>$tagAttributes) {
-            foreach($tagAttributes as $attributes) {
-                if($attributes['resource'] === $resourceId) {
-                    return $id;
-                }
-            }
-        }
-        return null;
     }
 
     /**
