@@ -10,29 +10,23 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations\View as AView;
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
+use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 use FOS\RestBundle\View\View;
+use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use FOS\RestBundle\Controller\Annotations\View as AView;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
+use FOS\RestBundle\Util\Codes;
 
-/**
- * Base Controller for Controllers using the RAD Rest functionality
- *
- * @author Lars Vierbergen <vierbergenlars@gmail.com>
- */
-class RadRestController extends FOSRestController implements ClassResourceInterface, RadRestControllerInterface
+class ControllerServiceController implements ClassResourceInterface, RadRestControllerInterface
 {
     /**
      * @var FrontendManager
      */
     private $frontendManager;
 
-    public function setFrontendManager(FrontendManager $frontendManager)
+    public function __construct(FrontendManager $frontendManager)
     {
         $this->frontendManager = $frontendManager;
     }
@@ -78,7 +72,7 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         foreach($routes as $routeName => $route)
         {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
-                return $this->routeRedirectView($routeName, $params);
+                return View::createRouteRedirect($routeName, $params);
             }
         }
 
@@ -93,9 +87,9 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
      */
     public function cgetAction()
     {
-        $view = $this->view($this->frontendManager->getList());
+        $view = View::create($this->frontendManager->getList());
         $view->getSerializationContext()->setGroups($this->getSerializationGroup('list'));
-        return $this->handleView($view);
+        return $view;
     }
 
     /**
@@ -105,9 +99,9 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     public function getAction($id)
     {
         $object = $this->frontendManager->getResource($id);
-        $view   = $this->view($object);
+        $view   = View::create($object);
         $view->getSerializationContext()->setGroups($this->getSerializationGroup('object'));
-        return $this->handleView($view);
+        return $view;
     }
 
     /**
@@ -116,8 +110,8 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     public function newAction()
     {
         $form = $this->frontendManager->createResource();
-        $view = $this->view($form)->setTemplateVar('form');
-        return $this->handleView($view);
+        $view = View::create($form)->setTemplateVar('form');
+        return $view;
     }
 
     /**
@@ -129,12 +123,12 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         $ret = $this->frontendManager->createResource($request);
 
         if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
         } else {
             $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_CREATED);
         }
 
-        return $this->handleView($view);
+        return $view;
     }
 
     /**
@@ -143,8 +137,8 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     public function editAction($id)
     {
         $form = $this->frontendManager->editResource($id);
-        $view = $this->view($form)->setTemplateVar('form');
-        return $this->handleView($view);
+        $view = View::create($form)->setTemplateVar('form');
+        return $view;
     }
 
     /**
@@ -156,12 +150,12 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         $ret = $this->frontendManager->editResource($id, $request);
 
         if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
         } else {
             $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
         }
 
-        return $this->handleView($view);
+        return $view;
     }
 
     /**
@@ -173,12 +167,12 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         $ret = $this->frontendManager->editResource($id, $request, true);
 
         if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
         } else {
             $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
         }
 
-        return $this->handleView($view);
+        return $view;
     }
 
     /**
@@ -187,8 +181,8 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
     public function removeAction($id)
     {
         $form = $this->frontendManager->deleteResource($id);
-        $view = $this->view($form)->setTemplateVar('form');
-        return $this->handleView($view);
+        $view = View::create($form)->setTemplateVar('form');
+        return $view;
     }
 
     /**
@@ -200,11 +194,11 @@ class RadRestController extends FOSRestController implements ClassResourceInterf
         $ret = $this->frontendManager->deleteResource($id, $request);
 
         if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
         } else {
             $view = $this->redirectTo('cget')->setStatusCode(Codes::HTTP_NO_CONTENT);
         }
 
-        return $this->handleView($view);
+        return $view;
     }
 }

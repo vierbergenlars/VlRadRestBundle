@@ -13,37 +13,36 @@ namespace vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler;
 use Nelmio\ApiDocBundle\Extractor\HandlerInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Routing\Route;
-use vierbergenlars\Bundle\RadRestBundle\ApiDoc\FrontendManagerRegistry;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
+use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestControllerInterface;
 
-class RadRestHandler implements HandlerInterface
+abstract class AbstractRadRestHandler implements HandlerInterface
 {
-    private $container;
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+    /**
+     * Checks if the method (and the class are supported by the handler
+     * @param \ReflectionMethod $reflMethod
+     * @ret
+     */
+    abstract protected function isSupported(\ReflectionMethod $reflMethod);
+
+    /**
+     *
+     * @param Route $route
+     * @return RadRestControllerInterface
+    */
+    abstract protected function getControllerInstance(Route $route);
 
     public function handle(ApiDoc $annotation, array $annotations, Route $route, \ReflectionMethod $reflMethod)
     {
-
-        if($reflMethod->getDeclaringClass()->getName() !== 'vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController') {
-            /*
-             * No touching!
-             * This method is not ours (either completely unrelated class or overriden from RadRestController)
-             * The developer is responsible for his own documentation on that method.
-             */
+        if(!$this->isSupported($reflMethod)) {
             return;
         }
 
-        $controller       = $route->getDefault('_controller');
-        $controllerPieces = explode('::', $controller);
-        $controllerClass  = $controllerPieces[0];
-        $controllerMethod = $controllerPieces[1];
+        $controllerInst = $this->getControllerInstance($route);
 
-        $controllerInst = new $controllerClass(); // Must be RadRestController, because the method we got came from there
-        $controllerInst->setContainer($this->container);
+        if(!$controllerInst instanceof RadRestControllerInterface) {
+            return;
+        }
+
         $frontendManager     = $controllerInst->getFrontendManager();
         $serializationGroups = $controllerInst->getSerializationGroups();
         if(!isset($serializationGroups['object'])) {
@@ -56,7 +55,7 @@ class RadRestHandler implements HandlerInterface
         $resourceManager = $this->getObjectProperty($frontendManager, 'resourceManager');
         $formType        = $this->getObjectProperty($frontendManager, 'formType');
 
-        switch($controllerMethod) {
+        switch($reflMethod->getName()) {
             case 'putAction':
             case 'postAction':
             case 'patchAction':
@@ -66,16 +65,15 @@ class RadRestHandler implements HandlerInterface
                 break;
             case 'getAction':
                 $this->setObjectProperty($annotation, 'output', array(
-                    'class'=>get_class($resourceManager->create()),
-                    'groups'=>$serializationGroups['object'],
+                'class'=>get_class($resourceManager->create()),
+                'groups'=>$serializationGroups['object'],
                 ));
                 break;
             case 'cgetAction':
                 $this->setObjectProperty($annotation, 'output', array(
-                    'class'=>get_class($resourceManager->create()),
-                    'groups'=>$serializationGroups['list'],
+                'class'=>get_class($resourceManager->create()),
+                'groups'=>$serializationGroups['list'],
                 ));
-
         }
     }
 
