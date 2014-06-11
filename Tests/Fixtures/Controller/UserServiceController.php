@@ -14,6 +14,11 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
 
 class UserServiceController extends ControllerServiceController
 {
+    public function _redirectTo($nextAction, array $params = array())
+    {
+        return $this->redirectTo($nextAction, $params);
+    }
+
     public function getSerializationGroups()
     {
         return array('list'=>array('abc', 'def'));

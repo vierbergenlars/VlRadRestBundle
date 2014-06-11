@@ -18,17 +18,41 @@ use FOS\RestBundle\Controller\Annotations\View as AView;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Util\Codes;
+use Symfony\Component\Routing\Router;
 
-class ControllerServiceController implements ClassResourceInterface, RadRestControllerInterface
+/**
+ * Base class for RAD Rest service controllers
+ */
+class ControllerServiceController extends AbstractController
 {
     /**
      * @var FrontendManager
      */
     private $frontendManager;
 
-    public function __construct(FrontendManager $frontendManager)
+    /**
+     * Required only when using the default redirectTo() method
+     * @var Router|null
+     */
+    private $router;
+
+    /**
+     * Required only when using the default redirectTo() method
+     * @var string|null
+     */
+    private $serviceName;
+
+    /**
+     *
+     * @param FrontendManager $frontendManager The frontend manager for this resource
+     * @param Router $router Required only when using the default redirectTo() method
+     * @param string $serviceName Required only when using the default redirectTo() method
+     */
+    public function __construct(FrontendManager $frontendManager, Router $router = null, $serviceName = null)
     {
         $this->frontendManager = $frontendManager;
+        $this->router          = $router;
+        $this->serviceName     = $serviceName;
     }
 
     public function getFrontendManager()
@@ -36,38 +60,18 @@ class ControllerServiceController implements ClassResourceInterface, RadRestCont
         return $this->frontendManager;
     }
 
-    /**
-     * Returns a list of serializer groups for each type of GET request (list & single object view)
-     * @codeCoverageIgnore
-     * @return array<string, string[]>
-     */
-    public function getSerializationGroups()
+    protected function handleView(View $view)
     {
-        return array(
-            'list'   => array('Default'),
-            'object' => array('Default'),
-        );
+        return $view;
     }
 
-    /**
-     * @param string $type
-     */
-    private function getSerializationGroup($type)
-    {
-        $sg = (array)$this->getSerializationGroups();
-        return isset($sg[$type])?$sg[$type]:array('Default');
-    }
-
-    /**
-     * Redirects to another action on the same controller
-     * @param string $nextAction The action name to redirect to
-     * @param array<string> $params Parameters to pass to the route generator
-     * @return View
-     */
     protected function redirectTo($nextAction, array $params = array())
     {
-        $controller = get_class($this).'::'.$nextAction.'Action';
-        $routes     = $this->get('router')->getRouteCollection()->all();
+        if($this->serviceName === null || $this->router === null) {
+            throw new \LogicException('To use the builtin method '.__METHOD__.', the router and service name must be injected during construction.');
+        }
+        $controller = $this->serviceName.':'.$nextAction.'Action';
+        $routes     = $this->router->getRouteCollection()->all();
         // FIXME: Get rid of O(n) performance on routes
         foreach($routes as $routeName => $route)
         {
@@ -82,123 +86,12 @@ class ControllerServiceController implements ClassResourceInterface, RadRestCont
     }
 
     /**
-     * @ApiDoc(resource=true)
-     * @AView
+     * Returns a list of serializer groups for each type of GET request (list & single object view)
+     * @codeCoverageIgnore
+     * @return array<string, string[]>
      */
-    public function cgetAction()
+    public function getSerializationGroups()
     {
-        $view = View::create($this->frontendManager->getList());
-        $view->getSerializationContext()->setGroups($this->getSerializationGroup('list'));
-        return $view;
-    }
-
-    /**
-     * @ApiDoc(resource=true)
-     * @AView
-     */
-    public function getAction($id)
-    {
-        $object = $this->frontendManager->getResource($id);
-        $view   = View::create($object);
-        $view->getSerializationContext()->setGroups($this->getSerializationGroup('object'));
-        return $view;
-    }
-
-    /**
-     * @AView
-     */
-    public function newAction()
-    {
-        $form = $this->frontendManager->createResource();
-        $view = View::create($form)->setTemplateVar('form');
-        return $view;
-    }
-
-    /**
-     * @ApiDoc
-     * @AView
-     */
-    public function postAction(Request $request)
-    {
-        $ret = $this->frontendManager->createResource($request);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_CREATED);
-        }
-
-        return $view;
-    }
-
-    /**
-     * @AView
-     */
-    public function editAction($id)
-    {
-        $form = $this->frontendManager->editResource($id);
-        $view = View::create($form)->setTemplateVar('form');
-        return $view;
-    }
-
-    /**
-     * @ApiDoc
-     * @AView
-     */
-    public function putAction(Request $request, $id)
-    {
-        $ret = $this->frontendManager->editResource($id, $request);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
-        }
-
-        return $view;
-    }
-
-    /**
-     * @ApiDoc
-     * @AView
-     */
-    public function patchAction(Request $request, $id)
-    {
-        $ret = $this->frontendManager->editResource($id, $request, true);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
-        }
-
-        return $view;
-    }
-
-    /**
-     * @AView
-     */
-    public function removeAction($id)
-    {
-        $form = $this->frontendManager->deleteResource($id);
-        $view = View::create($form)->setTemplateVar('form');
-        return $view;
-    }
-
-    /**
-     * @ApiDoc
-     * @AView
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $ret = $this->frontendManager->deleteResource($id, $request);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('cget')->setStatusCode(Codes::HTTP_NO_CONTENT);
-        }
-
-        return $view;
+        return array();
     }
 }

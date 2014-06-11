@@ -21,9 +21,9 @@ class RadRestServiceHandler extends AbstractRadRestHandler
         $this->container = $container;
     }
 
-    protected function isSupported(\ReflectionMethod $reflMethod)
+    protected function isSupported(Route $route)
     {
-        return $reflMethod->getDeclaringClass()->getName() === 'vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController';
+        return strpos($route->getDefault('_controller'), '::') === false;
     }
 
     protected function getControllerInstance(Route $route)

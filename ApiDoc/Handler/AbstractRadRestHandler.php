@@ -18,11 +18,11 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestControllerInterface;
 abstract class AbstractRadRestHandler implements HandlerInterface
 {
     /**
-     * Checks if the method (and the class are supported by the handler
-     * @param \ReflectionMethod $reflMethod
-     * @ret
+     * Checks if the route is supported by the handler
+     * @param Route $route
+     * @return boolean
      */
-    abstract protected function isSupported(\ReflectionMethod $reflMethod);
+    abstract protected function isSupported(Route $route);
 
     /**
      *
@@ -33,15 +33,16 @@ abstract class AbstractRadRestHandler implements HandlerInterface
 
     public function handle(ApiDoc $annotation, array $annotations, Route $route, \ReflectionMethod $reflMethod)
     {
-        if(!$this->isSupported($reflMethod)) {
+        if(!$this->isSupported($route)) {
+            return;
+        }
+
+        // The handler does not process overridden methods.
+        if($reflMethod->getDeclaringClass()->getName() !== 'vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController') {
             return;
         }
 
         $controllerInst = $this->getControllerInstance($route);
-
-        if(!$controllerInst instanceof RadRestControllerInterface) {
-            return;
-        }
 
         $frontendManager     = $controllerInst->getFrontendManager();
         $serializationGroups = $controllerInst->getSerializationGroups();

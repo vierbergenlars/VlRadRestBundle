@@ -16,14 +16,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class RadRestClassHandler extends AbstractRadRestHandler
 {
     private $container;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
-    protected function isSupported(\ReflectionMethod $reflMethod)
+    protected function isSupported(Route $route)
     {
-        return $reflMethod->getDeclaringClass()->getName() === 'vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController';
+        return strpos($route->getDefault('_controller'), '::') !== false;
     }
 
     protected function getControllerInstance(Route $route)
