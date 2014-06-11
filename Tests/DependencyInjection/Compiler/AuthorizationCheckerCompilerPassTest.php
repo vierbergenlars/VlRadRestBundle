@@ -13,6 +13,9 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\DepencencyInjection\Compiler
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\AuthorizationCheckerCompilerPass;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\AuthorizationCheckerCompilerPass
+ */
 class AuthorizationCheckerCompilerPassTest extends \PHPUnit_Framework_TestCase
 {
     protected function process(ContainerBuilder $container)

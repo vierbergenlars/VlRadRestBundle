@@ -12,6 +12,10 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\DepencencyInjection\Compiler
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass;
+
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass
+ */
 class FrontendManagerTagsCompilerPassTest extends \PHPUnit_Framework_TestCase
 {
     protected function process(ContainerBuilder $container)
