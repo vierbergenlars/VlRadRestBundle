@@ -59,9 +59,14 @@ class RadRestController extends AbstractController implements ContainerAwareInte
 
     protected function redirectTo($nextAction, array $params = array())
     {
+        // @codeCoverageIgnoreStart
+        if(($logger = $this->get('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)) !== null) {
+            $logger->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has a bad performance.', array('sourceController'=>get_class($this)));
+        }
+        // @codeCoverageIgnoreEnd
+
         $controller = get_class($this).'::'.$nextAction.'Action';
         $routes     = $this->get('router')->getRouteCollection()->all();
-        // FIXME: Get rid of O(n) performance on routes
         foreach($routes as $routeName => $route)
         {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {

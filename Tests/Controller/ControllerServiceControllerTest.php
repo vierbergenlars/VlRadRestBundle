@@ -27,6 +27,7 @@ class ControllerServiceControllerTest extends AbstractControllerTest
         ->setClass('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserServiceController')
         ->setArguments(array(
             $this->frontendManager,
+            null,
             new Reference('router'),
             'acme.demo.user.controller',
         ));
