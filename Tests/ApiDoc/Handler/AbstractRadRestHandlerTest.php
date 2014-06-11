@@ -140,6 +140,18 @@ abstract class AbstractRadRestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($apiDoc->getOutput());
     }
 
+    public function testHandleUnsupported()
+    {
+        $apiDoc = new ApiDoc(array());
+        $route = new Route('/', array('_controller'=>__METHOD__));
+        $reflMethod = new \ReflectionMethod(__METHOD__);
+
+        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
+
+        $this->assertNull($apiDoc->getInput());
+        $this->assertNull($apiDoc->getOutput());
+    }
+
     /**
      *
      * @param Route $route
