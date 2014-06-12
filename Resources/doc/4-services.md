@@ -102,6 +102,17 @@ class UserController extends RadRestController
     // ...
 }
 ```
+
+And register it in the routing configuration:
+
+```yaml
+// Resources/routing.yml
+---
+user:
+    resource: "@AcmeDemoBundle/Controller/UserController.php"
+    type:     rest
+```
+
 #### Controller as a Service
 
 You can also expose your controller as a service.
