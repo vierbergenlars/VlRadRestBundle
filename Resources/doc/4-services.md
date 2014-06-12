@@ -82,7 +82,7 @@ The frontend manager will always be registered as `radrest.frontend_manager.comp
 
 #### Class based controller
 
-The best way to make sure the frontend manager is always available is to override `setContainer()` on the controller, pass the call through to `parent::setContainer()` and then retrieve and set the frontend manager on the controller.
+Create the controller and override `getFrontendManager()` to retrieve the right frontend manager from the container.
 
 ```php
 <?php
@@ -91,14 +91,12 @@ The best way to make sure the frontend manager is always available is to overrid
 namespace Acme\DemoBundle\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserController extends RadRestController
 {
-    public function setContainer(ContainerInterface $container = null)
+    public function getFrontendManager()
     {
-        parent::setContainer($container);
-        $this->setFrontendManager($this->get('acme.demo.user.frontend_manager'));
+        return $this->get('acme.demo.user.frontend_manager');
     }
 
     // ...

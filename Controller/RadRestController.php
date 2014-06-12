@@ -27,9 +27,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @author Lars Vierbergen <vierbergenlars@gmail.com>
  */
-class RadRestController extends AbstractController implements ContainerAwareInterface
+abstract class RadRestController extends AbstractController implements ContainerAwareInterface
 {
-    private $frontendManager;
     protected $container;
 
     public function setContainer(ContainerInterface $container = null)
@@ -40,16 +39,6 @@ class RadRestController extends AbstractController implements ContainerAwareInte
     protected function get($id, $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
     {
         return $this->container->get($id, $invalidBehavior);
-    }
-
-    public function setFrontendManager(FrontendManager $frontendManager)
-    {
-        $this->frontendManager = $frontendManager;
-    }
-
-    public function getFrontendManager()
-    {
-        return $this->frontendManager;
     }
 
     protected function handleView(View $view)

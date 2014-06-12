@@ -16,12 +16,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SwitchedSerializationController extends RadRestController
 {
-    public function setContainer(ContainerInterface $container = null)
+    public function getFrontendManager()
     {
-        parent::setContainer($container);
-        if($container->has('frontend_manager')) {
-            $this->setFrontendManager($container->get('frontend_manager'));
-        }
+        return $this->get('frontend_manager');
     }
 
     public function getSerializationGroups()
