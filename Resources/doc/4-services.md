@@ -75,12 +75,12 @@ The frontend manager will always be registered as `radrest.frontend_manager.comp
 | `radrest.authorization_checker` | `resource=<string>` (required), `factory=<true|false>` (optional, default=`true`) | Defines an authorization checker for the resource set in the resource attribute. A factory that injects the required services is automatically set for the service, unless `factory=false`. Tag is required to be present for each resource. |
 | `radrest.form`                  | `resource=<string>` (required)                                                    | Defines a form for the resource set in the resource attribute. Tag is optional.                                                                                                                                                              |
 | `radrest.frontend_manager`      | `resource=<string>` (required)                                                    | Defines a frontend manager for the resource set in the resource attribute. Service and tag will be automatically generated.                                                                                                                  |
+| `radrest.controller`            | `resource=<string>` (required)                                                    | Defines a controller as a service, and automatically injects the frontend manager for that resource, the router and a logger.                                                                                                                |
 | `radrest.entity_repository`     | `entity_manager=<service_id>` (optional, default=`doctrine.orm.entity_manager`)   | Sets up the service as an entity repository for the entity given in the class.                                                                                                                                                               |
 
 ### Loading in the controller
 
-Controllers should not be registered as services.
-Since the container is not yet available when the controller is constructed, the frontend manager cannot be retrieved there.
+#### Class based controller
 
 The best way to make sure the frontend manager is always available is to override `setContainer()` on the controller, pass the call through to `parent::setContainer()` and then retrieve and set the frontend manager on the controller.
 
@@ -100,7 +100,58 @@ class UserController extends RadRestController
         parent::setContainer($container);
         $this->setFrontendManager($this->get('acme.demo.user.frontend_manager'));
     }
+
+    // ...
 }
 ```
+#### Controller as a Service
+
+You can also expose your controller as a service.
+Create a class extending `ControllerServiceController` to make sure FOSRestBundle picks up the right route name & URLs.
+
+```php
+<?php
+// Controller/NoteController.php
+
+namespace Acme\DemoBundle\Controller;
+
+use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
+
+class NoteController extends ControllerServiceController
+{
+    // ...
+}
+```
+
+Next, register your service and tag it with `radrest.controller`.
+When using the default constructor, all dependencies will be injected automatically.
+
+If you have overridden the contructor, you must omit the arguments for the frontend manager, logger and router.
+They will be injected in the right place automatically.
+
+```xml
+<?xml version="1.0" ?>
+<container>
+    <services>
+        <service id="acme.demo.note.controller" class="Acme\DemoBundle\Controller\NoteController">
+            <tag name="radrest.controller" resource="note" />
+        </service>
+    </services>
+</container>
+```
+
+Finally register the service in the routing configuration.
+
+```yaml
+// Resources/routing.yml
+---
+note:
+    resource: acme.demo.note.controller
+    type:     rest
+```
+
+> **Note:** The frontend manager to inject is determined automatically based on the `radrest.frontend_manager` tag with the same resource attribute.
+> If you wish to register the frontend manager yourself, you will be able to do so.
+> No default frontend manager will be created if a `radrest.frontend_manager` tag with that resource attribute already exists.
 
 [Index](index.md)
