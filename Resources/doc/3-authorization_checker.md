@@ -3,7 +3,7 @@ Step 3: The authorization checker
 
 1. [Introduction](#introduction)
 2. [Custom authorization checker](#custom-authorization-checker)
-3. [Convenience methods provided by `AbstractAuthorizationChecker`](#convenience-methods-provided-by-AbstractAuthorizationChecker)
+3. [Convenience methods provided by `AbstractAuthorizationChecker`](#convenience-methods-provided-by-abstractauthorizationchecker)
 
 ### Introduction
 
