@@ -34,4 +34,5 @@ If you choose to extend [`AbstractAuthorizationChecker`](../../Security/Abstract
 Less frequently used methods are `getSecurityContext()`, `getTrustResolver()` and `getRoleHierarchy()`.
 
 [Next chapter: Registering Services](4-services.md)
+
 [Index](index.md)

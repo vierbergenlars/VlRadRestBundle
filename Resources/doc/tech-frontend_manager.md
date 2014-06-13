@@ -70,3 +70,5 @@ If you want to create a controller managed by the FOSRestBundle, have a look at 
 2. Throws `AccessDeniedException` when the user is not allowed to delete this resource (`mayDelete($object) → false`)
 3. If the request is not `null`, and the form is valid: delete the resource, and return `null`.
 4. Else: return the `Form`
+
+[Index](index.md)

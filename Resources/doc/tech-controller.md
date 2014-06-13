@@ -9,7 +9,7 @@ These methods are described in this file.
 
 This method MUST be defined when using the `RadRestController`, it probably should not be overridden when using the `ControllerServiceController`.
 
-It will retrieve the frontend manager for this controller, and is documented in the [services documentation](./4-services.md#loading-in-the-controller)
+It will retrieve the frontend manager for this controller, and is documented in the [services documentation](4-services.md#loading-in-the-controller)
 
 ## `getRouteName`
 
@@ -100,3 +100,5 @@ The view that was generated is passed to this action, the return value is anythi
 If you are using the [ViewResponseListener](https://github.com/FriendsOfSymfony/FOSRestBundle/blob/master/Resources/doc/3-listener-support.md), this method does not have to be overridden.
 
 If you are not using the ViewResponseListener, you will want to use the `fos_rest.view_handler` service to convert the view to a response object.
+
+[Index](index.md)
