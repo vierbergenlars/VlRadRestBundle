@@ -14,8 +14,10 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
 
 class SwitchedSerializationServiceController extends ControllerServiceController
 {
-    public function getSerializationGroups()
+    public function getSerializationGroups($action)
     {
-        return array('object'=>array('abc', 'def'));
+        if($action === 'get') {
+            return array('abc', 'def');
+        }
     }
 }

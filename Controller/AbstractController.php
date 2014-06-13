@@ -22,32 +22,42 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 abstract class AbstractController implements ClassResourceInterface, RadRestControllerInterface
 {
     /**
-     * Redirects to another action on the same controller
-     * @param string $nextAction The action name to redirect to
-     * @param array<string> $params Parameters to pass to the route generator
-     * @return View
+     * Gets the name of the route for the given action on this controller.
+     * @param string $action
+     * @return string The route name
      */
-    abstract protected function redirectTo($nextAction, array $params = array());
-
-    /**
-     * Gets the frontend manager for this resource
-     * @return FrontendManager
-     */
-    abstract public function getFrontendManager();
+    abstract protected function getRouteName($action);
 
     /**
      * Handles the view before it is returned
      * @param View $view
      */
-    abstract protected function handleView(View $view);
+    protected function handleView(View $view)
+    {
+        return $view;
+    }
 
     /**
-     * @param string $type
+     * Redirects to another action on the same controller
+     * @param string $nextAction The action name to redirect to
+     * @param array<string> $params Parameters to pass to the route generator
+     * @return View
      */
-    private function getSerializationGroup($type)
+    protected function redirectTo($nextAction, array $params = array())
     {
-        $sg = (array)$this->getSerializationGroups();
-        return isset($sg[$type])?$sg[$type]:array('Default');
+        return View::createRouteRedirect($this->getRouteName($nextAction), $params);
+    }
+
+    /**
+     * Returns a list of serializer groups for the given action on this controller
+     *
+     * @codeCoverageIgnore
+     * @param string $action
+     * @return array<string>|null Serialization groups for this action
+     */
+    public function getSerializationGroups($action)
+    {
+        return null;
     }
 
     /**
@@ -57,7 +67,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
     public function cgetAction()
     {
         $view = View::create($this->getFrontendManager()->getList());
-        $view->getSerializationContext()->setGroups($this->getSerializationGroup('list'));
+        $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget')?:array('Default'));
         return $this->handleView($view);
     }
 
@@ -69,7 +79,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
     {
         $object = $this->getFrontendManager()->getResource($id);
         $view   = View::create($object);
-        $view->getSerializationContext()->setGroups($this->getSerializationGroup('object'));
+        $view->getSerializationContext()->setGroups($this->getSerializationGroups('get')?:array('Default'));
         return $this->handleView($view);
     }
 

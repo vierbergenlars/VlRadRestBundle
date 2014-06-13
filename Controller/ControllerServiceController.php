@@ -69,12 +69,7 @@ class ControllerServiceController extends AbstractController
         return $this->frontendManager;
     }
 
-    protected function handleView(View $view)
-    {
-        return $view;
-    }
-
-    protected function redirectTo($nextAction, array $params = array())
+    protected function getRouteName($action)
     {
         // @codeCoverageIgnoreStart
         if($this->logger !== null) {
@@ -85,27 +80,17 @@ class ControllerServiceController extends AbstractController
         if($this->serviceName === null || $this->router === null) {
             throw new \LogicException('To use the builtin method '.__METHOD__.', the router and service name must be injected during construction.');
         }
-        $controller = $this->serviceName.':'.$nextAction.'Action';
+        $controller = $this->serviceName.':'.$action.'Action';
         $routes     = $this->router->getRouteCollection()->all();
         foreach($routes as $routeName => $route)
         {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
-                return View::createRouteRedirect($routeName, $params);
+                return $routeName;
             }
         }
 
         // @codeCoverageIgnoreStart
         throw new \LogicException('No route found for controller '.$controller);
         // @codeCoverageIgnoreEnd
-    }
-
-    /**
-     * Returns a list of serializer groups for each type of GET request (list & single object view)
-     * @codeCoverageIgnore
-     * @return array<string, string[]>
-     */
-    public function getSerializationGroups()
-    {
-        return array();
     }
 }

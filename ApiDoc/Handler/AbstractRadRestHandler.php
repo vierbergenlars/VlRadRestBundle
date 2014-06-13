@@ -45,13 +45,6 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         $controllerInst = $this->getControllerInstance($route);
 
         $frontendManager     = $controllerInst->getFrontendManager();
-        $serializationGroups = $controllerInst->getSerializationGroups();
-        if(!isset($serializationGroups['object'])) {
-            $serializationGroups['object'] = array('Default');
-        }
-        if(!isset($serializationGroups['list'])) {
-            $serializationGroups['list'] = array('Default');
-        }
 
         $resourceManager = $this->getObjectProperty($frontendManager, 'resourceManager');
         $formType        = $this->getObjectProperty($frontendManager, 'formType');
@@ -67,13 +60,13 @@ abstract class AbstractRadRestHandler implements HandlerInterface
             case 'getAction':
                 $this->setObjectProperty($annotation, 'output', array(
                 'class'=>get_class($resourceManager->create()),
-                'groups'=>$serializationGroups['object'],
+                'groups'=>$controllerInst->getSerializationGroups('get')?:array('Default'),
                 ));
                 break;
             case 'cgetAction':
                 $this->setObjectProperty($annotation, 'output', array(
                 'class'=>get_class($resourceManager->create()),
-                'groups'=>$serializationGroups['list'],
+                'groups'=>$controllerInst->getSerializationGroups('cget')?:array('Default'),
                 ));
         }
     }

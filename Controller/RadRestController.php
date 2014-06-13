@@ -29,37 +29,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class RadRestController extends AbstractController implements ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface
+     */
     protected $container;
 
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    protected function get($id, $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
-    {
-        return $this->container->get($id, $invalidBehavior);
-    }
-
-    protected function handleView(View $view)
-    {
-        return $view;
-    }
-
-    protected function redirectTo($nextAction, array $params = array())
+    protected function getRouteName($action)
     {
         // @codeCoverageIgnoreStart
-        if(($logger = $this->get('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)) !== null) {
-            $logger->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has a bad performance.', array('sourceController'=>get_class($this)));
+        if($this->has('logger')) {
+            $this->get('logger')->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has a bad performance.', array('sourceController'=>get_class($this)));
         }
         // @codeCoverageIgnoreEnd
 
-        $controller = get_class($this).'::'.$nextAction.'Action';
+        $controller = get_class($this).'::'.$action.'Action';
         $routes     = $this->get('router')->getRouteCollection()->all();
         foreach($routes as $routeName => $route)
         {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
-                return View::createRouteRedirect($routeName, $params);
+                return $routeName;
             }
         }
 
@@ -69,12 +57,38 @@ abstract class RadRestController extends AbstractController implements Container
     }
 
     /**
-     * Returns a list of serializer groups for each type of GET request (list & single object view)
-     * @codeCoverageIgnore
-     * @return array<string, string[]>
+     * Sets the Container associated with this Controller.
+     *
+     * @param ContainerInterface $container A ContainerInterface instance
      */
-    public function getSerializationGroups()
+    public function setContainer(ContainerInterface $container = null)
     {
-        return array();
+        $this->container = $container;
     }
+
+    /**
+     * Gets a service by id.
+     *
+     * @param string $id The service id
+     *
+     * @return object The service
+     */
+    public function get($id)
+    {
+        return $this->container->get($id);
+    }
+
+    /**
+     * Returns true if the service id is defined.
+     *
+     * @param string $id The service id
+     *
+     * @return bool    true if the service id is defined, false otherwise
+     */
+    public function has($id)
+    {
+        return $this->container->has($id);
+    }
+
+
 }

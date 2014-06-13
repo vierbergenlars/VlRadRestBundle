@@ -15,10 +15,12 @@ use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 interface RadRestControllerInterface
 {
     /**
-     * Returns a list of serializer groups for each type of GET request (list & single object view)
-     * @return array<string, string[]>
+     * Returns a list of serializer groups for the given action on this controller
+     *
+     * @param string $action
+     * @return array<string>|null Serialization groups for this action
      */
-    public function getSerializationGroups();
+    public function getSerializationGroups($action);
 
     /**
      * Returns the frontend manager used for this controller

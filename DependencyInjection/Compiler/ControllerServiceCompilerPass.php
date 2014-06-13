@@ -56,7 +56,7 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
     private function processDefaultConstructor(Definition $definition, $serviceId, $frontendManagerId)
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
-        $redirectToMethod = $reflectionClass->getMethod('redirectTo');
+        $redirectToMethod = $reflectionClass->getMethod('getRouteNameForAction');
         if($redirectToMethod->getDeclaringClass()->name === self::BASE_CLASS) {
             $definition->setArguments(array(
                 new Reference($frontendManagerId),

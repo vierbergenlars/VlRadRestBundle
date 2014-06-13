@@ -21,8 +21,11 @@ class SwitchedSerializationController extends RadRestController
         return $this->get('frontend_manager');
     }
 
-    public function getSerializationGroups()
+    public function getSerializationGroups($action)
     {
-        return array('object'=>array('abc', 'def'));
+        if($action === 'get') {
+            return array('abc', 'def');
+        }
+        return array();
     }
 }

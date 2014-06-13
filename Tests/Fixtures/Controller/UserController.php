@@ -38,8 +38,10 @@ class UserController extends RadRestController
         }
     }
 
-    public function getSerializationGroups()
+    public function getSerializationGroups($action)
     {
-        return array('list'=>array('abc', 'def'));
+        if($action === 'cget') {
+            return array('abc', 'def');
+        }
     }
 }

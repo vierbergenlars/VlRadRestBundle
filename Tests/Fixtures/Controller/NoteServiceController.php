@@ -15,13 +15,13 @@ use FOS\RestBundle\View\View;
 
 class NoteServiceController extends ControllerServiceController
 {
-    protected function redirectTo($nextAction, array $params = array())
+    protected function getRouteName($action)
     {
-        switch($nextAction) {
+        switch($action) {
             case 'cget':
-                return View::createRouteRedirect('get_notes', $params);
+                return 'get_notes';
             case 'get':
-                return View::createRouteRedirect('get_note', $params);
+                return 'get_note';
         }
     }
 }
