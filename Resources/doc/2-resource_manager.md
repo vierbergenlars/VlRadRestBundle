@@ -1,6 +1,10 @@
 Step 2: The resource manager
 ============================
 
+1. [Introduction](#introduction)
+2. [Doctrine ORM resource manager](#doctrine-orm-resource-manager)
+3. [Custom resource manager](#custom-resource-manager)
+
 ### Introduction
 
 Using resource managers for each type of resource makes it possible to write storage agnostic Controllers.
@@ -71,6 +75,11 @@ The resource manager has 5 methods:
 
 If used together with the default controller, the resource object requires a `getId()` method, that will always return the primary identifier of the resource.
 
-[Next chapter: The Authorization Checker](3-authorization_checker.md)
+## Links
 
 [Index](index.md)
+
+1. [Setting Up](1-setting_up.md)
+2. Resource Manager
+3. **[Authorization Checker](3-authorization_checker.md)**
+4. [Services](4-services.md)

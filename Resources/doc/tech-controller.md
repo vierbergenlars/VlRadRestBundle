@@ -1,9 +1,16 @@
-# Controller
+Controller
+==========
 
 There are a number of methods defined on the base controllers that are meant to be overridden.
 The default implementations provide default values for their settings.
 
 These methods are described in this file.
+
+1. [`getFrontendManager`](#getfrontendmanager)
+2. [`getRouteName`](#getroutename)
+3. [`getSerializationGroups`](#getserializationgroups)
+4. [`*Action`](#action)
+5. [`handleView`](#handleview)
 
 ## `getFrontendManager`
 

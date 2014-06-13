@@ -1,6 +1,13 @@
 Step 4: Registering services
 ============================
 
+1. [Introduction](#introduction)
+2. [Depencency injection tags](#dependency-injection-tags)
+    1. [Tags summary](#tags-summary)
+3. [Loading in the controller](#loading-in-the-controller)
+    1. [Class based controller](#class-based-controller)
+    2. [Controller as a service](#controller-as-a-service)
+
 ### Introduction
 
 The Symfony framework provides a powerful dependency injection container.
@@ -166,4 +173,11 @@ note:
 > If you wish to register the frontend manager yourself, you will be able to do so.
 > No default frontend manager will be created if a `radrest.frontend_manager` tag with that resource attribute already exists.
 
+## Links
+
 [Index](index.md)
+
+1. [Setting Up](1-setting_up.md)
+2. [Resource Manager](2-resource_manager.md)
+3. [Authorization Checker](3-authorization_checker.md)
+4. Services

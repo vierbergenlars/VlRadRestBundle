@@ -1,5 +1,14 @@
 The Frontend Manager
-============================
+====================
+
+1. [Introduction](#introduction)
+2. [Integration in a custom controller](#integration-in-a-custom-controller)
+3. [Methods](#methods)
+    1. [`getList`](#getlist--array)
+    2. [`getResource`](#getresourceid--object)
+    3. [`createResource`](#createresourcerequest-request--null--objectform)
+    4. [`editResource`](#editresourceid-request-request--null--objectform)
+    5. [`deleteResource`](#deleteresourceid-request-request--null--nullform)
 
 ### Introduction
 

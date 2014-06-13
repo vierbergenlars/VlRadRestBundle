@@ -1,6 +1,10 @@
 Step 3: The authorization checker
 =================================
 
+1. [Introduction](#introduction)
+2. [Custom authorization checker](#custom-authorization-checker)
+3. [Convenience methods provided by `AbstractAuthorizationChecker`](#convenience-methods-provided-by-AbstractAuthorizationChecker)
+
 ### Introduction
 
 When creating a web application, you need some form of access control.
@@ -33,6 +37,11 @@ If you choose to extend [`AbstractAuthorizationChecker`](../../Security/Abstract
 
 Less frequently used methods are `getSecurityContext()`, `getTrustResolver()` and `getRoleHierarchy()`.
 
-[Next chapter: Registering Services](4-services.md)
+## Links
 
 [Index](index.md)
+
+1. [Setting Up](1-setting_up.md)
+2. [Resource Manager](2-resource_manager.md)
+3. Authorization Checker
+4. **[Services](4-services.md)**

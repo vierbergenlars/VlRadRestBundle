@@ -38,6 +38,12 @@ public function registerBundles()
 
 Have a look at the docs for information on how to use this bundle.
 
-[Next chapter: The Resource Manager](2-resource_manager.md)
+## Links
 
 [Index](index.md)
+
+1. Setting Up
+2. **[Resource Manager](2-resource_manager.md)**
+3. [Authorization Checker](3-authorization_checker.md)
+4. [Services](4-services.md)
+
