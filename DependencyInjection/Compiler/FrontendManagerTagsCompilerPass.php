@@ -21,6 +21,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class FrontendManagerTagsCompilerPass implements CompilerPassInterface
 {
+    const FRONTEND_MANAGER_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager';
+
     public function process(ContainerBuilder $container)
     {
         $helper = new Helpers($container);
@@ -38,7 +40,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
                 }
 
                 // Create a new definition for a frontend manager
-                $definition = new Definition('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager', array(
+                $definition = new Definition(static::FRONTEND_MANAGER_CLASS, array(
                     new Reference($resourceManagerId),
                     new Reference($authorizationCheckerId),
                     $formId===null?null:new Reference($formId),
@@ -61,7 +63,7 @@ class FrontendManagerTagsCompilerPass implements CompilerPassInterface
      * @param string[] $serviceIds
      * @return false|string
      */
-    private function findAliasBaseName($serviceIds)
+    protected function findAliasBaseName($serviceIds)
     {
         $pieces = explode('.', $serviceIds[0]);
         array_pop($pieces);

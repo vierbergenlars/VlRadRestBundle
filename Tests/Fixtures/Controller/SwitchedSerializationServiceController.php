@@ -10,22 +10,14 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
-use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
-use FOS\RestBundle\View\View;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
 
-class SwitchedSerializationController extends RadRestController
+class SwitchedSerializationServiceController extends ControllerServiceController
 {
-    public function getFrontendManager()
-    {
-        return $this->get('frontend_manager');
-    }
-
     public function getSerializationGroups($action)
     {
         if($action === 'get') {
             return array('abc', 'def');
         }
-        return array();
     }
 }

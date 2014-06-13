@@ -12,7 +12,7 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\ApiDoc\Handler;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Routing\Route;
-use vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestHandler;
+use vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestClassHandler;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserController;
 use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\UserRepository;
@@ -20,19 +20,16 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\UserType;
 
-/**
- * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestHandler
- */
-class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractRadRestHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    private $handler;
+    protected $handler;
+    protected $container;
 
     public function setUp()
     {
-        $container = new ContainerBuilder();
-        $container->set('frontend_manager', $this->getFrontendManager());
+        $this->container = new ContainerBuilder();
+        $this->container->set('frontend_manager', $this->getFrontendManager());
 
-        $this->handler = new RadRestHandler($container);
     }
 
     public function testHandleCGet()
@@ -50,7 +47,7 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleCGetDefaultSerialization()
     {
         $apiDoc = new ApiDoc(array('resource'=>true));
-        $route = $this->route('/users', 'cget', 'GET', 'SwitchedSerializationController');
+        $route = $this->route('/users', 'cget', 'GET', self::ROUTE_TYPE_SWITCHED_SERIALIZATION);
         $reflMethod = $this->getReflectionMethod($route);
 
         $this->handler->handle($apiDoc, array(), $route, $reflMethod);
@@ -74,7 +71,7 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleGetCustomSerialization()
     {
         $apiDoc = new ApiDoc(array('resource'=>true));
-        $route = $this->route('/users/{id}', 'get', 'GET', 'SwitchedSerializationController');
+        $route = $this->route('/users/{id}', 'get', 'GET', self::ROUTE_TYPE_SWITCHED_SERIALIZATION);
         $reflMethod = $this->getReflectionMethod($route);
 
         $this->handler->handle($apiDoc, array(), $route, $reflMethod);
@@ -86,7 +83,7 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleGetOverriddenMethod()
     {
         $apiDoc = new ApiDoc(array('resource'=>true));
-        $route = $this->route('/users/{id}', 'get', 'GET', 'OverriddenMethodController');
+        $route = $this->route('/users/{id}', 'get', 'GET', self::ROUTE_TYPE_OVERRIDDEN);
         $reflMethod = $this->getReflectionMethod($route);
 
         $this->handler->handle($apiDoc, array(), $route, $reflMethod);
@@ -143,18 +140,42 @@ class RadRestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($apiDoc->getOutput());
     }
 
-
-    private function getReflectionMethod(Route $route)
+    public function testHandleUnsupported()
     {
-        return new \ReflectionMethod($route->getDefault('_controller'));
+        $apiDoc = new ApiDoc(array());
+        $route = new Route('/', array('_controller'=>__METHOD__));
+        $reflMethod = new \ReflectionMethod(__METHOD__);
+
+        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
+
+        $this->assertNull($apiDoc->getInput());
+        $this->assertNull($apiDoc->getOutput());
     }
 
-    private function route($path, $action, $method = null, $class = 'UserController')
+    /**
+     *
+     * @param Route $route
+     * @return \ReflectionMethod
+     */
+    abstract protected function getReflectionMethod(Route $route);
+
+    /**
+     *
+     * @param int $type
+     * @param string $action
+     * @return string
+     */
+    abstract protected function getRouteControllerString($type, $action);
+
+    private function route($path, $action, $method, $type = self::ROUTE_TYPE_DEFAULT)
     {
-        $route = new Route($path, array('_controller'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\\'.$class.'::'.$action.'Action'));
+        $route = new Route($path, array('_controller'=>$this->getRouteControllerString($type, $action)));
         $route->setMethods($method);
         return $route;
     }
+    const ROUTE_TYPE_DEFAULT = 1;
+    const ROUTE_TYPE_OVERRIDDEN = 2;
+    const ROUTE_TYPE_SWITCHED_SERIALIZATION = 3;
 
     private function getFrontendManager()
     {

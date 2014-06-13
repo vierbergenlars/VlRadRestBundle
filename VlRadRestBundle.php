@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\AuthorizationCheckerCompilerPass;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\EntityRepositoryCompilerPass;
+use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\ControllerServiceCompilerPass;
 
 /**
  * @author Lars Vierbergen <vierbergenlars@gmail.com>
@@ -26,5 +27,6 @@ class VlRadRestBundle extends Bundle
         $container->addCompilerPass(new FrontendManagerTagsCompilerPass());
         $container->addCompilerPass(new AuthorizationCheckerCompilerPass());
         $container->addCompilerPass(new EntityRepositoryCompilerPass());
+        $container->addCompilerPass(new ControllerServiceCompilerPass());
     }
 }

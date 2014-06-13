@@ -10,19 +10,18 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
-use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
+use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
 use FOS\RestBundle\View\View;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class OverriddenMethodController extends RadRestController
+class NoteServiceController extends ControllerServiceController
 {
-    public function getFrontendManager()
+    protected function getRouteName($action)
     {
-        return $this->get('frontend_manager');
-    }
-
-    public function getAction($id)
-    {
-        return null;
+        switch($action) {
+            case 'cget':
+                return 'get_notes';
+            case 'get':
+                return 'get_note';
+        }
     }
 }
