@@ -38,7 +38,7 @@ class EntityRepositoryCompilerPass implements CompilerPassInterface
         }
     }
 
-    private function processService(Definition $definition, $entityManager)
+    protected function processService(Definition $definition, $entityManager)
     {
         $definition->setFactoryService($entityManager);
         $definition->setFactoryMethod('getRepository');

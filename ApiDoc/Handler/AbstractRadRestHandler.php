@@ -17,6 +17,8 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestControllerInterface;
 
 abstract class AbstractRadRestHandler implements HandlerInterface
 {
+    const BASE_CONTROLLER_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController';
+
     /**
      * Checks if the route is supported by the handler
      * @param Route $route
@@ -38,7 +40,7 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         }
 
         // The handler does not process overridden methods.
-        if($reflMethod->getDeclaringClass()->getName() !== 'vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController') {
+        if($reflMethod->getDeclaringClass()->getName() !== static::BASE_CONTROLLER_CLASS) {
             return;
         }
 
@@ -71,14 +73,14 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         }
     }
 
-    private function setObjectProperty($object, $property, $value)
+    protected function setObjectProperty($object, $property, $value)
     {
         $refl = new \ReflectionProperty($object, $property);
         $refl->setAccessible(true);
         $refl->setValue($object, $value);
     }
 
-    private function getObjectProperty($object, $property)
+    protected function getObjectProperty($object, $property)
     {
         $refl = new \ReflectionProperty($object, $property);
         $refl->setAccessible(true);

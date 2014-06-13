@@ -31,7 +31,7 @@ class AuthorizationCheckerCompilerPass implements CompilerPassInterface
         }
     }
 
-    private function processService(Definition $definition)
+    protected function processService(Definition $definition)
     {
         if($definition->getFactoryService() === null&&$definition->getFactoryClass() === null) {
             $definition->setFactoryService('radrest.authorization_checker.factory');

@@ -17,7 +17,13 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ControllerServiceCompilerPass implements CompilerPassInterface
 {
-    const BASE_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController';
+    const BASE_CONTROLLER_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController';
+    const FRONTEND_MANAGER_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager';
+    const LOGGER_INTERFACE = 'Psr\Log\LoggerInterface';
+    const LOGGER_SERVICE = 'logger';
+    const ROUTER_CLASS = 'Symfony\Component\Routing\Router';
+    const ROUTER_SERVICE = 'router';
+    const ROUTE_NAME_METHOD = 'getRouteName';
 
     public function process(ContainerBuilder $container)
     {
@@ -45,34 +51,34 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
         }
     }
 
-    private function hasDefaultConstructor(Definition $definition)
+    protected function hasDefaultConstructor(Definition $definition)
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
         $constructor = $reflectionClass->getConstructor();
         $declaringClass = $constructor->getDeclaringClass();
-        return $declaringClass->name === self::BASE_CLASS;
+        return $declaringClass->name === self::BASE_CONTROLLER_CLASS;
     }
 
-    private function processDefaultConstructor(Definition $definition, $serviceId, $frontendManagerId)
+    protected function processDefaultConstructor(Definition $definition, $serviceId, $frontendManagerId)
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
-        $redirectToMethod = $reflectionClass->getMethod('getRouteNameForAction');
-        if($redirectToMethod->getDeclaringClass()->name === self::BASE_CLASS) {
+        $redirectToMethod = $reflectionClass->getMethod(static::ROUTE_NAME_METHOD);
+        if($redirectToMethod->getDeclaringClass()->name === self::BASE_CONTROLLER_CLASS) {
             $definition->setArguments(array(
                 new Reference($frontendManagerId),
-                new Reference('logger'),
-                new Reference('router'),
+                new Reference(static::LOGGER_SERVICE),
+                new Reference(static::ROUTER_SERVICE),
                 $serviceId
             ));
         } else {
             $definition->setArguments(array(
                 new Reference($frontendManagerId),
-                new Reference('logger')
+                new Reference(static::LOGGER_SERVICE)
             ));
         }
     }
 
-    private function processService(Definition $definition, $frontendManagerId)
+    protected function processService(Definition $definition, $frontendManagerId)
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
         $constructor = $reflectionClass->getConstructor();
@@ -84,14 +90,14 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
             $typeHint = $parameter->getClass();
             if($typeHint !== null) {
                 switch($typeHint->name) {
-                    case 'vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager':
+                    case static::FRONTEND_MANAGER_CLASS:
                         array_splice($arguments, $parameter->getPosition(), 0, array(new Reference($frontendManagerId)));
                         break;
-                    case 'Psr\Log\LoggerInterface':
-                        array_splice($arguments, $parameter->getPosition(), 0, array(new Reference('logger')));
+                    case static::LOGGER_INTERFACE:
+                        array_splice($arguments, $parameter->getPosition(), 0, array(new Reference(static::LOGGER_SERVICE)));
                         break;
-                    case 'Symfony\Component\Routing\Router':
-                        array_splice($arguments, $parameter->getPosition(), 0, array(new Reference('router')));
+                    case static::ROUTER_CLASS:
+                        array_splice($arguments, $parameter->getPosition(), 0, array(new Reference(static::ROUTER_SERVICE)));
                 }
             }
         }

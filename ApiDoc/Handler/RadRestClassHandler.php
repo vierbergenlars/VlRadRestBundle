@@ -33,7 +33,7 @@ class RadRestClassHandler extends AbstractRadRestHandler
         $controllerPieces = explode('::', $controller);
         $controllerClass  = $controllerPieces[0];
 
-        $controllerInst = new $controllerClass(); // Must be RadRestController, because the method we got came from there
+        $controllerInst = new $controllerClass();
         $controllerInst->setContainer($this->container);
         return $controllerInst;
     }
