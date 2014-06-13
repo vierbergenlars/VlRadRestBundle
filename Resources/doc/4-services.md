@@ -80,6 +80,9 @@ The frontend manager will always be registered as `radrest.frontend_manager.comp
 
 ### Loading in the controller
 
+> **WARNING:** You should override `getRouteName()` in your controller to avoid a linear search over all defined routes in the application.
+> [Read more](./tech-controller.md#getroutename)
+
 #### Class based controller
 
 Create the controller and override `getFrontendManager()` to retrieve the right frontend manager from the container.
