@@ -12,10 +12,10 @@ namespace vierbergenlars\Bundle\RadRestBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\AuthorizationCheckerCompilerPass;
-use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\EntityRepositoryCompilerPass;
 use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\ControllerServiceCompilerPass;
+use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\EntityRepositoryCompilerPass;
+use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass;
 
 /**
  * @author Lars Vierbergen <vierbergenlars@gmail.com>

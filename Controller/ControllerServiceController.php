@@ -10,16 +10,9 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use FOS\RestBundle\Controller\Annotations\View as AView;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Util\Codes;
-use Symfony\Component\Routing\Router;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Router;
+use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 
 /**
  * Base class for RAD Rest service controllers
@@ -52,9 +45,9 @@ class ControllerServiceController extends AbstractController
     /**
      *
      * @param FrontendManager $frontendManager The frontend manager for this resource
-     * @param LoggerInterface $logger
-     * @param Router $router Required only when using the default redirectTo() method
-     * @param string $serviceName Required only when using the default redirectTo() method
+     * @param LoggerInterface|null $logger
+     * @param Router|null $router Required only when using the default redirectTo() method
+     * @param string|null $serviceName Required only when using the default redirectTo() method
      */
     public function __construct(FrontendManager $frontendManager, LoggerInterface $logger = null, Router $router = null, $serviceName = null)
     {

@@ -10,15 +10,6 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
-use FOS\RestBundle\Controller\Annotations\View as AView;
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
-use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -30,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class RadRestController extends AbstractController implements ContainerAwareInterface
 {
     /**
-     * @var ContainerInterface
+     * @var ContainerInterface|null
      */
     protected $container;
 
@@ -59,7 +50,7 @@ abstract class RadRestController extends AbstractController implements Container
     /**
      * Sets the Container associated with this Controller.
      *
-     * @param ContainerInterface $container A ContainerInterface instance
+     * @param ContainerInterface|null $container A ContainerInterface instance
      */
     public function setContainer(ContainerInterface $container = null)
     {

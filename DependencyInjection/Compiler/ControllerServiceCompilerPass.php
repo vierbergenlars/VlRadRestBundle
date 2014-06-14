@@ -17,18 +17,18 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ControllerServiceCompilerPass implements CompilerPassInterface
 {
-    const BASE_CONTROLLER_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController';
+    const BASE_CONTROLLER_CLASS  = 'vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController';
     const FRONTEND_MANAGER_CLASS = 'vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager';
-    const LOGGER_INTERFACE = 'Psr\Log\LoggerInterface';
-    const LOGGER_SERVICE = 'logger';
-    const ROUTER_CLASS = 'Symfony\Component\Routing\Router';
-    const ROUTER_SERVICE = 'router';
-    const ROUTE_NAME_METHOD = 'getRouteName';
+    const LOGGER_INTERFACE       = 'Psr\Log\LoggerInterface';
+    const LOGGER_SERVICE         = 'logger';
+    const ROUTER_CLASS           = 'Symfony\Component\Routing\Router';
+    const ROUTER_SERVICE         = 'router';
+    const ROUTE_NAME_METHOD      = 'getRouteName';
 
     public function process(ContainerBuilder $container)
     {
         $serviceIds = $container->findTaggedServiceIds('radrest.controller');
-        $helper = new Helpers($container);
+        $helper     = new Helpers($container);
         foreach($serviceIds as $serviceId => $tagAttributes)
         {
             foreach($tagAttributes as $attribute)
@@ -54,14 +54,14 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
     protected function hasDefaultConstructor(Definition $definition)
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
-        $constructor = $reflectionClass->getConstructor();
-        $declaringClass = $constructor->getDeclaringClass();
+        $constructor     = $reflectionClass->getConstructor();
+        $declaringClass  = $constructor->getDeclaringClass();
         return $declaringClass->name === self::BASE_CONTROLLER_CLASS;
     }
 
     protected function processDefaultConstructor(Definition $definition, $serviceId, $frontendManagerId)
     {
-        $reflectionClass = new \ReflectionClass($definition->getClass());
+        $reflectionClass  = new \ReflectionClass($definition->getClass());
         $redirectToMethod = $reflectionClass->getMethod(static::ROUTE_NAME_METHOD);
         if($redirectToMethod->getDeclaringClass()->name === self::BASE_CONTROLLER_CLASS) {
             $definition->setArguments(array(
@@ -81,9 +81,9 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
     protected function processService(Definition $definition, $frontendManagerId)
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
-        $constructor = $reflectionClass->getConstructor();
-        $parameters = $constructor->getParameters();
-        $arguments = $definition->getArguments();
+        $constructor     = $reflectionClass->getConstructor();
+        $parameters      = $constructor->getParameters();
+        $arguments       = $definition->getArguments();
 
         foreach($parameters as $parameter)
         {

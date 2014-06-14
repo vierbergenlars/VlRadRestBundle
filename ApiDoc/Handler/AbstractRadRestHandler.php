@@ -10,8 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler;
 
-use Nelmio\ApiDocBundle\Extractor\HandlerInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Nelmio\ApiDocBundle\Extractor\HandlerInterface;
 use Symfony\Component\Routing\Route;
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestControllerInterface;
 
@@ -44,10 +44,8 @@ abstract class AbstractRadRestHandler implements HandlerInterface
             return;
         }
 
-        $controllerInst = $this->getControllerInstance($route);
-
-        $frontendManager     = $controllerInst->getFrontendManager();
-
+        $controllerInst  = $this->getControllerInstance($route);
+        $frontendManager = $controllerInst->getFrontendManager();
         $resourceManager = $this->getObjectProperty($frontendManager, 'resourceManager');
         $formType        = $this->getObjectProperty($frontendManager, 'formType');
 
@@ -73,6 +71,11 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         }
     }
 
+    /**
+     * @param object $object
+     * @param string $property
+     * @param mixed $value
+     */
     protected function setObjectProperty($object, $property, $value)
     {
         $refl = new \ReflectionProperty($object, $property);
@@ -80,6 +83,10 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         $refl->setValue($object, $value);
     }
 
+    /**
+     * @param object $object
+     * @param string $property
+     */
     protected function getObjectProperty($object, $property)
     {
         $refl = new \ReflectionProperty($object, $property);

@@ -10,8 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler;
 
-use Symfony\Component\Routing\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Route;
 
 class RadRestServiceHandler extends AbstractRadRestHandler
 {
