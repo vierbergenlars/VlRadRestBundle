@@ -1,18 +1,21 @@
 Step 1: Setting up the bundle
 =============================
 
-### A) Instal VlRadRestBundle
+### A) Install VlRadRestBundle
 
-**Note:**
-
+> **Note:**
 > This bundle requires the [FOSRestBundle](https://github.com/FriendsOfSymfony/FOSRestBundle) to be set up first.
 > The FOSRestBundle is installed as a dependency, but it should still be set up according to the [instructions](https://github.com/FriendsOfSymfony/FOSRestBundle/blob/master/Resources/doc/index.md).
 
-Assumint you have installed composer, simply run:
+Assuming you have installed composer, simply run:
 
-```bash
-composer require vierbergenlars/rad-rest-bundle ~0.1
+```sh
+composer require vierbergenlars/rad-rest-bundle @stable
 ```
+
+> **Protip:** you should browse the [`vierbergenlars/rad-rest-bundle`](https://packagist.org/packages/vierbergenlars/rad-rest-bundle) page to choose a stable version to use, avoid the @stable meta constraint.
+>
+> The latest stable release is ![Latest Stable Version](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/v/stable.svg)
 
 ### B) Enable the bundle in the kernel
 
@@ -28,8 +31,9 @@ public function registerBundles()
         // ...
         new vierbergenlars\Bundle\RadRestBundle\VlRadRestBundle(),
 
-        // Don't forget to also register the FOSRestBundle
+        // Don't forget to also register the FOSRestBundle and the JMSSerializerBundle
         new FOS\RestBundle\FOSRestBundle(),
+        new JMS\SerializerBundle\JMSSerializerBundle(),
     );
 }
 ```

@@ -11,6 +11,7 @@
 namespace vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -66,14 +67,14 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
         if($redirectToMethod->getDeclaringClass()->name === self::BASE_CONTROLLER_CLASS) {
             $definition->setArguments(array(
                 new Reference($frontendManagerId),
-                new Reference(static::LOGGER_SERVICE),
+                new Reference(static::LOGGER_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE),
                 new Reference(static::ROUTER_SERVICE),
                 $serviceId
             ));
         } else {
             $definition->setArguments(array(
                 new Reference($frontendManagerId),
-                new Reference(static::LOGGER_SERVICE)
+                new Reference(static::LOGGER_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE)
             ));
         }
     }
@@ -94,7 +95,7 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
                         array_splice($arguments, $parameter->getPosition(), 0, array(new Reference($frontendManagerId)));
                         break;
                     case static::LOGGER_INTERFACE:
-                        array_splice($arguments, $parameter->getPosition(), 0, array(new Reference(static::LOGGER_SERVICE)));
+                        array_splice($arguments, $parameter->getPosition(), 0, array(new Reference(static::LOGGER_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE)));
                         break;
                     case static::ROUTER_CLASS:
                         array_splice($arguments, $parameter->getPosition(), 0, array(new Reference(static::ROUTER_SERVICE)));

@@ -23,6 +23,13 @@ Installation
 
 All the installation instructions are located in [documentation](https://github.com/vierbergenlars/VlRadRestBundle/blob/master/Resources/doc/index.md).
 
+Short installation instructions:
+
+1. `composer require vierbergenlars/rad-rest-bundle`
+2. Register bundle `FOS\RestBundle\FOSRestBundle`
+3. Register bundle `JMS\SerializerBundle\JMSSerializerBundle`
+3. Register bundle `vierbergenlars\Bundle\RadRestBundle\VlRadRestBundle`
+
 License
 -------
 
