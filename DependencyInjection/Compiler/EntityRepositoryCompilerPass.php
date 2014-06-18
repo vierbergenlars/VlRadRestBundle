@@ -43,5 +43,6 @@ class EntityRepositoryCompilerPass implements CompilerPassInterface
         $definition->setFactoryService($entityManager);
         $definition->setFactoryMethod('getRepository');
         $definition->setArguments(array($definition->getClass()));
+        $definition->setClass('Doctrine\ORM\EntityRepository');
     }
 }
