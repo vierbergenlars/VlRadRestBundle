@@ -14,6 +14,9 @@ use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Security\AuthorizationChecker;
 use Symfony\Component\Security\Core\Role\Role;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Security\AbstractAuthorizationChecker
+ */
 class AbstractAuthorizationCheckerTest extends \PHPUnit_Framework_TestCase
 {
     private $securityContext;
@@ -103,7 +106,7 @@ class AbstractAuthorizationCheckerTest extends \PHPUnit_Framework_TestCase
         $this->securityContext->expects($this->any())->method('getToken')->will($this->returnValue($this->token));
 
         $authorizationChecker = new AuthorizationChecker($this->securityContext, $this->trustResolver);
-        $this->token->expects($this->once())->method('getRoles')->will($this->returnValue(array(new Role('ROLE_USER'), new Role('ROLE_ADMIN'))));
+        $this->token->expects($this->atLeastOnce())->method('getRoles')->will($this->returnValue(array(new Role('ROLE_USER'), new Role('ROLE_ADMIN'))));
         $this->assertTrue($authorizationChecker->_hasRole('ROLE_USER'));
         $this->assertTrue($authorizationChecker->_hasRole('ROLE_ADMIN'));
         $this->assertFalse($authorizationChecker->_hasRole('ROLE_SWITCH_USER'));
@@ -114,7 +117,7 @@ class AbstractAuthorizationCheckerTest extends \PHPUnit_Framework_TestCase
         $this->securityContext->expects($this->any())->method('getToken')->will($this->returnValue($this->token));
 
         $authorizationChecker = new AuthorizationChecker($this->securityContext, $this->trustResolver, $this->roleHierarchy);
-        $this->token->expects($this->once())->method('getRoles')->will($this->returnValue(array(new Role('ROLE_USER'), new Role('ROLE_ADMIN'))));
+        $this->token->expects($this->atLeastOnce())->method('getRoles')->will($this->returnValue(array(new Role('ROLE_USER'), new Role('ROLE_ADMIN'))));
         $this->assertTrue($authorizationChecker->_hasRole('ROLE_USER'));
         $this->assertTrue($authorizationChecker->_hasRole('ROLE_ADMIN'));
         $this->assertTrue($authorizationChecker->_hasRole('ROLE_SWITCH_USER'));

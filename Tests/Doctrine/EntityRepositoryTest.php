@@ -14,6 +14,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
+ */
 class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     protected $em;
@@ -24,6 +27,7 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
         $this->classmetadata = new ClassMetadata('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User');
+        $this->classmetadata->reflClass = new \ReflectionClass($this->classmetadata->name);
         $this->repository = new EntityRepository($this->em, $this->classmetadata);
     }
 

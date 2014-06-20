@@ -1,10 +1,12 @@
 VlRadRestBundle
 =============
 
-[![Build Status](https://secure.travis-ci.org/vierbergenlars/VlRadRestBundle.png?branch=master)](http://travis-ci.org/vierbergenlars/VlRadRestBundle)
-[![Code Coverage](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=master)
+[![Build Status](https://secure.travis-ci.org/vierbergenlars/VlRadRestBundle.png?branch=develop)](http://travis-ci.org/vierbergenlars/VlRadRestBundle)
+[![HHVM Status](http://hhvm.h4cc.de/badge/vierbergenlars/rad-rest-bundle.png?branch=dev-develop)](http://hhvm.h4cc.de/package/vierbergenlars/rad-rest-bundle)
+[![Code Coverage](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=develop)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/vierbergenlars/VlRadRestBundle/?branch=develop)
 [![Latest Stable Version](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/v/stable.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/v/unstable.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
 [![License](https://poser.pugx.org/vierbergenlars/rad-rest-bundle/license.svg)](https://packagist.org/packages/vierbergenlars/rad-rest-bundle)
 
 Documentation
@@ -15,10 +17,19 @@ file in this bundle:
 
 [Read the Documentation for master](https://github.com/vierbergenlars/VlRadRestBundle/blob/master/Resources/doc/index.md)
 
+[Read the Documentation for develop](https://github.com/vierbergenlars/VlRadRestBundle/blob/develop/Resources/doc/index.md)
+
 Installation
 ------------
 
 All the installation instructions are located in [documentation](https://github.com/vierbergenlars/VlRadRestBundle/blob/master/Resources/doc/index.md).
+
+Short installation instructions:
+
+1. `composer require vierbergenlars/rad-rest-bundle`
+2. Register bundle `FOS\RestBundle\FOSRestBundle`
+3. Register bundle `JMS\SerializerBundle\JMSSerializerBundle`
+3. Register bundle `vierbergenlars\Bundle\RadRestBundle\VlRadRestBundle`
 
 License
 -------

@@ -12,20 +12,36 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
 use FOS\RestBundle\View\View;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 
 class UserController extends RadRestController
 {
-    /**
-     * Override view handler to just return the view
-     * @return View
-     */
-    protected function handleView(View $view)
-    {
-        return $view;
-    }
-    
+    private $frontendManager;
+
     public function _redirectTo($nextAction, array $params = array())
     {
         return $this->redirectTo($nextAction, $params);
+    }
+
+    public function setFrontendManager(FrontendManager $frontendManager)
+    {
+        $this->frontendManager = $frontendManager;
+    }
+
+    public function getFrontendManager()
+    {
+        if($this->container->has('frontend_manager')) {
+            return $this->get('frontend_manager');
+        } else {
+            return $this->frontendManager;
+        }
+    }
+
+    public function getSerializationGroups($action)
+    {
+        if($action === 'cget') {
+            return array('abc', 'def');
+        }
     }
 }

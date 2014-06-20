@@ -19,6 +19,9 @@ use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Validator\Validation;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
+ */
 class FrontendManagerTest extends \PHPUnit_Framework_TestCase
 {
     private $resourceManager;
@@ -165,6 +168,40 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider authenticationCheckProvider
      */
+    public function testGetsNullRequest($auths, $method, $expectException)
+    {
+        $this->setUpAuthenticationChecker($auths);
+        $fakeUser = $this->setUpResourceManager();
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, $this->formType, $this->formFactory);
+        if($expectException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'getResource':
+                $this->assertSame($fakeUser, $frontendManager->getResource(1));
+                break;
+            case 'createResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->createResource());
+                break;
+            case 'editResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->editResource(1));
+                break;
+            case 'deleteResource':
+                $this->assertInstanceOf('Symfony\Component\Form\Form', $frontendManager->deleteResource(1));
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+    }
+
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
     public function testGetsNotFound($auths, $method, $expectAuthException)
     {
         $this->setUpAuthenticationChecker($auths, true);
@@ -301,7 +338,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             case 'createResource':
                 $request = new Request();
                 $request->setMethod('POST');
-                $request->request->add(array('user'=>array('username'=>'abc')));
+                $request->request->add(array('user'=>array('username'=>'abc', 'email'=>'abc@example.com')));
                 if(!$expectAuthException) {
                     $this->resourceManager->expects($this->once())->method('update')->with($fakeUser);
                 } else {
@@ -314,7 +351,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             case 'editResource':
                 $request = new Request();
                 $request->setMethod('PUT');
-                $request->request->add(array('user'=>array('username'=>'abc')));
+                $request->request->add(array('user'=>array('username'=>'abc', 'email'=>'abc@example.com')));
                 if(!$expectAuthException) {
                     $this->resourceManager->expects($this->once())->method('update')->with($fakeUser);
                 } else {
@@ -334,7 +371,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
                     $this->resourceManager->expects($this->never())->method('delete');
                 }
                 $retval = $frontendManager->deleteResource(1, $request);
-                $this->assertTrue($retval);
+                $this->assertNull($retval);
                 break;
             default:
                 $this->fail('$frontendManager->'.$method.' should not be tested');

@@ -16,7 +16,9 @@
         "friendsofsymfony/rest-bundle": "~1.0",
         "symfony/framework-bundle": "~2.1",
         "symfony/security-bundle": "~2.1",
-        "symfony/form": "~2.1"
+        "symfony/form": "~2.1",
+        "nelmio/api-doc-bundle": "*",
+        "jms/serializer-bundle": "*"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "~1.2",

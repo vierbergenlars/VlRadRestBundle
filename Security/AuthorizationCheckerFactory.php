@@ -10,9 +10,9 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Security;
 
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 /**
  * A factory for all subclasses of {@link AbstractAuthorizationChecker}
@@ -42,7 +42,7 @@ class AuthorizationCheckerFactory
 
     public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
     {
-        $this->context = $context;
+        $this->context       = $context;
         $this->trustResolver = $trustResolver;
         $this->roleHierarchy = $roleHierarchy;
     }

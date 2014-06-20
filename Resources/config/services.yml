@@ -1,0 +1,21 @@
+parameters:
+    radrest.authorization_checker.factory.class: vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerFactory
+services:
+    radrest.authorization_checker.factory:
+        class: %radrest.authorization_checker.factory.class%
+        arguments:
+            - @?security.context
+            - @?security.authentication.trust_resolver
+            - @?security.role_hierarchy
+    radrest.api_doc.extractor.handler:
+        class: vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestClassHandler
+        arguments:
+            - @service_container
+        tags:
+            - { name: nelmio_api_doc.extractor.handler }
+    radrest.api_doc.extractor.service_handler:
+        class: vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestServiceHandler
+        arguments:
+            - @service_container
+        tags:
+            - { name: nelmio_api_doc.extractor.handler }

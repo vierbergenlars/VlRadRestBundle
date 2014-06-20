@@ -10,121 +10,76 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Util\Codes;
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
-use Symfony\Component\Form\Form;
-use FOS\RestBundle\View\View;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Base Controller for Controllers using the RAD Rest functionality
  *
  * @author Lars Vierbergen <vierbergenlars@gmail.com>
  */
-class RadRestController extends FOSRestController implements ClassResourceInterface
+abstract class RadRestController extends AbstractController implements ContainerAwareInterface
 {
     /**
-     * @var FrontendManager
+     * @var ContainerInterface|null
      */
-    private $frontendManager;
+    protected $container;
 
-    public function setFrontendManager(FrontendManager $frontendManager)
+    protected function getRouteName($action)
     {
-        $this->frontendManager = $frontendManager;
+        // @codeCoverageIgnoreStart
+        if($this->has('logger')) {
+            $this->get('logger')->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has a bad performance.', array('sourceController'=>get_class($this)));
+        }
+        // @codeCoverageIgnoreEnd
+
+        $controller = get_class($this).'::'.$action.'Action';
+        $routes     = $this->get('router')->getRouteCollection()->all();
+        foreach($routes as $routeName => $route)
+        {
+            if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
+                return $routeName;
+            }
+        }
+
+        // @codeCoverageIgnoreStart
+        throw new \LogicException('No route found for controller '.$controller);
+        // @codeCoverageIgnoreEnd
     }
 
     /**
-     * Redirects to another action on the same controller
-     * @param string $nextAction The action name to redirect to
-     * @param array $params Parameters to pass to the route generator
-     * @return View|null
+     * Sets the Container associated with this Controller.
+     *
+     * @param ContainerInterface|null $container A ContainerInterface instance
      */
-    protected function redirectTo($nextAction, array $params = array())
+    public function setContainer(ContainerInterface $container = null)
     {
-        $controller = get_class($this).'::'.$nextAction.'Action';
-        $routes = $this->get('router')->getRouteCollection()->all();
-        // FIXME: Get rid of O(n) performance on routes
-        foreach($routes as $routeName => $route)
-        {
-            if($route->hasDefault('_controller')&&$route->getDefault('_controller') == $controller) {
-                return $this->routeRedirectView($routeName, $params);
-            }
-        }
-        return null;
+        $this->container = $container;
     }
 
-    public function cgetAction()
+    /**
+     * Gets a service by id.
+     *
+     * @param string $id The service id
+     *
+     * @return object The service
+     */
+    public function get($id)
     {
-        $view = $this->view($this->frontendManager->getList());
-        return $this->handleView($view);
+        return $this->container->get($id);
     }
 
-    public function getAction($id)
+    /**
+     * Returns true if the service id is defined.
+     *
+     * @param string $id The service id
+     *
+     * @return bool    true if the service id is defined, false otherwise
+     */
+    public function has($id)
     {
-        $object = $this->frontendManager->getResource($id);
-        $view = $this->view($object);
-        return $this->handleView($view);
+        return $this->container->has($id);
     }
 
-    public function newAction()
-    {
-        $form = $this->frontendManager->createResource(new Request());
-        $view = $this->view($form)->setTemplateVar('form');
-        return $this->handleView($view);
-    }
 
-    public function postAction(Request $request)
-    {
-        $ret = $this->frontendManager->createResource($request);
-
-        if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()));
-        }
-
-        return $this->handleView($view);
-    }
-
-    public function editAction($id)
-    {
-        $form = $this->frontendManager->editResource($id,new Request());
-        $view = $this->view($form)->setTemplateVar('form');
-        return $this->handleView($view);
-    }
-
-    public function putAction(Request $request, $id)
-    {
-        $ret = $this->frontendManager->editResource($id, $request);
-
-        if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()));
-        }
-
-        return $this->handleView($view);
-    }
-
-    public function removeAction($id)
-    {
-        $form = $this->frontendManager->deleteResource($id, new Request());
-        $view = $this->view($form)->setTemplateVar('form');
-        return $this->handleView($view);
-    }
-
-    public function deleteAction(Request $request, $id)
-    {
-        $ret = $this->frontendManager->deleteResource($id, $request);
-
-        if($ret instanceof Form) {
-            $view = $this->view($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
-            $view = $this->redirectTo('cget');
-        }
-
-        return $this->handleView($view);
-    }
 }
