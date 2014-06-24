@@ -11,10 +11,17 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository as DoctrineRepository;
-use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\PageableResourceManagerInterface;
+use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
+use Knp\Component\Pager\Paginator;
 
-class EntityRepository extends DoctrineRepository implements ResourceManagerInterface
+class EntityRepository extends DoctrineRepository implements PageableResourceManagerInterface, PaginatorAwareInterface
 {
+    /**
+     *
+     * @var Paginator|null
+     */
+    private $paginator;
     /**
      * @param string $calledMethod Method that was called on this object, to create a nice exception message.
      */
@@ -41,6 +48,20 @@ class EntityRepository extends DoctrineRepository implements ResourceManagerInte
                 gettype($object)
             ));
         }
+    }
+
+    public function setPaginator(Paginator $paginator = null)
+    {
+        $this->paginator = $paginator;
+    }
+
+    public function getPage($page, $itemsPerPage)
+    {
+        if($this->paginator === null) {
+            throw new \LogicException('The paginator is required to be set when using '.__METHOD__.'()');
+        }
+        $queryBuilder =  $this->createQueryBuilder('e');
+        return $this->paginator->paginate($queryBuilder, $page, $itemsPerPage);
     }
 
     public function create()

@@ -18,7 +18,8 @@
         "symfony/security-bundle": "~2.1",
         "symfony/form": "~2.1",
         "nelmio/api-doc-bundle": "*",
-        "jms/serializer-bundle": "*"
+        "jms/serializer-bundle": "*",
+        "knplabs/knp-paginator-bundle": "~2.4"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "~1.2",

@@ -13,6 +13,8 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Doctrine;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
@@ -25,10 +27,34 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $this->em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+        ->disableOriginalConstructor()
+        ->getMock();
         $this->classmetadata = new ClassMetadata('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User');
         $this->classmetadata->reflClass = new \ReflectionClass($this->classmetadata->name);
         $this->repository = new EntityRepository($this->em, $this->classmetadata);
+    }
+
+    public function testGetPage()
+    {
+        $paginator = $this->getMock('Knp\Component\Pager\Paginator');
+        $this->repository->setPaginator($paginator);
+
+        $this->em->expects($this->any())->method('createQueryBuilder')->willReturn(new QueryBuilder($this->em));
+
+        $paginator->expects($this->once())->method('paginate')
+        ->with($this->anything(), 8, 20)
+        ->willReturn($pagination = $this->getMock('Knp\Component\Pager\Pagination\PaginationInterface'));
+
+        $this->assertEquals($pagination, $this->repository->getPage(8, 20));
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testGetPageNoPaginator()
+    {
+        $this->repository->getPage(1, 10);
     }
 
     public function testCreateObject()
@@ -61,6 +87,19 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         ->method('flush');
 
         $this->repository->update($object);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testUpdateObjectNoObject()
+    {
+        $this->em->expects($this->never())
+        ->method('persist');
+        $this->em->expects($this->never())
+        ->method('flush');
+
+        $this->repository->update('abcde');
     }
 
     /**
@@ -121,6 +160,19 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         ->willThrowException(new \Exception());
 
         $this->repository->delete($object);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testDeleteObjectNoObjectPassed()
+    {
+        $this->em->expects($this->never())
+        ->method('delete');
+        $this->em->expects($this->never())
+        ->method('flush');
+
+        $this->repository->delete(123);
     }
 }
 
