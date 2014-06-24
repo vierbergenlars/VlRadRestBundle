@@ -18,6 +18,7 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Validator\Validation;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\PaginateableUserRepository;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
@@ -198,6 +199,27 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testGetListPagination()
+    {
+        $this->setUpAuthenticationChecker(array('mayList'=>true));
+        $resourceManager = PaginateableUserRepository::createWithRandomItems(15);
+        $frontendManager = new FrontendManager($resourceManager, $this->authorizationChecker);
+
+        $retval = $frontendManager->getList(1);
+        $this->assertInstanceOf('Knp\Component\Pager\Pagination\PaginationInterface', $retval);
+        $this->assertEquals(1, $retval->getCurrentPageNumber());
+        $this->assertEquals(10, $retval->getItemNumberPerPage());
+
+        $frontendManager->setItemsPerPage(4);
+
+        $retval = $frontendManager->getList(3);
+        $this->assertInstanceOf('Knp\Component\Pager\Pagination\PaginationInterface', $retval);
+        $this->assertEquals(3, $retval->getCurrentPageNumber());
+        $this->assertEquals(4, $retval->getItemNumberPerPage());
+
+        $retval = $frontendManager->getList();
+        $this->assertTrue(is_array($retval));
+    }
 
     /**
      * @dataProvider authenticationCheckProvider

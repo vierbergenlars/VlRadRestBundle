@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
  *
@@ -25,7 +26,7 @@ class FrontendManager
 {
     /**
      *
-     * @var ResourceManagerInterface
+     * @var ResourceManagerInterface|PageableResourceManagerInterface
      */
     private $resourceManager;
 
@@ -49,6 +50,12 @@ class FrontendManager
 
     /**
      *
+     * @var int
+     */
+    private $itemsPerPage = 10;
+
+    /**
+     *
      * @param ResourceManagerInterface $resourceManager
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param AbstractType|null $formType
@@ -63,14 +70,29 @@ class FrontendManager
     }
 
     /**
-     * Gets a list of all resources of this type
-     * @throws AccessDeniedException When access to list the resources is disallowed by the AuthorizationChecker
-     * @return array<object>
+     * Sets the items to show per page
+     * @param int $itemsPerPage
      */
-    public function getList()
+    public function setItemsPerPage($itemsPerPage)
+    {
+        $this->itemsPerPage = $itemsPerPage;
+        return $this;
+    }
+
+    /**
+     * Gets a list of all resources of this type
+     * @param int|null $page The page to display when using the SliceableResourceManagerInterface, or null to get the whole list
+     * @throws AccessDeniedException When access to list the resources is disallowed by the AuthorizationChecker
+     * @return array<object>|PaginationInterface
+     */
+    public function getList($page = null)
     {
         if(!$this->authorizationChecker->mayList()) {
             throw new AccessDeniedException();
+        }
+
+        if($this->resourceManager instanceof PageableResourceManagerInterface && $page !== null) {
+            return $this->resourceManager->getPage($page, $this->itemsPerPage);
         }
 
         return $this->resourceManager->findAll();

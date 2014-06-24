@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfTokenManager;
 use vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\PaginateableUserRepository;
 
 abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -63,7 +64,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
 
     private function createFrontendManagerArgs()
     {
-        $this->resourceManager = new UserRepository();
+        if(!$this->resourceManager) {
+            $this->resourceManager = new UserRepository();
+        }
 
         return array(
             $this->resourceManager,
@@ -103,11 +106,54 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $controller = $this->createController();
         $fakeUser = $this->resourceManager->fakeUser = User::create('aafs', 5);
 
-        $retval = $controller->cgetAction();
+        $retval = $controller->cgetAction(new Request);
         $this->assertSame(array($fakeUser), $retval->getData());
         $this->assertSame('data', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
         $this->assertSame(array('abc', 'def'), $retval->getSerializationContext()->attributes->get('groups')->get());
+    }
+
+    public function testCGetPaginate()
+    {
+        $this->resourceManager = new PaginateableUserRepository();
+
+        $items = range('a', 'z');
+        $this->resourceManager->items = array_map(function($chr) {
+            return User::create($chr);
+        }, $items);
+        $this->setUp(); // rerun setup with new resource manager
+
+        $controller = $this->createController();
+
+        $request = new Request();
+        $request->query->set('page', 3);
+        $retval = $controller->cgetAction($request);
+        $this->assertInstanceOf('Knp\Component\Pager\Pagination\PaginationInterface', $retval->getData());
+        $this->assertEquals(array_slice($this->resourceManager->items, 20), $retval->getData()->getItems());
+        $this->assertEquals(3, $retval->getData()->getCurrentPageNumber());
+        $this->assertEquals(10, $retval->getData()->getItemNumberPerPage());
+        $this->assertSame('data', $retval->getTemplateVar());
+        $this->assertSame(200, $retval->getStatusCode());
+        $this->assertSame(array('abc', 'def'), $retval->getSerializationContext()->attributes->get('groups')->get());
+
+        $request = new Request();
+        $request->query->set('page', 4);
+        $retval = $controller->cgetAction($request);
+        $this->assertInstanceOf('Knp\Component\Pager\Pagination\PaginationInterface', $retval->getData());
+        $this->assertEquals(array(), $retval->getData()->getItems());
+        $this->assertEquals(4, $retval->getData()->getCurrentPageNumber());
+        $this->assertEquals(10, $retval->getData()->getItemNumberPerPage());
+        $this->assertSame('data', $retval->getTemplateVar());
+        $this->assertSame(200, $retval->getStatusCode());
+
+        $request = new Request();
+        $retval = $controller->cgetAction($request);
+        $this->assertInstanceOf('Knp\Component\Pager\Pagination\PaginationInterface', $retval->getData());
+        $this->assertEquals(array_slice($this->resourceManager->items, 0, 10), $retval->getData()->getItems());
+        $this->assertEquals(1, $retval->getData()->getCurrentPageNumber());
+        $this->assertEquals(10, $retval->getData()->getItemNumberPerPage());
+        $this->assertSame('data', $retval->getTemplateVar());
+        $this->assertSame(200, $retval->getStatusCode());
     }
 
     public function testGet()

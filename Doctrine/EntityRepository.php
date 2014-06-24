@@ -11,9 +11,9 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository as DoctrineRepository;
-use vierbergenlars\Bundle\RadRestBundle\Manager\PageableResourceManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Knp\Component\Pager\Paginator;
+use vierbergenlars\Bundle\RadRestBundle\Manager\PageableResourceManagerInterface;
 
 class EntityRepository extends DoctrineRepository implements PageableResourceManagerInterface, PaginatorAwareInterface
 {

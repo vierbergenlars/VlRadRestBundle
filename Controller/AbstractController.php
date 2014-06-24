@@ -63,9 +63,9 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      * @ApiDoc(resource=true)
      * @AView
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $view = View::create($this->getFrontendManager()->getList());
+        $view = View::create($this->getFrontendManager()->getList($request->query->get('page', 1)));
         $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget')?:array('Default'));
         return $this->handleView($view);
     }
