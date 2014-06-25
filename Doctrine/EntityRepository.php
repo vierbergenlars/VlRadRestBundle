@@ -12,8 +12,9 @@ namespace vierbergenlars\Bundle\RadRestBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository as DoctrineRepository;
 use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
 
-class EntityRepository extends DoctrineRepository implements ResourceManagerInterface
+class EntityRepository extends DoctrineRepository implements ResourceManagerInterface, PageableInterface
 {
     /**
      * @param string $calledMethod Method that was called on this object, to create a nice exception message.
@@ -41,6 +42,11 @@ class EntityRepository extends DoctrineRepository implements ResourceManagerInte
                 gettype($object)
             ));
         }
+    }
+
+    public function getPageDescription()
+    {
+        return new QueryBuilderPageDescription($this->createQueryBuilder('e'));
     }
 
     public function create()
