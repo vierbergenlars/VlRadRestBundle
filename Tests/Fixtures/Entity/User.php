@@ -67,4 +67,12 @@ class User
 		$prop->setAccessible(false);
 		return $user;
 	}
+
+	public static function createArray($num = 10) {
+	    $a = array();
+	    for($i = 0; $i < $num; $i++) {
+	        $a[] = self::create(chr(mt_rand(97, 122)).chr(mt_rand(97, 122)).chr(mt_rand(97, 122)), $i);
+	    }
+	    return $a;
+	}
 }
