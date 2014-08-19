@@ -35,10 +35,11 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     private $routeCollection;
     protected $router;
     protected $container;
-    private $resourceManager;
+    protected $resourceManager;
 
     public function setUp()
     {
+        $this->resourceManager = null;
         $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
         ->setConstructorArgs($this->createFrontendManagerArgs())
         ->enableProxyingToOriginalMethods()
@@ -61,9 +62,11 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->routeCollection->add('delete_user', $this->route('/users/{id}', 'delete', 'DELETE'));
     }
 
-    private function createFrontendManagerArgs()
+    protected function createFrontendManagerArgs()
     {
-        $this->resourceManager = new UserRepository();
+        if($this->resourceManager == null) {
+            $this->resourceManager = new UserRepository();
+        }
 
         return array(
             $this->resourceManager,
@@ -103,7 +106,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $controller = $this->createController();
         $fakeUser = $this->resourceManager->fakeUser = User::create('aafs', 5);
 
-        $retval = $controller->cgetAction();
+        $request = new Request();
+
+        $retval = $controller->cgetAction($request);
         $this->assertSame(array($fakeUser), $retval->getData());
         $this->assertSame('data', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());

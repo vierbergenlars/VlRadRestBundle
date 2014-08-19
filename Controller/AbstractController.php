@@ -17,6 +17,7 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 
 abstract class AbstractController implements ClassResourceInterface, RadRestControllerInterface
 {
@@ -26,6 +27,17 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      * @return string The route name
      */
     abstract protected function getRouteName($action);
+
+    /**
+     * Gets a slice of the page description for one page
+     * @param PageDescriptionInterface $pageDescription
+     * @param int $page
+     * @return array<object>
+     */
+    protected function getPagination(PageDescriptionInterface $pageDescription, $page)
+    {
+        return $pageDescription->getSlice($page<1?0:($page-1)*10, 10);
+    }
 
     /**
      * Handles the view before it is returned
@@ -63,9 +75,14 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      * @ApiDoc(resource=true)
      * @AView
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $view = View::create($this->getFrontendManager()->getList());
+        $list = $this->getFrontendManager()->getList(true);
+        if(is_array($list)) {
+            $view = View::create($list);
+        } else {
+            $view = View::create($this->getPagination($list, $request->query->get('page', 1)));
+        }
         $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget')?:array('Default'));
         return $this->handleView($view);
     }
