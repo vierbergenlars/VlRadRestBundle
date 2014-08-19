@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
 
 /**
@@ -25,7 +27,7 @@ class FrontendManager
 {
     /**
      *
-     * @var ResourceManagerInterface
+     * @var ResourceManagerInterface|PageableInterface
      */
     private $resourceManager;
 
@@ -64,13 +66,18 @@ class FrontendManager
 
     /**
      * Gets a list of all resources of this type
+     * @param bool $usePaginator
      * @throws AccessDeniedException When access to list the resources is disallowed by the AuthorizationChecker
-     * @return array<object>
+     * @return array<object>|PageDescriptionInterface
      */
-    public function getList()
+    public function getList($usePaginator = false)
     {
         if(!$this->authorizationChecker->mayList()) {
             throw new AccessDeniedException();
+        }
+
+        if($this->resourceManager instanceof PageableInterface && $usePaginator === true) {
+            return $this->resourceManager->getPageDescription();
         }
 
         return $this->resourceManager->findAll();

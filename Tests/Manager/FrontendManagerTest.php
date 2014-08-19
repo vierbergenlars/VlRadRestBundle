@@ -168,6 +168,79 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider authenticationCheckProvider
      */
+    public function testGetsPagination($auths, $method, $expectException) {
+        if($method != 'getList')
+            return;
+        $this->setUpAuthenticationChecker($auths);
+        $resMgr = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\PageableResourceManager');
+        $pageDesc = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface');
+        $resMgr->expects($auths['mayList']?$this->once():$this->never())->method('getPageDescription')->willReturn($pageDesc);
+        $frontendManager = new FrontendManager($resMgr, $this->authorizationChecker, $this->formType, $this->formFactory);
+        if($expectException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame($pageDesc, $frontendManager->getList(true));
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+
+    }
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
+    public function testGetsPaginationArrayRequested($auths, $method, $expectException) {
+        if($method != 'getList')
+            return;
+        $this->setUpAuthenticationChecker($auths);
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\PageableResourceManager');
+        $fakeUser = $this->setUpResourceManager();
+        $this->resourceManager->expects($this->never())->method('getPageDescription');
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, $this->formType, $this->formFactory);
+        if($expectException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+
+    }
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
+    public function testGetsPaginationNonPageable($auths, $method, $expectException) {
+        if($method != 'getList')
+            return;
+        $this->setUpAuthenticationChecker($auths);
+        $fakeUser = $this->setUpResourceManager();
+        $frontendManager = new FrontendManager($this->resourceManager, $this->authorizationChecker, $this->formType, $this->formFactory);
+        if($expectException) {
+            $this->setExpectedException('Symfony\Component\Security\Core\Exception\AccessDeniedException');
+        }
+
+        switch($method) {
+            case 'getList':
+                $this->assertSame(array($fakeUser), $frontendManager->getList(true));
+                break;
+            default:
+                $this->fail('$frontendManager->'.$method.' should not be tested');
+        }
+
+    }
+
+    /**
+     * @dataProvider authenticationCheckProvider
+     */
     public function testGetsNullRequest($auths, $method, $expectException)
     {
         $this->setUpAuthenticationChecker($auths);
