@@ -17,6 +17,7 @@
         "symfony/framework-bundle": "~2.1",
         "symfony/security-bundle": "~2.1",
         "symfony/form": "~2.1",
+        "symfony/validator": "~2.1",
         "nelmio/api-doc-bundle": "*",
         "jms/serializer-bundle": "*"
     },
