@@ -10,8 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Pagination\Adapters;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Knp\Component\Pager\Event\ItemsEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 
 class KnpPaginationSubscriber implements EventSubscriberInterface

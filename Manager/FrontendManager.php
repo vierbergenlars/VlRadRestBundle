@@ -16,8 +16,8 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
 
 /**

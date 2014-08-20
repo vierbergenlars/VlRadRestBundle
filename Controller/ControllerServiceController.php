@@ -10,11 +10,11 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
+use Knp\Component\Pager\Paginator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Router;
 use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
-use Knp\Component\Pager\Paginator;
 
 /**
  * Base class for RAD Rest service controllers
