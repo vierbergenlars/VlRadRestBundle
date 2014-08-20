@@ -12,6 +12,7 @@ namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 
 /**
  * Base Controller for Controllers using the RAD Rest functionality
@@ -45,6 +46,15 @@ abstract class RadRestController extends AbstractController implements Container
         // @codeCoverageIgnoreStart
         throw new \LogicException('No route found for controller '.$controller);
         // @codeCoverageIgnoreEnd
+    }
+
+    protected function getPagination(PageDescriptionInterface $pageDescription, $page)
+    {
+        if($this->has('knp_paginator')) {
+            return $this->get('knp_paginator')->paginate($pageDescription, $page);
+        } else {
+            return parent::getPagination($pageDescription, $page);
+        }
     }
 
     /**

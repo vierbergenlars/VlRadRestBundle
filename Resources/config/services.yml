@@ -19,3 +19,7 @@ services:
             - @service_container
         tags:
             - { name: nelmio_api_doc.extractor.handler }
+    radrest.pagination.adapter.knp_paginator:
+        class: vierbergenlars\Bundle\RadRestBundle\Pagination\Adapters\KnpPaginationSubscriber
+        tags:
+            - { name: knp_paginator.subscriber }
