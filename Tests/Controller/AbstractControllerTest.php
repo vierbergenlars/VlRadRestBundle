@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Loader\ClosureLoader;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
@@ -35,10 +36,11 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     private $routeCollection;
     protected $router;
     protected $container;
-    private $resourceManager;
+    protected $resourceManager;
 
     public function setUp()
     {
+        $this->resourceManager = null;
         $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
         ->setConstructorArgs($this->createFrontendManagerArgs())
         ->enableProxyingToOriginalMethods()
@@ -49,6 +51,7 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         });
         $this->container = new ContainerBuilder();
         $this->container->set('router', $this->router);
+        $this->container->set('service_container', $this->container);
 
         $this->routeCollection->add('get_users', $this->route('/users', 'cget', 'GET'));
         $this->routeCollection->add('get_user', $this->route('/users/{id}', 'get', 'GET'));
@@ -61,9 +64,39 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->routeCollection->add('delete_user', $this->route('/users/{id}', 'delete', 'DELETE'));
     }
 
-    private function createFrontendManagerArgs()
+    protected function registerKnpPaginatorService()
     {
-        $this->resourceManager = new UserRepository();
+        if(!class_exists('Knp\Bundle\PaginatorBundle\Subscriber\SlidingPaginationSubscriber'))
+            return $this->markTestSkipped('Knp Paginator bundle is not installed');
+        if($this->container->hasDefinition('acme.demo.user.controller')) {
+            $this->container->getDefinition('acme.demo.user.controller')
+                ->addMethodCall('setPaginator',array(new Reference('knp_paginator')));
+        }
+        $this->container->register('knp_paginator')
+            ->setClass('Knp\Component\Pager\Paginator')
+            ->addArgument(new Reference('event_dispatcher'));
+        $this->container->register('event_dispatcher')
+            ->setClass('Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher')
+            ->addArgument(new Reference('service_container'))
+            ->addMethodCall('addSubscriber', array(new Reference('radrest.pagination.adapter.knp_paginator')))
+            ->addMethodCall('addSubscriber', array(new Reference('knp_paginator.subscriber.sliding_pagination')));
+        $this->container->register('radrest.pagination.adapter.knp_paginator')
+            ->setClass('vierbergenlars\Bundle\RadRestBundle\Pagination\Adapters\KnpPaginationSubscriber');
+        $this->container->register('knp_paginator.subscriber.sliding_pagination')
+            ->setClass('Knp\Bundle\PaginatorBundle\Subscriber\SlidingPaginationSubscriber')
+            ->addArgument(array(
+                'defaultPaginationTemplate'=>'KnpPaginatorBundle:Pagination:sliding.html.twig',
+                'defaultSortableTemplate'=>'KnpPaginatorBundle:Pagination:sortable_link.html.twig',
+                'defaultFiltrationTemplate'=>'KnpPaginatorBundle:Pagination:filtration.html.twig',
+                'defaultPageRange'=>5,
+            ));
+    }
+
+    protected function createFrontendManagerArgs()
+    {
+        if($this->resourceManager == null) {
+            $this->resourceManager = new UserRepository();
+        }
 
         return array(
             $this->resourceManager,
@@ -103,7 +136,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $controller = $this->createController();
         $fakeUser = $this->resourceManager->fakeUser = User::create('aafs', 5);
 
-        $retval = $controller->cgetAction();
+        $request = new Request();
+
+        $retval = $controller->cgetAction($request);
         $this->assertSame(array($fakeUser), $retval->getData());
         $this->assertSame('data', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());

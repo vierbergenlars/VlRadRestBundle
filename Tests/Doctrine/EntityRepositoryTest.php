@@ -13,6 +13,7 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Doctrine;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
@@ -25,10 +26,24 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if(!class_exists('Doctrine\ORM\Mapping\ClassMetadata'))
+            return $this->markTestSkipped('Doctrine ORM is not installed');
         $this->em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
         $this->classmetadata = new ClassMetadata('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User');
         $this->classmetadata->reflClass = new \ReflectionClass($this->classmetadata->name);
         $this->repository = new EntityRepository($this->em, $this->classmetadata);
+    }
+
+    public function testGetPageDescription()
+    {
+        $queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
+        ->setConstructorArgs(array($this->em))
+        ->enableProxyingToOriginalMethods()
+        ->getMock();
+        $this->em->expects($this->once())->method('createQueryBuilder')->will($this->returnValue($queryBuilder));
+        $queryBuilder->expects($this->atLeastOnce())->method('select');
+
+        $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Doctrine\QueryBuilderPageDescription', $this->repository->getPageDescription());
     }
 
     public function testCreateObject()

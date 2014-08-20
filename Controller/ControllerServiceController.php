@@ -10,9 +10,11 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
+use Knp\Component\Pager\Paginator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Router;
 use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 
 /**
  * Base class for RAD Rest service controllers
@@ -44,6 +46,12 @@ class ControllerServiceController extends AbstractController
 
     /**
      *
+     * @var Paginator|null
+     */
+    private $paginator;
+
+    /**
+     *
      * @param FrontendManager $frontendManager The frontend manager for this resource
      * @param LoggerInterface|null $logger
      * @param Router|null $router Required only when using the default redirectTo() method
@@ -55,6 +63,10 @@ class ControllerServiceController extends AbstractController
         $this->logger          = $logger;
         $this->router          = $router;
         $this->serviceName     = $serviceName;
+    }
+
+    public function setPaginator(Paginator $paginator) {
+        $this->paginator = $paginator;
     }
 
     public function getFrontendManager()
@@ -85,5 +97,14 @@ class ControllerServiceController extends AbstractController
         // @codeCoverageIgnoreStart
         throw new \LogicException('No route found for controller '.$controller);
         // @codeCoverageIgnoreEnd
+    }
+
+    protected function getPagination(PageDescriptionInterface $pageDescription, $page)
+    {
+        if($this->paginator instanceof Paginator) {
+            return $this->paginator->paginate($pageDescription, $page);
+        } else {
+            return parent::getPagination($pageDescription, $page);
+        }
     }
 }
