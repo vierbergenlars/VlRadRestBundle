@@ -14,6 +14,10 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\PageableUserReposi
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @covers vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController
+ * @covers vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController
+ */
 class PaginationRadRestControllerTest extends RadRestControllerTest
 {
     protected function createFrontendManagerArgs() {
