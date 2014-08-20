@@ -66,6 +66,8 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
 
     protected function registerKnpPaginatorService()
     {
+        if(!class_exists('Knp\Bundle\PaginatorBundle\Subscriber\SlidingPaginationSubscriber'))
+            return $this->markTestSkipped('Knp Paginator bundle is not installed');
         if($this->container->hasDefinition('acme.demo.user.controller')) {
             $this->container->getDefinition('acme.demo.user.controller')
                 ->addMethodCall('setPaginator',array(new Reference('knp_paginator')));
