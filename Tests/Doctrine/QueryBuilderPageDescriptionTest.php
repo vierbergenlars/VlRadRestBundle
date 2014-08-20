@@ -24,6 +24,9 @@ class QueryBuilderPageDescriptionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        if(!class_exists('Doctrine\ORM\EntityManager'))
+            return $this->markTestSkipped('Doctrine ORM is not installed');
+
         $this->em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
         ->disableOriginalConstructor()
         ->getMock();

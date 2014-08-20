@@ -26,6 +26,8 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if(!class_exists('Doctrine\ORM\Mapping\ClassMetadata'))
+            return $this->markTestSkipped('Doctrine ORM is not installed');
         $this->em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
         $this->classmetadata = new ClassMetadata('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User');
         $this->classmetadata->reflClass = new \ReflectionClass($this->classmetadata->name);
