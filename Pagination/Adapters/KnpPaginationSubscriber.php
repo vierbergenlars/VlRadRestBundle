@@ -28,7 +28,7 @@ class KnpPaginationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'knp_pager.items' => array('items')
+            'knp_pager.items' => array('items', 0)
         );
     }
 }
