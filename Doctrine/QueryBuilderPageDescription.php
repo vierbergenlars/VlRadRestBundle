@@ -28,7 +28,8 @@ class QueryBuilderPageDescription implements PageDescriptionInterface
     public function getTotalItemCount()
     {
         $aliases = $this->queryBuilder->getDQLPart('select');
-        return $this->queryBuilder
+        $qb = clone $this->queryBuilder;
+        return $qb
         ->select(sprintf('COUNT(%s)', $aliases[0]))
         ->getQuery()
         ->getSingleScalarResult()
@@ -37,7 +38,8 @@ class QueryBuilderPageDescription implements PageDescriptionInterface
 
     public function getSlice($offset, $limit)
     {
-        return $this->queryBuilder
+        $qb = clone $this->queryBuilder;
+        return $qb
         ->setFirstResult($offset)
         ->setMaxResults($limit)
         ->getQuery()

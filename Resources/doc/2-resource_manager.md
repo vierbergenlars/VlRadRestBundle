@@ -75,6 +75,15 @@ The resource manager has 5 methods:
 
 If used together with the default controller, the resource object requires a `getId()` method, that will always return the primary identifier of the resource.
 
+#### Pagination
+
+A resource manager may implement `vierbergenlars\Bundle\RadRestBundle\Pagination\PaginableInterface`,
+and add a `getPageDescription()` method, which will return a class implementing `PageDescriptionInterface`.
+
+Doing so will enable pagination logic in the default controllers, which will by default display 10 items per page. (Override `AbstractController::getPagination()` to change this).
+
+If the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle) is installed, it will be used for pagination in the default controllers.
+
 ## Links
 
 [Index](index.md)
