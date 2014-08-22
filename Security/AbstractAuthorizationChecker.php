@@ -40,7 +40,7 @@ abstract class AbstractAuthorizationChecker implements AuthorizationCheckerInter
      */
     private $roleHierarchy;
 
-    final public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
+    public function __construct(SecurityContextInterface $context = null, AuthenticationTrustResolverInterface $trustResolver = null, RoleHierarchyInterface $roleHierarchy = null)
     {
         $this->context       = $context;
         $this->trustResolver = $trustResolver;

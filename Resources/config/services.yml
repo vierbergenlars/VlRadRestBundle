@@ -1,12 +1,4 @@
-parameters:
-    radrest.authorization_checker.factory.class: vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerFactory
 services:
-    radrest.authorization_checker.factory:
-        class: %radrest.authorization_checker.factory.class%
-        arguments:
-            - @?security.context
-            - @?security.authentication.trust_resolver
-            - @?security.role_hierarchy
     radrest.api_doc.extractor.handler:
         class: vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestClassHandler
         arguments:
