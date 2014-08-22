@@ -14,6 +14,10 @@ use Knp\Component\Pager\Event\ItemsEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 
+/**
+ * Adapter for the knp pagination bundle that converts a PageDescriptionInterface to a Knp pagination object
+ * @internal
+ */
 class KnpPaginationSubscriber implements EventSubscriberInterface
 {
     public function items(ItemsEvent $event)
@@ -28,7 +32,7 @@ class KnpPaginationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'knp_pager.items' => array('items')
+            'knp_pager.items' => array('items', 0)
         );
     }
 }
