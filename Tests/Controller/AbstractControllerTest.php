@@ -27,7 +27,7 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\UserType;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
-use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfTokenManager;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfProvider;
 use vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController;
 
 abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
@@ -105,7 +105,7 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
             Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->addExtension(new ValidatorExtension(Validation::createValidator()))
-            ->addExtension(new CsrfExtension(new CsrfTokenManager()))
+            ->addExtension(new CsrfExtension(new CsrfProvider()))
             ->getFormFactory()
         );
     }

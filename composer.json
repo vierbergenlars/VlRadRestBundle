@@ -14,17 +14,17 @@
     "require": {
         "php": ">=5.3.2",
         "friendsofsymfony/rest-bundle": "~1.0",
-        "symfony/framework-bundle": "~2.1",
-        "symfony/security-bundle": "~2.1",
-        "symfony/form": "~2.1",
-        "symfony/validator": "~2.1",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/security-bundle": "~2.3",
+        "symfony/form": "~2.3",
+        "symfony/validator": "~2.3",
         "nelmio/api-doc-bundle": "*",
         "jms/serializer-bundle": "*"
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "~1.2",
         "doctrine/orm":"~2.0",
-        "symfony/symfony": "~2.1",
+        "symfony/symfony": "~2.3",
         "symfony/monolog-bundle": "~2.1",
         "knplabs/knp-paginator-bundle": "~2.4"
     },
