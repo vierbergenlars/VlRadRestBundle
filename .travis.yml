@@ -20,7 +20,7 @@ matrix:
     - env: SYMFONY_VERSION=dev-master
   include:
     - php: 5.5
-      env: COMPOSER_INSTALL=--no-dev
+      env: COMPOSER_INSTALL=--no-dev SYMFONY_VERSION=2.3.*
     - php: 5.5
       env: SYMFONY_VERSION=2.4.*
     - php: 5.5
