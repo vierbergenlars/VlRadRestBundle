@@ -10,6 +10,11 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Pagination;
 
+/**
+ * Marks a resource manager that can be paginated.
+ *
+ * @author Lars Vierbergen <vierbergenlars@gmail.com>
+ */
 interface PageableInterface
 {
     /**

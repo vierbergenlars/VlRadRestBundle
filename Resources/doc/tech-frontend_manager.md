@@ -54,6 +54,9 @@ If you want to create a controller managed by the FOSRestBundle, have a look at 
 1. Throws `AccessDeniedException` when the user is not allowed to list. (`mayList() → false`)
 2. Returns an array containing all resources from the resource manager. (`findAll() → Array`)
 
+> When called as `getList(true)`, an object implementing `PageDescriptionInterface` will be returned if available.
+> If the resource manager does not implement `PageableInterface`, the full list of resources is returned as an array.
+
 #### `getResource($id) → $object`
 
 1. Returns the resource matching the `$id` from the resource manager (`find($id) → $object`)

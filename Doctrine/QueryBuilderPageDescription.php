@@ -14,6 +14,8 @@ use Doctrine\ORM\QueryBuilder;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 
 /**
+ * Page description implementation for Doctrine QueryBuilders
+ * Used by EntityRepository for pagination
  * @internal
  */
 class QueryBuilderPageDescription implements PageDescriptionInterface
