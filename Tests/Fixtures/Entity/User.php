@@ -26,8 +26,20 @@ class User
 	 * @ORM\Column(type="text")
 	 */
 	private $username;
-	
+
 	private $email;
+
+	/**
+	 * Non-public property w/o getter
+	 * @see vierbergenlars\Bundle\RadRestBundle\Tests\Twig\ObjectExtension
+	 */
+	protected $password;
+
+	/**
+	 * Public property w/o getter
+	 * @see vierbergenlars\Bundle\RadRestBundle\Tests\Twig\ObjectExtension
+	 */
+	public $nose;
 
 	public function getId()
 	{
@@ -43,12 +55,12 @@ class User
 	{
 		$this->username = $username;
 	}
-	
+
 	public function getEmail()
 	{
 	    return $this->email;
 	}
-	
+
 	public function setEmail($email)
 	{
 	    $this->email = $email;
@@ -74,5 +86,13 @@ class User
 	        $a[] = self::create(chr(mt_rand(97, 122)).chr(mt_rand(97, 122)).chr(mt_rand(97, 122)), $i);
 	    }
 	    return $a;
+	}
+
+	/**
+	 * @see vierbergenlars\Bundle\RadRestBundle\Tests\Twig\ObjectExtension
+	 */
+	public function __toString()
+	{
+	    return $this->username;
 	}
 }

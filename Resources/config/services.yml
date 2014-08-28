@@ -23,3 +23,7 @@ services:
             - @logger
         tags:
             - { name: kernel.event_subscriber }
+    radrest.twig.object_extension:
+        class: vierbergenlars\Bundle\RadRestBundle\Twig\ObjectExtension
+        tags:
+            - { name: twig.extension }
