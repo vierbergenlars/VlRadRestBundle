@@ -18,7 +18,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
-use vierbergenlars\Bundle\RadRestBundle\View\ControllerVariables;
+use vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables;
 
 abstract class AbstractController implements ClassResourceInterface, RadRestControllerInterface
 {
@@ -46,6 +46,9 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      */
     protected function handleView(View $view)
     {
+        $view->setExtraData(array(
+            'controller' => new ControllerVariables($this),
+        ));
         return $view;
     }
 
