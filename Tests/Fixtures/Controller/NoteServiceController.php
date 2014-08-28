@@ -15,13 +15,15 @@ use FOS\RestBundle\View\View;
 
 class NoteServiceController extends ControllerServiceController
 {
-    protected function getRouteName($action)
+    public function getRouteName($action)
     {
         switch($action) {
             case 'cget':
                 return 'get_notes';
             case 'get':
                 return 'get_note';
+            default:
+                return parent::getRouteName($action);
         }
     }
 }
