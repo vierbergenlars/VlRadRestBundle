@@ -13,12 +13,12 @@ namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 use FOS\RestBundle\Controller\Annotations\View as AView;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
-use vierbergenlars\Bundle\RadRestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 use vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 abstract class AbstractController implements ClassResourceInterface, RadRestControllerInterface
 {

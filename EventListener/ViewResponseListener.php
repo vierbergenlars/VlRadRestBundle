@@ -10,15 +10,15 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\EventListener;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
-use vierbergenlars\Bundle\RadRestBundle\View\View;
-use Symfony\Component\HttpKernel\KernelEvents;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 class ViewResponseListener implements EventSubscriberInterface
 {
@@ -31,11 +31,14 @@ class ViewResponseListener implements EventSubscriberInterface
     public function __construct(ViewHandlerInterface $viewHandler, EngineInterface $templating, LoggerInterface $logger)
     {
         $this->viewHandler = $viewHandler;
-        $this->templating = $templating;
-        $this->logger = $logger;
+        $this->templating  = $templating;
+        $this->logger      = $logger;
     }
 
-
+    /**
+     * Fallback to another template when the currently set/guessed template does not exist
+     * @param FilterControllerEvent $event
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
@@ -48,14 +51,14 @@ class ViewResponseListener implements EventSubscriberInterface
         }
         // @codeCoverageIgnoreEnd
 
-        $request = $event->getRequest();
+        $request  = $event->getRequest();
         $template = $request->attributes->get('_template');
 
         if($template instanceof TemplateReference) {
             // Search for alternative templates if the requested one does not exist
             if(!$this->templating->exists($template)) {
                 $oldName = $template->getLogicalName();
-                $map = array('put'=>'edit', 'post'=>'new', 'delete'=>'remove');
+                $map     = array('put'=>'edit', 'post'=>'new', 'delete'=>'remove');
                 if(isset($map[$template->get('name')])) {
                     $template->set('name', $map[$template->get('name')]);
                     $this->logger->debug(sprintf('Template "%s" does not exist, trying alternative name "%s".', $oldName, $template->getLogicalName()));
@@ -71,6 +74,10 @@ class ViewResponseListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * Merge View extraData into View data when using a request format that uses templates
+     * @param GetResponseForControllerResultEvent $event
+     */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         $result = $event->getControllerResult();
@@ -80,9 +87,8 @@ class ViewResponseListener implements EventSubscriberInterface
             }
             // If a templating format is in use, merge extradata variables into data
             if($this->viewHandler->isFormatTemplating($result->getFormat())) {
-                $data = $result->getData();
                 $extraData = $result->getExtraData();
-                $data = $this->viewHandler->prepareTemplateParameters($result);
+                $data      = $this->viewHandler->prepareTemplateParameters($result);
                 $result->setData(array_merge($data, $extraData));
             }
         }
