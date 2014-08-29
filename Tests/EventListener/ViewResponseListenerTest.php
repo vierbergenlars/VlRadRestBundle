@@ -50,7 +50,7 @@ class ViewResponseListenerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->templating = $this->getMock('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface');
         $this->container = new ContainerBuilder();
-        $this->listener = new ViewResponseListener($this->viewHandler, $this->templating, new Logger(__CLASS__, array(new NullHandler())));
+        $this->listener = new ViewResponseListener($this->viewHandler, $this->templating, class_exists('Monolog\Logger')?new Logger(__CLASS__, array(new NullHandler())):null);
     }
 
     private function getFilterEvent(Request $request)
