@@ -20,7 +20,7 @@ services:
         arguments:
             - @fos_rest.view_handler
             - @templating
-            - @?logger
+            - @logger
         tags:
             - { name: kernel.event_subscriber }
     radrest.twig.object_extension:

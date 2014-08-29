@@ -28,7 +28,7 @@ class ViewResponseListener implements EventSubscriberInterface
     private $templating;
     private $logger;
 
-    public function __construct(ViewHandlerInterface $viewHandler, EngineInterface $templating, LoggerInterface $logger = null)
+    public function __construct(ViewHandlerInterface $viewHandler, EngineInterface $templating, LoggerInterface $logger)
     {
         $this->viewHandler = $viewHandler;
         $this->templating = $templating;
@@ -58,8 +58,7 @@ class ViewResponseListener implements EventSubscriberInterface
                 $map = array('put'=>'edit', 'post'=>'new', 'delete'=>'remove');
                 if(isset($map[$template->get('name')])) {
                     $template->set('name', $map[$template->get('name')]);
-                    if($this->logger)
-                        $this->logger->debug(sprintf('Template "%s" does not exist, trying alternative name "%s".', $oldName, $template->getLogicalName()));
+                    $this->logger->debug(sprintf('Template "%s" does not exist, trying alternative name "%s".', $oldName, $template->getLogicalName()));
                 }
             }
 
@@ -67,8 +66,7 @@ class ViewResponseListener implements EventSubscriberInterface
                 $oldName = $template->getLogicalName();
                 $template->set('bundle', 'VlRadRestBundle');
                 $template->set('controller', 'Default');
-                if($this->logger)
-                    $this->logger->debug(sprintf('Template "%s" does not exist, trying default template "%s".', $oldName, $template->getLogicalName()));
+                $this->logger->debug(sprintf('Template "%s" does not exist, trying default template "%s".', $oldName, $template->getLogicalName()));
             }
         }
     }
