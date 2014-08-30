@@ -181,3 +181,4 @@ note:
 2. [Resource Manager](2-resource_manager.md)
 3. [Authorization Checker](3-authorization_checker.md)
 4. Services
+5. **[Templates](5-templates.md)**

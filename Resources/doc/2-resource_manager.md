@@ -92,3 +92,4 @@ If the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle) is in
 2. Resource Manager
 3. **[Authorization Checker](3-authorization_checker.md)**
 4. [Services](4-services.md)
+5. [Templates](5-templates.md)
