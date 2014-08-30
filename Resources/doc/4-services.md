@@ -79,7 +79,7 @@ The frontend manager will always be registered as `radrest.frontend_manager.comp
 | Tag name                        | Attributes                                                                        | Description                                                                                                                                                                                                                                  |
 | ------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `radrest.resource_manager`      | `resource=<string>` (required)                                                    | Defines a resource manager for the resource set in the resource attribute. Tag is required to be present for each resource.                                                                                                                  |
-| `radrest.authorization_checker` | `resource=<string>` (required), `factory=<true:false>` (optional, default=`true`) | Defines an authorization checker for the resource set in the resource attribute. A factory that injects the required services is automatically set for the service, unless `factory=false`. Tag is required to be present for each resource. |
+| `radrest.authorization_checker` | `resource=<string>` (required)                                                    | Defines an authorization checker for the resource set in the resource attribute. Required services are automatically set as constructor arguments based on typehints. Tag is required to be present for each resource.                       |
 | `radrest.form`                  | `resource=<string>` (required)                                                    | Defines a form for the resource set in the resource attribute. Tag is optional.                                                                                                                                                              |
 | `radrest.frontend_manager`      | `resource=<string>` (required)                                                    | Defines a frontend manager for the resource set in the resource attribute. Service and tag will be automatically generated.                                                                                                                  |
 | `radrest.controller`            | `resource=<string>` (required)                                                    | Defines a controller as a service, and automatically injects the frontend manager for that resource, the router and a logger.                                                                                                                |
@@ -145,7 +145,7 @@ class NoteController extends ControllerServiceController
 Next, register your service and tag it with `radrest.controller`.
 When using the default constructor, all dependencies will be injected automatically.
 
-If you have overridden the contructor, you must omit the arguments for the frontend manager, logger and router.
+If you have overridden the constructor, you must omit the arguments for the frontend manager, logger and router.
 They will be injected in the right place automatically.
 
 ```xml

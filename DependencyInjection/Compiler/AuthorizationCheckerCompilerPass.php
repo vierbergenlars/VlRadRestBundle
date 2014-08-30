@@ -33,9 +33,7 @@ class AuthorizationCheckerCompilerPass implements CompilerPassInterface
             foreach($tagAttributes as $attribute)
             {
                 $serviceDefinition = $container->findDefinition($serviceId);
-                if(!isset($attribute['factory']) || $attribute['factory'] === true) {
-                    $this->processService($serviceDefinition);
-                }
+                $this->processService($serviceDefinition);
             }
         }
     }
@@ -47,8 +45,7 @@ class AuthorizationCheckerCompilerPass implements CompilerPassInterface
         $parameters      = $constructor->getParameters();
         $arguments       = $definition->getArguments();
 
-        foreach($parameters as $parameter)
-        {
+        foreach($parameters as $parameter) {
             $typeHint = $parameter->getClass();
             if($typeHint !== null) {
                 switch($typeHint->name) {
@@ -60,6 +57,7 @@ class AuthorizationCheckerCompilerPass implements CompilerPassInterface
                         break;
                     case static::ROLE_HIERARCHY_INTERFACE:
                         array_splice($arguments, $parameter->getPosition(), 0, array(new Reference(static::ROLE_HIERARCHY_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE)));
+                        break;
                 }
             }
         }
