@@ -24,6 +24,6 @@ class SwitchedSerializationController extends RadRestController
         if($action === 'get') {
             return array('abc', 'def');
         }
-        return array();
+        return parent::getSerializationGroups($action);
     }
 }
