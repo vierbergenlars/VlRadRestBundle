@@ -22,6 +22,8 @@ class NoteServiceController extends ControllerServiceController
                 return 'get_notes';
             case 'get':
                 return 'get_note';
+            default:
+                return parent::getRouteName($action);
         }
     }
 }

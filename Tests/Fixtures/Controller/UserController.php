@@ -43,5 +43,6 @@ class UserController extends RadRestController
         if($action === 'cget') {
             return array('abc', 'def');
         }
+        return parent::getSerializationGroups($action);
     }
 }
