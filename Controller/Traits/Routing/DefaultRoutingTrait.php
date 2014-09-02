@@ -45,6 +45,9 @@ trait DefaultRoutingTrait
         }
 
         $controller = $this->getActionResourceName($action);
+        if(!$controller || !$this->getRouter()) {
+            throw new \LogicException('To use the builtin method '.__METHOD__.', a router must be available.');
+        }
         $routes     = $this->getRouter()->getRouteCollection()->all();
         foreach($routes as $routeName => $route) {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
