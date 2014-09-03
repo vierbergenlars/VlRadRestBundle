@@ -25,5 +25,5 @@ trait AbstractBaseManipulateTrait
      * @param array<string> $params Parameters to pass to the route generator
      * @return View
      */
-    abstract protected function redirectTo($route, array $params = array());
+    abstract protected function redirectTo($nextAction, array $params = array());
 }

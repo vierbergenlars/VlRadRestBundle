@@ -11,11 +11,11 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes;
 
 use FOS\RestBundle\Controller\Annotations\View as AView;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Util\Codes;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This trait provides routes for resource modification

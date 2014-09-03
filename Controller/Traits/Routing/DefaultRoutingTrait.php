@@ -29,6 +29,7 @@ trait DefaultRoutingTrait
     abstract protected function getRouter();
 
     /**
+     * @param string $action
      * @return string
      */
     abstract protected function getActionResourceName($action);
@@ -48,7 +49,7 @@ trait DefaultRoutingTrait
         if(!$controller || !$this->getRouter()) {
             throw new \LogicException('To use the builtin method '.__METHOD__.', a router must be available.');
         }
-        $routes     = $this->getRouter()->getRouteCollection()->all();
+        $routes = $this->getRouter()->getRouteCollection()->all();
         foreach($routes as $routeName => $route) {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
                 return $routeName;

@@ -10,8 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes;
 
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 use FOS\RestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 
 /**
  * Base trait for all route related actions

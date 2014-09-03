@@ -12,8 +12,8 @@ namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Pagination\DefaultPaginationTrait;
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Redirect\DefaultRedirectTrait;
-use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\ViewHandler\DefaultViewHandlerTrait;
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Serialization\DefaultSerializationGroupsTrait;
+use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\ViewHandler\DefaultViewHandlerTrait;
 
 /**
  * This trait groups
