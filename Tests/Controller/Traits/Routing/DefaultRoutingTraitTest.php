@@ -137,6 +137,7 @@ class DefaultRoutingTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException LogicException
      */
     public function testGetRouteNameNoResourceName()
     {
