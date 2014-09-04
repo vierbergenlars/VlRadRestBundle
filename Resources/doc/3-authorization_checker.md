@@ -45,3 +45,4 @@ Less frequently used methods are `getSecurityContext()`, `getTrustResolver()` an
 2. [Resource Manager](2-resource_manager.md)
 3. Authorization Checker
 4. **[Services](4-services.md)**
+5. [Templates](5-templates.md)

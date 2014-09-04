@@ -74,7 +74,7 @@ class ControllerServiceController extends AbstractController
         return $this->frontendManager;
     }
 
-    protected function getRouteName($action)
+    public function getRouteName($action)
     {
         // @codeCoverageIgnoreStart
         if($this->logger !== null) {

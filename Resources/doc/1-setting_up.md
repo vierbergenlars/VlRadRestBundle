@@ -50,4 +50,4 @@ Have a look at the docs for information on how to use this bundle.
 2. **[Resource Manager](2-resource_manager.md)**
 3. [Authorization Checker](3-authorization_checker.md)
 4. [Services](4-services.md)
-
+5. [Templates](5-templates.md)

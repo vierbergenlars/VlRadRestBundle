@@ -1,0 +1,36 @@
+{% extends 'VlRadRestBundle:Default:skeleton.html.twig' %}
+{% block radrest_content %}
+  <table>
+    <thead>
+      {% if data|length >= 0 %}
+        {% set keys = data[0]|radrest_object_keys %}
+        <tr>
+          {% for name in keys %}
+            <td>{{ name|humanize }}</td>
+          {% endfor %}
+          <td>Actions</td>
+        </tr>
+      {% endif %}
+    </thead>
+    <tbody>
+      {% for obj in data %}
+        <tr>
+          {% for key in keys %}
+            <td>{{ attribute(obj, key)|radrest_object_stringify }}</td>
+          {% endfor %}
+          <td>
+            {% set actions = {'get':'View', 'edit': 'Edit', 'remove': 'Delete'} %}
+            {% for action, text in actions %}
+              {% if controller.may(action, obj) %}
+                <a href="{{ url(controller.route(action), {id: obj.id })}}">{{ text }}</a>
+              {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if controller.may('new') %}
+    <a href="{{url(controller.route('new'))}}">Create</a>
+  {% endif %}
+{% endblock %}
