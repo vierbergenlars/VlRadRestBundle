@@ -64,6 +64,9 @@ class ObjectExtensionTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @medium
+     */
     public function testTwigIntegration()
     {
         $twig = new \Twig_Environment();
