@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./Tests/bootstrap.php" colors="true">
+<phpunit bootstrap="./Tests/bootstrap.php" strict="true" verbose="true">
     <testsuites>
         <testsuite name="VlRadRestBundle test suite">
             <directory suffix="Test.php">./Tests</directory>

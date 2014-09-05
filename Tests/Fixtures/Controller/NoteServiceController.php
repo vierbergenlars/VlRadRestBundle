@@ -11,7 +11,6 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
-use FOS\RestBundle\View\View;
 
 class NoteServiceController extends ControllerServiceController
 {
