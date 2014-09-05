@@ -10,7 +10,7 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller\Traits\ViewHandler;
 
-use FOS\RestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\ViewHandler\DefaultViewHandlerTrait

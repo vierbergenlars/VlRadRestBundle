@@ -9,7 +9,7 @@
  */
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Redirect;
 
-use FOS\RestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * This trait provides the default redirect to a route implementation

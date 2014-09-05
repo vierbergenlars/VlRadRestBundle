@@ -10,7 +10,7 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes;
 
-use FOS\RestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * Base trait for all routes that manipulate data

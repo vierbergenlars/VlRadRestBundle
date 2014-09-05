@@ -12,7 +12,7 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller\Traits\Routes;
 
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\ArrayPageDescription;
 use FOS\RestBundle\Util\Codes;
 

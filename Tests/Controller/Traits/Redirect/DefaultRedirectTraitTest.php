@@ -10,7 +10,7 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller\Traits\Redirect;
 
-use FOS\RestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Redirect\DefaultRedirectTrait
