@@ -28,17 +28,6 @@ class DefaultRoutingTraitTest extends \PHPUnit_Framework_TestCase
         if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
             $this->markTestSkipped('PHP 5.4 required to use traits');
 
-        if(!trait_exists(__NAMESPACE__.'\\_DefaultRoutingTrait', false)) {
-            // Expose DefaultRoutingTrait::getRouteName as public
-            eval(
-                'namespace '.__NAMESPACE__.';
-                use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routing\DefaultRoutingTrait;
-                trait _DefaultRoutingTrait {
-                    use DefaultRoutingTrait { getRouteName as public;}
-                }'
-            );
-        }
-
         $this->routeCollection = $rc = new RouteCollection();
         $this->router = new Router(new ClosureLoader(), function() use($rc) {
             return $rc;
@@ -47,7 +36,7 @@ class DefaultRoutingTraitTest extends \PHPUnit_Framework_TestCase
         $this->routeCollection->add('get_users', new Route('/users', array('_controller'=>'abcde:cgetAction')));
         $this->routeCollection->add('get_user', new Route('/user/{id}', array('_controller'=>'abcde:getAction')));
 
-        $this->routingTrait = $this->getMockBuilder(__NAMESPACE__.'\_DefaultRoutingTrait')
+        $this->routingTrait = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routing\DefaultRoutingTrait')
             ->enableProxyingToOriginalMethods()
             ->getMockForTrait();
     }

@@ -39,7 +39,7 @@ trait DefaultRoutingTrait
      * @param string $action
      * @return string The route name
      */
-    protected function getRouteName($action)
+    public function getRouteName($action)
     {
         if($this->getLogger() !== null) {
             $this->getLogger()->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has bad performance.', array('sourceController'=>get_class($this)));
