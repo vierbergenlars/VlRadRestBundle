@@ -79,9 +79,11 @@ class ControllerServiceCheckerCompilerPassTest extends \PHPUnit_Framework_TestCa
 
         // Default constructor, overridden redirectTo method
         $def = $container->getDefinition('acme.demo.note.controller');
-        $this->assertCount(2, $def->getArguments());
+        $this->assertCount(4, $def->getArguments());
         $this->assertEquals('acme.demo.note.frontend_manager', (string)$def->getArgument(0));
         $this->assertEquals('logger', (string)$def->getArgument(1));
+        $this->assertEquals('router', (string)$def->getArgument(2));
+        $this->assertEquals('acme.demo.note.controller', $def->getArgument(3));
 
         // Overridden constructor, only parameter is frontend manager
         $def = $container->getDefinition('acme.demo.file.controller');

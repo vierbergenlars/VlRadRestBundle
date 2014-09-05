@@ -26,7 +26,7 @@ abstract class RadRestController extends AbstractController implements Container
      */
     protected $container;
 
-    protected function getRouteName($action)
+    public function getRouteName($action)
     {
         // @codeCoverageIgnoreStart
         if($this->has('logger')) {

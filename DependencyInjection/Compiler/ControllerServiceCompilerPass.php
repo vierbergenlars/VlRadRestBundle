@@ -62,21 +62,12 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
 
     protected function processDefaultConstructor(Definition $definition, $serviceId, $frontendManagerId)
     {
-        $reflectionClass  = new \ReflectionClass($definition->getClass());
-        $redirectToMethod = $reflectionClass->getMethod(static::ROUTE_NAME_METHOD);
-        if($redirectToMethod->getDeclaringClass()->name === self::BASE_CONTROLLER_CLASS) {
-            $definition->setArguments(array(
-                new Reference($frontendManagerId),
-                new Reference(static::LOGGER_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE),
-                new Reference(static::ROUTER_SERVICE),
-                $serviceId
-            ));
-        } else {
-            $definition->setArguments(array(
-                new Reference($frontendManagerId),
-                new Reference(static::LOGGER_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE)
-            ));
-        }
+        $definition->setArguments(array(
+            new Reference($frontendManagerId),
+            new Reference(static::LOGGER_SERVICE, ContainerInterface::NULL_ON_INVALID_REFERENCE),
+            new Reference(static::ROUTER_SERVICE),
+            $serviceId
+        ));
     }
 
     protected function processService(Definition $definition, $frontendManagerId)

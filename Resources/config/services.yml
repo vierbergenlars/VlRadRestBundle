@@ -15,3 +15,15 @@ services:
         class: vierbergenlars\Bundle\RadRestBundle\Pagination\Adapters\KnpPaginationSubscriber
         tags:
             - { name: knp_paginator.subscriber }
+    radrest.view_response_listener:
+        class: vierbergenlars\Bundle\RadRestBundle\EventListener\ViewResponseListener
+        arguments:
+            - @fos_rest.view_handler
+            - @templating
+            - @?logger
+        tags:
+            - { name: kernel.event_subscriber }
+    radrest.twig.object_extension:
+        class: vierbergenlars\Bundle\RadRestBundle\Twig\ObjectExtension
+        tags:
+            - { name: twig.extension }

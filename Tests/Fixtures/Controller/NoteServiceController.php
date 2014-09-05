@@ -15,7 +15,7 @@ use FOS\RestBundle\View\View;
 
 class NoteServiceController extends ControllerServiceController
 {
-    protected function getRouteName($action)
+    public function getRouteName($action)
     {
         switch($action) {
             case 'cget':

@@ -24,9 +24,7 @@ This method does not really provide a default value.
 It will look up the route names of the actions defined on this controller.
 
 This method is called before each response that modifies a resource. That is, `postAction`, `putAction`, `patchAction` and `deleteAction`.
-It is called by `redirectTo` to find out the right route to create a redirect response for.
-
-> Currently you will only see lookups for `cget` and `get` passing, but this may change with a future *mayor* release.
+It is called by `redirectTo` and by the default templates to find out the right route to create a redirect response for.
 
 By default the lookup is executed with a linear search over all routes defined for the application.
 Depending on the size of your route collection this may result in a significant slowdown.
@@ -43,15 +41,20 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController;
 
 class UserController extends ControllerServiceController
 {
-    protected function getRouteName($action) {
+    public function getRouteName($action) {
         switch($action) {
             case 'cget':
                 return 'get_users';
             case 'get':
-                return 'get_user';
-            // These routes should suffice for now, but other actions may be required in the future.
+            case 'new':
+            case 'post':
+            case 'edit':
+            case 'put':
+            case 'remove':
+            case 'delete':
+                return $action.'_user';
             default:
-                throw new \LogicException(sprintf('No route for action %s', $action));
+                return parent::getRouteName($action);
         }
     }
     // ...
@@ -102,7 +105,8 @@ You have to add an `@ApiDoc` annotation with the desired information yourself.
 ## `handleView`
 
 Handles the return value from each action.
-The view that was generated is passed to this action, the return value is anything the kernel can handle `onKernelView`
+The view that was generated is passed to this action, the return value is anything the kernel can handle `onKernelView`.
+You may use this method to alter data stored in the view, e.g. add extra variables, or change a redirect target.
 
 If you are using the [ViewResponseListener](https://github.com/FriendsOfSymfony/FOSRestBundle/blob/master/Resources/doc/3-listener-support.md), this method does not have to be overridden.
 
