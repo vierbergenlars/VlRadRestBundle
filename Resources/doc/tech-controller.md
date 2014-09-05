@@ -65,7 +65,7 @@ class UserController extends ControllerServiceController
 
 This method provides the values for the [serialization group feature of the JMS serializer](http://jmsyst.com/libs/serializer/master/cookbook/exclusion_strategies#creating-different-views-of-your-objects).
 
-By default, or when the function returns a falsy value (`array()`, `null` or `false`), the default serialization group is set.
+By default, the default serialization group is set.
 
 > You will only see lookups for `cget` and `get`.
 

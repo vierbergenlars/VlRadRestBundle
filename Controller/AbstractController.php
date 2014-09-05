@@ -68,11 +68,11 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      *
      * @codeCoverageIgnore
      * @param string $action
-     * @return array<string>|null Serialization groups for this action
+     * @return array<string> Serialization groups for this action
      */
     public function getSerializationGroups($action)
     {
-        return null;
+        return array('Default');
     }
 
     /**
@@ -87,7 +87,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
         } else {
             $view = View::create($this->getPagination($list, $request->query->get('page', 1)));
         }
-        $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget')?:array('Default'));
+        $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget'));
         return $this->handleView($view);
     }
 
@@ -99,7 +99,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
     {
         $object = $this->getFrontendManager()->getResource($id);
         $view   = View::create($object);
-        $view->getSerializationContext()->setGroups($this->getSerializationGroups('get')?:array('Default'));
+        $view->getSerializationContext()->setGroups($this->getSerializationGroups('get'));
         return $this->handleView($view);
     }
 

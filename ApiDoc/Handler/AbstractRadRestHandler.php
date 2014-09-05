@@ -60,13 +60,13 @@ abstract class AbstractRadRestHandler implements HandlerInterface
             case 'getAction':
                 $this->setObjectProperty($annotation, 'output', array(
                 'class'=>get_class($resourceManager->create()),
-                'groups'=>$controllerInst->getSerializationGroups('get')?:array('Default'),
+                'groups'=>$controllerInst->getSerializationGroups('get'),
                 ));
                 break;
             case 'cgetAction':
                 $this->setObjectProperty($annotation, 'output', array(
                 'class'=>get_class($resourceManager->create()),
-                'groups'=>$controllerInst->getSerializationGroups('cget')?:array('Default'),
+                'groups'=>$controllerInst->getSerializationGroups('cget'),
                 ));
         }
     }

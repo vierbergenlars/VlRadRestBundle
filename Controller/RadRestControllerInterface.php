@@ -18,7 +18,7 @@ interface RadRestControllerInterface
      * Returns a list of serializer groups for the given action on this controller
      *
      * @param string $action
-     * @return array<string>|null Serialization groups for this action
+     * @return array<string> Serialization groups for this action
      */
     public function getSerializationGroups($action);
 
