@@ -11,8 +11,6 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
-use FOS\RestBundle\View\View;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class OverriddenMethodController extends RadRestController
 {

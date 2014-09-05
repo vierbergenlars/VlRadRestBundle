@@ -15,6 +15,7 @@ use vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendMan
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\FrontendManagerTagsCompilerPass
+ * @covers vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\Helpers
  */
 class FrontendManagerTagsCompilerPassTest extends \PHPUnit_Framework_TestCase
 {

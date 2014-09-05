@@ -19,5 +19,6 @@ class SwitchedSerializationServiceController extends ControllerServiceController
         if($action === 'get') {
             return array('abc', 'def');
         }
+        return parent::getSerializationGroups($action);
     }
 }

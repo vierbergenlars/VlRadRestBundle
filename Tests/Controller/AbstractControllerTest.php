@@ -27,7 +27,7 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\UserType;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
-use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfTokenManager;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfProvider;
 use vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController;
 
 abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
@@ -38,7 +38,7 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     protected $container;
     protected $resourceManager;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->resourceManager = null;
         $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
@@ -52,6 +52,7 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->container = new ContainerBuilder();
         $this->container->set('router', $this->router);
         $this->container->set('service_container', $this->container);
+        $this->container->set('frontend_manager', $this->frontendManager);
 
         $this->routeCollection->add('get_users', $this->route('/users', 'cget', 'GET'));
         $this->routeCollection->add('get_user', $this->route('/users/{id}', 'get', 'GET'));
@@ -105,7 +106,7 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
             Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->addExtension(new ValidatorExtension(Validation::createValidator()))
-            ->addExtension(new CsrfExtension(new CsrfTokenManager()))
+            ->addExtension(new CsrfExtension(new CsrfProvider()))
             ->getFormFactory()
         );
     }
@@ -127,6 +128,10 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
+        if(!method_exists($controller,'_redirectTo')) {
+            // This is not a required method on
+            $this->markTestIncomplete('Missing %s::_redirectTo() (method for testing only)', get_class($controller));
+        }
         $this->assertSame('get_users', $controller->_redirectTo('cget')->getRoute());
         $this->assertSame('get_user', $controller->_redirectTo('get', array('id'=>1))->getRoute());
     }

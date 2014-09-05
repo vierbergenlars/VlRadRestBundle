@@ -24,5 +24,6 @@ class UserServiceController extends ControllerServiceController
         if($action === 'cget') {
             return array('abc', 'def');
         }
+        return parent::getSerializationGroups($action);
     }
 }

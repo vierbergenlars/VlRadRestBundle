@@ -11,8 +11,6 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
-use FOS\RestBundle\View\View;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SwitchedSerializationController extends RadRestController
 {
@@ -26,6 +24,6 @@ class SwitchedSerializationController extends RadRestController
         if($action === 'get') {
             return array('abc', 'def');
         }
-        return array();
+        return parent::getSerializationGroups($action);
     }
 }

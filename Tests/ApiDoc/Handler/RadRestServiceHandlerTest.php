@@ -17,6 +17,8 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestServiceHandler
  * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\AbstractRadRestHandler
+ * @covers vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController
+ * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
  */
 class RadRestServiceHandlerTest extends AbstractRadRestHandlerTest
 {

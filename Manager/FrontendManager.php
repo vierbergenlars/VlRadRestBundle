@@ -207,4 +207,13 @@ class FrontendManager
 
         return $deleteForm;
     }
+
+    /**
+     * @internal
+     * @return \vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface
+     */
+    public function getAuthorizationChecker()
+    {
+        return $this->authorizationChecker;
+    }
 }

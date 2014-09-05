@@ -13,11 +13,12 @@ namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 use FOS\RestBundle\Controller\Annotations\View as AView;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
+use vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 abstract class AbstractController implements ClassResourceInterface, RadRestControllerInterface
 {
@@ -26,7 +27,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      * @param string $action
      * @return string The route name
      */
-    abstract protected function getRouteName($action);
+    abstract public function getRouteName($action);
 
     /**
      * Gets a slice of the page description for one page
@@ -45,6 +46,9 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      */
     protected function handleView(View $view)
     {
+        $view->setExtraData(array(
+            'controller' => new ControllerVariables($this),
+        ));
         return $view;
     }
 
@@ -64,11 +68,11 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
      *
      * @codeCoverageIgnore
      * @param string $action
-     * @return array<string>|null Serialization groups for this action
+     * @return array<string> Serialization groups for this action
      */
     public function getSerializationGroups($action)
     {
-        return null;
+        return array('Default');
     }
 
     /**
@@ -83,7 +87,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
         } else {
             $view = View::create($this->getPagination($list, $request->query->get('page', 1)));
         }
-        $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget')?:array('Default'));
+        $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget'));
         return $this->handleView($view);
     }
 
@@ -95,7 +99,7 @@ abstract class AbstractController implements ClassResourceInterface, RadRestCont
     {
         $object = $this->getFrontendManager()->getResource($id);
         $view   = View::create($object);
-        $view->getSerializationContext()->setGroups($this->getSerializationGroups('get')?:array('Default'));
+        $view->getSerializationContext()->setGroups($this->getSerializationGroups('get'));
         return $this->handleView($view);
     }
 
