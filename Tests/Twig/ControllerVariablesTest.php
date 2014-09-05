@@ -37,11 +37,22 @@ class ControllerVariablesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->controllerVariables->route('cget'), 'get_users');
     }
 
+    private function getFrontendManager($authorizationChecker)
+    {
+        $fm = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $fm->expects($this->atLeastOnce())
+            ->method('getAuthorizationChecker')
+            ->willReturn($authorizationChecker);
+        return $fm;
+    }
+
     public function testGetAuthorizationChecker()
     {
-        $resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
         $authorizationChecker = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface');
-        $frontendManager = new FrontendManager($resourceManager, $authorizationChecker);
+        $frontendManager = $this->getFrontendManager($authorizationChecker);
+
         $this->controller->expects($this->once())
             ->method('getFrontendManager')
             ->willReturn($frontendManager);
@@ -54,9 +65,9 @@ class ControllerVariablesTest extends \PHPUnit_Framework_TestCase
      */
     public function testMay($action, $object, $calledMethod)
     {
-        $resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
         $authorizationChecker = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface');
-        $frontendManager = new FrontendManager($resourceManager, $authorizationChecker);
+        $frontendManager = $this->getFrontendManager($authorizationChecker);
+        
         $this->controller->expects($this->once())
             ->method('getFrontendManager')
             ->willReturn($frontendManager);

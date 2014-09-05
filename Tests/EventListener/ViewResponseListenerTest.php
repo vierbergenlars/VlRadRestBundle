@@ -21,6 +21,7 @@ use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\EventListener\ViewResponseListener
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class ViewResponseListenerTest extends \PHPUnit_Framework_TestCase
 {

@@ -17,6 +17,7 @@ use Doctrine\ORM\QueryBuilder;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
+ * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\QueryBuilderPageDescription
  */
 class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -138,4 +139,3 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->repository->delete($object);
     }
 }
-

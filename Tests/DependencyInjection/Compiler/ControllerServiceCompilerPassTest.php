@@ -16,8 +16,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\ControllerServiceCompilerPass
+ * @covers vierbergenlars\Bundle\RadRestBundle\DependencyInjection\Compiler\Helpers
  */
-class ControllerServiceCheckerCompilerPassTest extends \PHPUnit_Framework_TestCase
+class ControllerServiceCompilerPassTest extends \PHPUnit_Framework_TestCase
 {
     protected function process(ContainerBuilder $container)
     {
