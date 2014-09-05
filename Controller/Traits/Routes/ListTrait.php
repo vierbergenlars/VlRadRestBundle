@@ -10,10 +10,10 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes;
 use FOS\RestBundle\Controller\Annotations\View as AView;
-use vierbergenlars\Bundle\RadRestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
+use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * This trait provides routes for resource listing

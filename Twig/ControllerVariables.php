@@ -10,8 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Twig;
 
-use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestControllerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
 
 class ControllerVariables
 {
