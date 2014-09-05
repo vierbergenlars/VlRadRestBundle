@@ -23,3 +23,4 @@ them. This bundle is just a tool to help you create a REST API rapidly.
 
 - [The Frontend Manager](tech-frontend_manager.md)
 - [The Base Controllers](tech-controller.md)
+- [Controller traits](tech-traits.md)
