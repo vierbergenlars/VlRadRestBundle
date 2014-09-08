@@ -46,9 +46,14 @@ The `ListTrait` also requires an implementation of [`getPagination()`](#paginati
 The pagination traits enable support for different pagination libraries.
 They provide the `getPagination()` method.
 
- * The `DefaultPaginationTrait` just takes a slice of the results without support for rendering a pager.
- * The `KnpPaginationTrait` leverages the power of the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle).
-   It requires an implementation of `getPaginator()`.
+### Default pagination trait
+
+The `DefaultPaginationTrait` just takes a slice of the results without support for rendering a pager.
+
+### Knp pagination trait
+
+The `KnpPaginationTrait` leverages the power of the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle).
+It requires an implementation of `getPaginator()`.
 
 ## Routing
 
