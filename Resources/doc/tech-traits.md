@@ -72,7 +72,20 @@ There is one implementation available `DefaultRedirectTrait`, which depends on [
 
 The serialization groups trait provides a default implementation of [`getSerializationGroups()`](tech-controller.md#getserializationgroups).
 
-There is one implementation available `DefaultSerializationGroupsTrait`, which will always select the default serialization group.
+### Default serialization groups trait
+
+The `DefaultSerializationGroupsTrait` will always select the default serialization group (`'Default'`).
+
+### Class Resource serialization groups trait
+
+The `ClassResourceSerializationGroupsTrait` will select serialization groups based on the action and controller that is used.
+
+For the `cgetAction`, which shows a list of resources, the serialization groups 'list' and `<controller_name>.'_list'` are used.
+For the `getAction`, which shows a detail of one resource, the serialization groups 'object' and `<controller_name>.'_object'` are used.
+
+> Example: controller class `UserController`.
+>  * cgetAction: 'list', 'user_list'
+>  * getAction: 'object', 'user_object'
 
 ## ViewHandler
 
