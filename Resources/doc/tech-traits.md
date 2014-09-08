@@ -54,13 +54,24 @@ They provide the `getPagination()` method.
 
 The routing traits provide the default `getRouteName()` method.
 
+### Default routing traits
+
 > **WARNING:** This method may have bad performance (see [controller:getRouteName](tech-controller.md#getroutename))
 
 There are two flavors of the routing trait, one for [class based controllers](4-services.md#class-based-controller) (`DefaultClassRoutingTrait`),
 and one for [service based controllers](4-services.md#controller-as-a-service) (`DefaultServiceRoutingTrait`).
 
-Both require implementaions of `getLogger()` and `getRouter()`.
+Both require implementations of `getLogger()` and `getRouter()`.
 The `DefaultServiceRoutingTrait` also requires an implementation of `getServiceName()`.
+
+These traits are guaranteed to word for all routes that exist on the controller.
+
+### Class Resource routing trait
+
+The `ClassResourceRoutingTrait` is faster than the default routing trait and has no dependency on the router.
+
+It is based on the algorithm that generates the route names in FOSRestBundle, but may not always match the route
+the FOSRestBundle generated because the implementation is simplified.
 
 ## Redirect
 
