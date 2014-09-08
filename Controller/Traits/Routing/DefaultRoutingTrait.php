@@ -45,6 +45,10 @@ trait DefaultRoutingTrait
             $this->getLogger()->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has bad performance.', array('sourceController'=>get_class($this)));
         }
 
+        static $cache = array();
+        if(isset($cache[$action])) {
+            return $cache[$action];
+        }
         $controller = $this->getActionResourceName($action);
         if(!$controller || !$this->getRouter()) {
             throw new \LogicException('To use the builtin method '.__METHOD__.', a router must be available.');
@@ -52,7 +56,7 @@ trait DefaultRoutingTrait
         $routes = $this->getRouter()->getRouteCollection()->all();
         foreach($routes as $routeName => $route) {
             if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
-                return $routeName;
+                return $cache[$action] = $routeName;
             }
         }
 
