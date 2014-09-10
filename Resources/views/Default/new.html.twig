@@ -2,7 +2,7 @@
 {% block radrest_content %}
 <h1>Create</h1>
 {% if form is defined %}
-  {{ form(form, {action: path(controller.route('post'), {id: id})}) }}
+  {{ form(form, {action: path(controller.route('post'))}) }}
 {% endif %}
-{% include 'VlRadRestBundle:Default:links.html.twig' with {data: form.vars.value} %}
+{% include 'VlRadRestBundle:Default:links.html.twig' with { controller: controller } only %}
 {% endblock %}
