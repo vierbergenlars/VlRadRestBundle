@@ -34,7 +34,10 @@ class ObjectExtension extends \Twig_Extension
         $refl       = new \ReflectionClass($object);
         $properties = $refl->getProperties();
         foreach($properties as $property) {
-            if($property->isPublic()||$refl->hasMethod('get'.ucfirst($property->getName()))) {
+            if($property->isPublic()
+                ||$refl->hasMethod('get'.ucfirst($property->getName()))
+                ||$refl->hasMethod('is'.ucfirst($property->getName()))
+                ) {
                 $keys[] = $property->getName();
             }
         }
