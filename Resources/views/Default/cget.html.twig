@@ -1,16 +1,15 @@
 {% extends 'VlRadRestBundle:Default:skeleton.html.twig' %}
 {% block radrest_content %}
+{% if data|length > 0 %}
   <table>
     <thead>
-      {% if data|length >= 0 %}
-        {% set keys = data[0]|radrest_object_keys %}
-        <tr>
-          {% for name in keys %}
-            <td>{{ name|humanize }}</td>
-          {% endfor %}
-          <td>Actions</td>
-        </tr>
-      {% endif %}
+      {% set keys = data[0]|radrest_object_keys %}
+      <tr>
+        {% for name in keys %}
+          <td>{{ name|humanize }}</td>
+        {% endfor %}
+        <td>Actions</td>
+      </tr>
     </thead>
     <tbody>
       {% for obj in data %}
@@ -30,7 +29,8 @@
       {% endfor %}
     </tbody>
   </table>
-  {% if controller.may('new') %}
-    <a href="{{url(controller.route('new'))}}">Create</a>
-  {% endif %}
+{% endif %}
+{% if controller.may('new') %}
+  <a href="{{url(controller.route('new'))}}">Create</a>
+{% endif %}
 {% endblock %}

@@ -74,6 +74,8 @@ class ControllerServiceCompilerPass implements CompilerPassInterface
     {
         $reflectionClass = new \ReflectionClass($definition->getClass());
         $constructor     = $reflectionClass->getConstructor();
+        if(!$constructor)
+            return;
         $parameters      = $constructor->getParameters();
         $arguments       = $definition->getArguments();
 

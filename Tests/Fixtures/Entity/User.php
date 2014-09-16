@@ -41,6 +41,12 @@ class User
 	 */
 	public $nose;
 
+	/**
+	 * Non-public property w/ getter
+	 * @see vierbergenlars\Bundle\RadRestBundle\Tests\Twig\ObjectExtension
+	 */
+	private $dead = false;
+
 	public function getId()
 	{
 		return $this->id;
@@ -64,6 +70,15 @@ class User
 	public function setEmail($email)
 	{
 	    $this->email = $email;
+	}
+
+	/**
+	 * Non-public property w/ getter
+	 * @see vierbergenlars\Bundle\RadRestBundle\Tests\Twig\ObjectExtension
+	 */
+	public function isDead()
+	{
+	    return $this->dead;
 	}
 
 	public static function create($username, $id = null)

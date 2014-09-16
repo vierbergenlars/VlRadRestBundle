@@ -36,7 +36,7 @@ class ObjectExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $user = User::create('abc');
         $keys = $this->extension->objectKeys($user);
-        $this->assertEquals(array('id', 'username', 'email', 'nose'), $keys);
+        $this->assertEquals(array('id', 'username', 'email', 'nose', 'dead'), $keys);
     }
 
     /**
@@ -100,12 +100,14 @@ TWIG
                     <th>username</th>
                     <th>email</th>
                     <th>nose</th>
+                    <th>dead</th>
                 </tr>
                 <tr>
                     <td>5</td>
                     <td>abcde</td>
                     <td>abcde@example.com</td>
                     <td>1970-01-01T02:28:08+0000</td>
+                    <td>N</td>
                 </tr>
             </table>
 RES

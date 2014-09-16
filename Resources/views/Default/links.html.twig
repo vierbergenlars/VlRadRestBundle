@@ -1,10 +1,12 @@
 {% set actions = {'get': 'View', 'edit': 'Edit', 'remove': 'Delete'} %}
-{% for action, text in actions %}
-  {% if controller.may(action, data) %}
-    <a href="{{ url(controller.route(action), { id: id }) }}">{{ text }}</a>
-  {% endif %}
-{% endfor %}
+{% if data is defined and id is defined %}
+    {% for action, text in actions %}
+        {% if controller.may(action, data) %}
+            <a href="{{ url(controller.route(action), { id: id }) }}">{{ text }}</a>
+        {% endif %}
+    {% endfor %}
+{% endif %}
 {% if controller.may('cget') %}
-  <br>
-  <a href="{{ url(controller.route('cget')) }}">List</a>
+    <br>
+    <a href="{{ url(controller.route('cget')) }}">List</a>
 {% endif %}
