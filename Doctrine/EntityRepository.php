@@ -11,11 +11,22 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository as DoctrineRepository;
-use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\SearchableResourceManagerInterface;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
-class EntityRepository extends DoctrineRepository implements ResourceManagerInterface, PageableInterface
+class EntityRepository extends DoctrineRepository implements SearchableResourceManagerInterface, PageableInterface
 {
+    protected $fieldSearchWhitelist = array();
+
+    public function __construct($em, ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+        if($this->fieldSearchWhitelist === array()) {
+            $this->fieldSearchWhitelist = $class->getFieldNames();
+        }
+    }
+
     /**
      * @param string $calledMethod Method that was called on this object, to create a nice exception message.
      */
@@ -47,6 +58,23 @@ class EntityRepository extends DoctrineRepository implements ResourceManagerInte
     public function getPageDescription()
     {
         return new QueryBuilderPageDescription($this->createQueryBuilder('e'));
+    }
+
+    public function search($terms)
+    {
+        if(!is_array($terms)) {
+            throw new \RuntimeException('Terms should be an array for EntityRepository');
+        }
+        $qb = $this->createQueryBuilder('e');
+        $predicate = $qb->expr()->andX();
+        foreach($terms as $field => $value) {
+            if(in_array($field, $this->fieldSearchWhitelist)) {
+                $predicate->add($qb->expr()->like('e.'.$field, ':'.$field));
+            }
+        }
+        $qb->where($predicate);
+        $qb->setParameters($terms);
+        return new QueryBuilderPageDescription($qb);
     }
 
     public function create()
