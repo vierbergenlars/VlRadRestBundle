@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Doctrine\EntityRepository
@@ -29,9 +30,15 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         if(!class_exists('Doctrine\ORM\Mapping\ClassMetadata'))
             return $this->markTestSkipped('Doctrine ORM is not installed');
-        $this->em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $this->em = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->classmetadata = new ClassMetadata('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User');
         $this->classmetadata->reflClass = new \ReflectionClass($this->classmetadata->name);
+        $this->classmetadata->fieldMappings = array(
+            'id'=>null,
+            'username'=>null,
+        );
         $this->repository = new EntityRepository($this->em, $this->classmetadata);
     }
 
@@ -45,6 +52,24 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         $queryBuilder->expects($this->atLeastOnce())->method('select');
 
         $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Doctrine\QueryBuilderPageDescription', $this->repository->getPageDescription());
+    }
+
+    public function testSearch()
+    {
+        $queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
+        ->setConstructorArgs(array($this->em))
+        ->enableProxyingToOriginalMethods()
+        ->getMock();
+        $this->em->expects($this->once())->method('createQueryBuilder')->will($this->returnValue($queryBuilder));
+        $this->em->expects($this->any())->method('getExpressionBuilder')->will($this->returnValue(new Expr()));
+        $queryBuilder->expects($this->atLeastOnce())->method('select');
+
+        $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Doctrine\QueryBuilderPageDescription', $this->repository->search(array('username'=>'aaa', 'group'=>'xxy', 'id'=>5)));
+
+        $this->assertEquals('SELECT e FROM vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User e WHERE e.username LIKE :username AND e.id LIKE :id', $queryBuilder->getDQL());
+        $this->assertEquals('aaa', $queryBuilder->getParameter('username')->getValue());
+        $this->assertEquals('xxy', $queryBuilder->getParameter('group')->getValue());
+        $this->assertEquals(5, $queryBuilder->getParameter('id')->getValue());
     }
 
     public function testCreateObject()

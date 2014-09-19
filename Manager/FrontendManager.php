@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
 use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\EmptyPageDescription;
 
 /**
  *
@@ -81,6 +82,25 @@ class FrontendManager
         }
 
         return $this->resourceManager->findAll();
+    }
+
+    /**
+     * Searches resources of this type
+     * @param mixed $terms Whatever the resource manager accepts as search terms
+     * @throws AccessDeniedException
+     * @return PageDescriptionInterface
+     */
+    public function search($terms)
+    {
+        if(!$this->authorizationChecker->mayList()) {
+            throw new AccessDeniedException();
+        }
+
+        if($this->resourceManager instanceof SearchableResourceManagerInterface) {
+            return $this->resourceManager->search($terms);
+        }
+
+        return new EmptyPageDescription();
     }
 
     /**

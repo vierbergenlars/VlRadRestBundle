@@ -18,6 +18,9 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Validator\Validation;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\ArrayPageDescription;
+use vierbergenlars\Bundle\RadRestBundle\Pagination\EmptyPageDescription;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
@@ -32,7 +35,7 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->authorizationChecker = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface');
-        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\SearchableResourceManagerInterface');
         $this->formType = new UserType();
         $this->formFactory = Forms::createFormFactoryBuilder()
         ->addExtension(new HttpFoundationExtension())
@@ -52,6 +55,16 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             array(
                 array('mayList'=>true),
                 'getList',
+                false
+            ),
+            array(
+                array('mayList'=>false),
+                'search',
+                true
+            ),
+            array(
+                array('mayList'=>true),
+                'search',
                 false
             ),
             array(
@@ -143,6 +156,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         $this->resourceManager->expects($this->any())->method('find')->will($this->returnValue($fakeUser));
         $this->resourceManager->expects($this->any())->method('findAll')->will($this->returnValue($withUser?array($fakeUser):array()));
         $this->resourceManager->expects($this->any())->method('create')->will($this->returnValue($fakeUser));
+        $this->resourceManager->expects($this->any())->method('search')->will($this->returnCallback(function($t) use($fakeUser) {
+            if($t === array('username'=>'aaa')) {
+                return new ArrayPageDescription(array($fakeUser));
+            } else {
+                return new EmptyPageDescription();
+            }
+        }));
+
         return $fakeUser;
     }
 
@@ -161,6 +182,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         switch($method) {
             case 'getList':
                 $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
                 break;
             case 'getResource':
                 $this->assertSame($fakeUser, $frontendManager->getResource(1));
@@ -241,6 +270,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             case 'getList':
                 $this->assertSame(array($fakeUser), $frontendManager->getList());
                 break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
+                break;
             case 'getResource':
                 $this->assertSame($fakeUser, $frontendManager->getResource(1));
                 break;
@@ -274,6 +311,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         switch($method) {
             case 'getList':
                 $this->assertSame(array(), $frontendManager->getList());
+                break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
                 break;
             case 'getResource':
                 $this->setExpectedException('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
@@ -310,6 +355,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         switch($method) {
             case 'getList':
                 $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
                 break;
             case 'getResource':
                 $this->assertSame($fakeUser, $frontendManager->getResource(1));
@@ -353,6 +406,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
             case 'getList':
                 $this->assertSame(array($fakeUser), $frontendManager->getList());
                 break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
+                break;
             case 'getResource':
                 $this->assertSame($fakeUser, $frontendManager->getResource(1));
                 break;
@@ -391,6 +452,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         switch($method) {
             case 'getList':
                 $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
                 break;
             case 'getResource':
                 $this->assertSame($fakeUser, $frontendManager->getResource(1));
@@ -453,6 +522,14 @@ class FrontendManagerTest extends \PHPUnit_Framework_TestCase
         switch($method) {
             case 'getList':
                 $this->assertSame(array($fakeUser), $frontendManager->getList());
+                break;
+            case 'search':
+                $r = $frontendManager->search(array('username'=>'aaa'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(1, $r->getTotalItemCount());
+                $r = $frontendManager->search(array('username'=>'aab'));
+                $this->assertTrue($r instanceof PageDescriptionInterface);
+                $this->assertSame(0, $r->getTotalItemCount());
                 break;
             case 'getResource':
                 $this->assertSame($fakeUser, $frontendManager->getResource(1));
