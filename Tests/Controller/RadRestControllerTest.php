@@ -34,7 +34,6 @@ class RadRestControllerTest extends AbstractControllerTest
     {
         $controller = new UserController();
         $controller->setContainer($this->container);
-        $controller->setFrontendManager($this->frontendManager);
         return $controller;
     }
 }
