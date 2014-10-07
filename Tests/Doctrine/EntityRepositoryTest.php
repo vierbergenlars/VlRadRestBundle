@@ -54,36 +54,61 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Doctrine\QueryBuilderPageDescription', $this->repository->getPageDescription());
     }
 
-    public function testSearch()
+    public function testNewInstance()
     {
-        $queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
-        ->setConstructorArgs(array($this->em))
-        ->enableProxyingToOriginalMethods()
-        ->getMock();
-        $this->em->expects($this->once())->method('createQueryBuilder')->will($this->returnValue($queryBuilder));
-        $this->em->expects($this->any())->method('getExpressionBuilder')->will($this->returnValue(new Expr()));
-        $queryBuilder->expects($this->atLeastOnce())->method('select');
-
-        $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Doctrine\QueryBuilderPageDescription', $this->repository->search(array('username'=>'aaa', 'group'=>'xxy', 'id'=>5)));
-
-        $this->assertEquals('SELECT e FROM vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User e WHERE e.username LIKE :username AND e.id LIKE :id', $queryBuilder->getDQL());
-        $this->assertEquals('aaa', $queryBuilder->getParameter('username')->getValue());
-        $this->assertEquals('xxy', $queryBuilder->getParameter('group')->getValue());
-        $this->assertEquals(5, $queryBuilder->getParameter('id')->getValue());
-    }
-
-    public function testCreateObject()
-    {
-        $object = $this->repository->create();
+        $object = $this->repository->newInstance();
         $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', $object);
     }
 
-    public function testUpdateObject()
+    public function testCreateObject()
     {
         $object = new User();
         $this->em->expects($this->once())
         ->method('persist')
         ->with($object);
+        $this->em->expects($this->once())
+        ->method('flush')
+        ->with($object);
+        $this->repository->create($object);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testCreateObjectWrongType()
+    {
+        $object = new \stdClass();
+        $this->em->expects($this->never())
+        ->method('persist');
+        $this->em->expects($this->never())
+        ->method('flush');
+
+        $this->repository->create($object);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testCreateObjectFailed()
+    {
+        $object = new User();
+        $this->em->expects($this->once())
+        ->method('persist')
+        ->with($object);
+        $this->em->expects($this->once())
+        ->method('flush')
+        ->with($object)
+        ->willThrowException(new \Exception());
+
+        $this->repository->create($object);
+    }
+
+
+    public function testUpdateObject()
+    {
+        $object = new User();
+        $this->em->expects($this->never())
+        ->method('persist');
         $this->em->expects($this->once())
         ->method('flush')
         ->with($object);
@@ -110,9 +135,6 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testUpdateObjectFailed()
     {
         $object = new User();
-        $this->em->expects($this->once())
-        ->method('persist')
-        ->with($object);
         $this->em->expects($this->once())
         ->method('flush')
         ->with($object)
