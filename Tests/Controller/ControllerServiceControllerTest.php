@@ -30,7 +30,9 @@ class ControllerServiceControllerTest extends AbstractControllerTest
         $this->container->register('acme.demo.user.controller')
         ->setClass('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserServiceController')
         ->setArguments(array(
-            $this->frontendManager,
+            new Reference('resource_manager'),
+            new Reference('form'),
+            new Reference('form_factory'),
             null,
             new Reference('router'),
             'acme.demo.user.controller',
@@ -54,7 +56,11 @@ class ControllerServiceControllerTest extends AbstractControllerTest
      */
     public function testRedirectToUnmetDependencies()
     {
-        $this->container->getDefinition('acme.demo.user.controller')->setArguments(array($this->frontendManager));
+        $this->container->getDefinition('acme.demo.user.controller')->setArguments(array(
+            new Reference('resource_manager'),
+            new Reference('form'),
+            new Reference('form_factory'),
+        ));
         $this->createController()->_redirectTo('cget');
     }
 }

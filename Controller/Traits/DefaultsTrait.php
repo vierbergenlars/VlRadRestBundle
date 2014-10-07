@@ -14,6 +14,7 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Pagination\DefaultPagi
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Redirect\DefaultRedirectTrait;
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Serialization\DefaultSerializationGroupsTrait;
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\ViewHandler\DefaultViewHandlerTrait;
+use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Form\DefaultFormTrait;
 
 /**
  * This trait groups
@@ -24,4 +25,5 @@ trait DefaultsTrait
     use DefaultRedirectTrait;
     use DefaultSerializationGroupsTrait;
     use DefaultViewHandlerTrait;
+    use DefaultFormTrait;
 }

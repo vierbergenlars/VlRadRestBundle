@@ -24,13 +24,20 @@ trait EditTrait
 {
     use AbstractBaseManipulateTrait;
 
+    protected function createEditForm($object)
+    {
+        return $this->createForm($object, 'PUT');
+    }
+
     /**
      * @AView
      */
     public function editAction($id)
     {
-        $form = $this->getFrontendManager()->editResource($id);
-        $view = View::create($form)->setTemplateVar('form');
+        $object = $this->getResourceManager()->find($id);
+        $form = $this->createEditForm($object);
+        $view = View::create($form);
+
         return $this->handleView($view);
     }
 
@@ -40,12 +47,12 @@ trait EditTrait
      */
     public function putAction(Request $request, $id)
     {
-        $ret = $this->getFrontendManager()->editResource($id, $request);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        $object = $this->getResourceManager()->find($id);
+        $form = $this->createEditForm($object);
+        if($this->processForm($form, $request)) {
+            $view = $this->redirectTo('get', array('id'=>$object->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
         } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
+            $view = View::create($form, Codes::HTTP_BAD_REQUEST);
         }
 
         return $this->handleView($view);

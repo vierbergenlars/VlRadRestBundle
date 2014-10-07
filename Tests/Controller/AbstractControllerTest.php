@@ -32,7 +32,6 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController;
 
 abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
 {
-    protected $frontendManager;
     private $routeCollection;
     protected $router;
     protected $container;
@@ -40,11 +39,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->resourceManager = null;
-        $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
-        ->setConstructorArgs($this->createFrontendManagerArgs())
-        ->enableProxyingToOriginalMethods()
-        ->getMock();
+        $this->resourceManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\UserRepository')
+            ->enableProxyingToOriginalMethods()
+            ->getMock();
         $routeCollection = $this->routeCollection = new RouteCollection();
         $this->router = new Router(new ClosureLoader(), function() use($routeCollection) {
             return $routeCollection;
@@ -52,7 +49,14 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->container = new ContainerBuilder();
         $this->container->set('router', $this->router);
         $this->container->set('service_container', $this->container);
-        $this->container->set('frontend_manager', $this->frontendManager);
+        $this->container->set('resource_manager', $this->resourceManager);
+        $this->container->set('form', new UserType());
+        $this->container->set('form_factory', Forms::createFormFactoryBuilder()
+            ->addExtension(new HttpFoundationExtension())
+            ->addExtension(new ValidatorExtension(Validation::createValidator()))
+            ->addExtension(new CsrfExtension(new CsrfProvider()))
+            ->getFormFactory()
+        );
 
         $this->routeCollection->add('get_users', $this->route('/users', 'cget', 'GET'));
         $this->routeCollection->add('get_user', $this->route('/users/{id}', 'get', 'GET'));
@@ -93,24 +97,6 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
             ));
     }
 
-    protected function createFrontendManagerArgs()
-    {
-        if($this->resourceManager == null) {
-            $this->resourceManager = new UserRepository();
-        }
-
-        return array(
-            $this->resourceManager,
-            new AuthorizationChecker(),
-            new UserType(),
-            Forms::createFormFactoryBuilder()
-            ->addExtension(new HttpFoundationExtension())
-            ->addExtension(new ValidatorExtension(Validation::createValidator()))
-            ->addExtension(new CsrfExtension(new CsrfProvider()))
-            ->getFormFactory()
-        );
-    }
-
     /**
      *
      * @param string $path
@@ -139,26 +125,33 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     public function testCGet()
     {
         $controller = $this->createController();
-        $fakeUser = $this->resourceManager->fakeUser = User::create('aafs', 5);
+        $this->resourceManager->setFakeUsers(User::createArray(25));
 
         $request = new Request();
 
         $retval = $controller->cgetAction($request);
-        $this->assertSame(array($fakeUser), $retval->getData());
-        $this->assertSame('data', $retval->getTemplateVar());
+        $this->assertCount(10, $retval->getData());
         $this->assertSame(200, $retval->getStatusCode());
         $this->assertSame(array('abc', 'def'), $retval->getSerializationContext()->attributes->get('groups')->get());
+
+        $request->query->set('page', 2);
+        $retval2 = $controller->cgetAction($request);
+        $this->assertCount(10, $retval->getData());
+        $this->assertNotEquals($retval->getData(), $retval2->getData());
+
+        $request->query->set('page', 3);
+        $retval3 = $controller->cgetAction($request);
+        $this->assertCount(5, $retval3->getData());
     }
 
     public function testGet()
     {
         $controller = $this->createController();
-        $fakeUser = $this->resourceManager->fakeUser = User::create('sfsf', 90);
-        $this->frontendManager->expects($this->once())->method('getResource')->with(90);
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('sfsf', 90));
+        $this->resourceManager->expects($this->once())->method('find')->with(90);
 
         $retval = $controller->getAction(90);
         $this->assertSame($fakeUser, $retval->getData());
-        $this->assertSame('data', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
         $this->assertSame(array('Default'), $retval->getSerializationContext()->attributes->get('groups')->get());
     }
@@ -167,13 +160,12 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('');
-        $this->frontendManager->expects($this->once())->method('createResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create(''));
+        $this->resourceManager->expects($this->once())->method('newInstance');
 
         $retval = $controller->newAction();
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertFalse($retval->getData()->isSubmitted());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
     }
 
@@ -181,8 +173,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('', 90);
-        $this->frontendManager->expects($this->once())->method('createResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('', 90));
+        $this->resourceManager->expects($this->once())->method('newInstance');
+        $this->resourceManager->expects($this->once())->method('create')->with($fakeUser);
 
         $request = new Request();
         $request->setMethod('POST');
@@ -199,8 +192,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('', 90);
-        $this->frontendManager->expects($this->once())->method('createResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('', 90));
+        $this->resourceManager->expects($this->once())->method('newInstance');
+        $this->resourceManager->expects($this->never())->method('create');
 
         $request = new Request();
         $request->setMethod('POST');
@@ -210,20 +204,18 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertTrue($retval->getData()->isSubmitted());
         $this->assertFalse($retval->getData()->isValid());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
     public function testEdit()
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('sfsf', 90);
-        $this->frontendManager->expects($this->once())->method('editResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('sfsf', 90));
+        $this->resourceManager->expects($this->once())->method('find');
 
         $retval = $controller->editAction(90);
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertFalse($retval->getData()->isSubmitted());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
     }
 
@@ -231,8 +223,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
-        $this->frontendManager->expects($this->once())->method('editResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('defg', 90));
+        $this->resourceManager->expects($this->once())->method('find');
+        $this->resourceManager->expects($this->once())->method('update')->with($fakeUser);
 
         $request = new Request();
         $request->setMethod('PUT');
@@ -249,8 +242,10 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
-        $this->frontendManager->expects($this->once())->method('editResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('defg', 90));
+        $this->resourceManager->expects($this->once())->method('find');
+        $this->resourceManager->expects($this->never())->method('update');
+
 
         $request = new Request();
         $request->setMethod('PUT');
@@ -260,7 +255,6 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertTrue($retval->getData()->isSubmitted());
         $this->assertFalse($retval->getData()->isValid());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
 
@@ -268,8 +262,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
-        $this->frontendManager->expects($this->once())->method('editResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('defg', 90));
+        $this->resourceManager->expects($this->once())->method('find');
+        $this->resourceManager->expects($this->once())->method('update')->with($fakeUser);
 
         $request = new Request();
         $request->setMethod('PATCH');
@@ -285,8 +280,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
-        $this->frontendManager->expects($this->once())->method('editResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('defg', 90));
+        $this->resourceManager->expects($this->once())->method('find');
+        $this->resourceManager->expects($this->never())->method('update');
 
         $request = new Request();
         $request->setMethod('PATCH');
@@ -296,7 +292,6 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertTrue($retval->getData()->isSubmitted());
         $this->assertFalse($retval->getData()->isValid());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
 
@@ -304,13 +299,12 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('sfsf', 90);
-        $this->frontendManager->expects($this->once())->method('deleteResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('sfsf', 90));
+        $this->resourceManager->expects($this->once())->method('find');
 
         $retval = $controller->removeAction(90);
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertFalse($retval->getData()->isSubmitted());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(200, $retval->getStatusCode());
     }
 
@@ -318,8 +312,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
-        $this->frontendManager->expects($this->once())->method('deleteResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('defg', 90));
+        $this->resourceManager->expects($this->once())->method('find');
+        $this->resourceManager->expects($this->once())->method('delete')->with($fakeUser);
 
         $request = new Request();
         $request->setMethod('DELETE');
@@ -336,8 +331,9 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
     {
         $controller = $this->createController();
 
-        $fakeUser = $this->resourceManager->fakeUser = User::create('defg', 90);
-        $this->frontendManager->expects($this->once())->method('deleteResource');
+        $fakeUser = $this->resourceManager->setFakeUser(User::create('defg', 90));
+        $this->resourceManager->expects($this->once())->method('find');
+        $this->resourceManager->expects($this->never())->method('delete');
 
         $request = new Request();
         $request->setMethod('DELETE');
@@ -347,7 +343,6 @@ abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\Form\Form', $retval->getData());
         $this->assertTrue($retval->getData()->isSubmitted());
         $this->assertFalse($retval->getData()->isValid());
-        $this->assertSame('form', $retval->getTemplateVar());
         $this->assertSame(400, $retval->getStatusCode());
     }
 }

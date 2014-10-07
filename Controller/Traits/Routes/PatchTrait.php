@@ -24,18 +24,23 @@ trait PatchTrait
 {
     use AbstractBaseManipulateTrait;
 
+    protected function createPatchForm($object)
+    {
+        return $this->createForm($object, 'PATCH');
+    }
+
     /**
      * @ApiDoc
      * @AView
      */
     public function patchAction(Request $request, $id)
     {
-        $ret = $this->getFrontendManager()->editResource($id, $request, true);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        $object = $this->getResourceManager()->find($id);
+        $form = $this->createPatchForm($object);
+        if($this->processForm($form, $request)) {
+            $view = $this->redirectTo('get', array('id'=>$object->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
         } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_NO_CONTENT);
+            $view = View::create($form, Codes::HTTP_BAD_REQUEST);
         }
 
         return $this->handleView($view);

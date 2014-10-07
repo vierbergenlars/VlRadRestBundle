@@ -10,6 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Manager;
 
+use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
+
 /**
  * Manager interface for all objects controlled by the REST controller
  *
@@ -21,9 +23,9 @@ interface ResourceManagerInterface
     /**
      * Gets the whole collection of objects
      *
-     * @return array<object>
+     * @return PageDescriptionInterface
      */
-    public function findAll();
+    public function getPageDescription();
 
     /**
      * Finds the object by its database ID
@@ -34,17 +36,26 @@ interface ResourceManagerInterface
     public function find($id);
 
     /**
-     * Creates a new object, does not persist it to the database yet.
+     * Creates a blank instance of the managed object
      *
      * @return object
-    */
-    public function create();
+     */
+    public function newInstance();
 
     /**
-     * Updates or creates an object in the database
+     * Creates an object in the database
      *
      * @param object $object
-     * @throws \Exception if the object cannot be updated/created
+     * @throws \Exception if the object cannot be created
+     * @return void
+    */
+    public function create($object);
+
+    /**
+     * Updates an object in the database
+     *
+     * @param object $object
+     * @throws \Exception if the object cannot be updated
      * @return void
     */
     public function update($object);

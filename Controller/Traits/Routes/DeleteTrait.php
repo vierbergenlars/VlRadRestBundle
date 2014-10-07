@@ -16,6 +16,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use vierbergenlars\Bundle\RadRestBundle\View\View;
+use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * This trait provides routes for resource deletion
@@ -25,12 +26,29 @@ trait DeleteTrait
     use AbstractBaseManipulateTrait;
 
     /**
+     * @return FormFactoryInterface
+     */
+    abstract protected function getFormFactory();
+
+    protected function createDeleteForm($object)
+    {
+        return $this->getFormFactory()
+            ->createBuilder('form', $object, array('data_class'=>get_class($object)))
+            ->add('submit', 'submit')
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
+    /**
      * @AView
      */
     public function removeAction($id)
     {
-        $form = $this->getFrontendManager()->deleteResource($id);
-        $view = View::create($form)->setTemplateVar('form');
+        $object = $this->getResourceManager()->find($id);
+        $form = $this->createDeleteForm($object);
+        $view = View::create($form);
+
         return $this->handleView($view);
     }
 
@@ -40,12 +58,12 @@ trait DeleteTrait
      */
     public function deleteAction(Request $request, $id)
     {
-        $ret = $this->getFrontendManager()->deleteResource($id, $request);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
-        } else {
+        $object = $this->getResourceManager()->find($id);
+        $form = $this->createDeleteForm($object);
+        if($this->processForm($form, $request)) {
             $view = $this->redirectTo('cget')->setStatusCode(Codes::HTTP_NO_CONTENT);
+        } else {
+            $view = View::create($form, Codes::HTTP_BAD_REQUEST);
         }
 
         return $this->handleView($view);

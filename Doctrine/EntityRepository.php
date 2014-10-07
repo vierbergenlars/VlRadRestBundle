@@ -77,15 +77,21 @@ class EntityRepository extends DoctrineRepository implements SearchableResourceM
         return new QueryBuilderPageDescription($qb);
     }
 
-    public function create()
+    public function newInstance()
     {
         return $this->getClassMetadata()->newInstance();
+    }
+
+    public function create($object)
+    {
+        $this->validateObject($object, 'create');
+        $this->getEntityManager()->persist($object);
+        $this->getEntityManager()->flush($object);
     }
 
     public function update($object)
     {
         $this->validateObject($object, 'update');
-        $this->getEntityManager()->persist($object);
         $this->getEntityManager()->flush($object);
     }
 

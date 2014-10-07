@@ -10,8 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes;
 
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 use vierbergenlars\Bundle\RadRestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 
 /**
  * Base trait for all route related actions
@@ -19,10 +19,10 @@ use vierbergenlars\Bundle\RadRestBundle\View\View;
 trait AbstractBaseTrait
 {
     /**
-     * Get the frontend manager for the controller
-     * @return FrontendManager
+     * Get the resource manager for the controller
+     * @return ResourceManagerInterface
      */
-    abstract public function getFrontendManager();
+    abstract public function getResourceManager();
 
     /**
      * Manipulate the output of the controller
