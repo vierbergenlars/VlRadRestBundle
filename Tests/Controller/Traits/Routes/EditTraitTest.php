@@ -21,71 +21,73 @@ use FOS\RestBundle\Util\Codes;
  */
 class EditTraitTest extends \PHPUnit_Framework_TestCase
 {
-    private $frontendManager;
+    private $resourceManager;
 
     private $editTrait;
+
+    private $form;
+
+    private $user;
 
     protected function setUp()
     {
         if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
             $this->markTestSkipped('PHP 5.4 required to use traits');
 
-        $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
 
         $this->editTrait = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\EditTrait')
             ->enableProxyingToOriginalMethods()
             ->getMockForTrait();
 
         $this->editTrait->expects($this->once())
-            ->method('getFrontendManager')
+            ->method('getResourceManager')
             ->with()
-            ->willReturn($this->frontendManager);
+            ->willReturn($this->resourceManager);
+
+        $this->form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->editTrait->expects($this->once())
+            ->method('createForm')
+            ->with($this->anything(), 'PUT')
+            ->willReturn($this->form);
 
         $this->editTrait->expects($this->once())
             ->method('handleView')
             ->with($this->anything())
             ->willReturnArgument(0);
+
+        $this->resourceManager->expects($this->once())
+            ->method('find')
+            ->with(8)
+            ->willReturn($this->user = User::create('abc', 8));
+
     }
 
     public function testEdit()
     {
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->frontendManager->expects($this->once())
-            ->method('editResource')
-            ->with(5)
-            ->willReturn($form);
-
-        $view = $this->editTrait->editAction(5);
+        $view = $this->editTrait->editAction(8);
 
         $this->assertTrue($view instanceof View);
-        $this->assertEquals($form, $view->getData());
-        $this->assertEquals('form', $view->getTemplateVar());
+        $this->assertEquals($this->form, $view->getData());
     }
 
     public function testPutFail()
     {
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $request = new Request();
         $request->setMethod('PUT');
 
-        $this->frontendManager->expects($this->once())
-            ->method('editResource')
-            ->with(5, $request)
-            ->willReturn($form);
+        $this->editTrait->expects($this->once())
+            ->method('processForm')
+            ->with($this->form, $request)
+            ->willReturn(false);
 
-        $view = $this->editTrait->putAction($request, 5);
+        $view = $this->editTrait->putAction($request, 8);
 
         $this->assertTrue($view instanceof View);
-        $this->assertEquals($form, $view->getData());
-        $this->assertEquals('form', $view->getTemplateVar());
+        $this->assertEquals($this->form, $view->getData());
         $this->assertEquals(Codes::HTTP_BAD_REQUEST, $view->getStatusCode());
     }
 
@@ -94,17 +96,17 @@ class EditTraitTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->setMethod('PUT');
 
-        $this->frontendManager->expects($this->once())
-            ->method('editResource')
-            ->with(5, $request)
-            ->willReturn($user = User::create('abcde', 5));
+        $this->editTrait->expects($this->once())
+            ->method('processForm')
+            ->with($this->form, $request)
+            ->willReturn(true);
 
         $this->editTrait->expects($this->once())
             ->method('redirectTo')
-            ->with('get', array('id'=>5))
-            ->willReturn($redirect = View::createRouteRedirect('get_user', array('id'=>5)));
+            ->with('get', array('id'=>8))
+            ->willReturn($redirect = View::createRouteRedirect('get_user', array('id'=>8)));
 
-        $view = $this->editTrait->putAction($request, 5);
+        $view = $this->editTrait->putAction($request, 8);
 
         $this->assertSame($redirect, $view);
         $this->assertEquals(Codes::HTTP_NO_CONTENT, $view->getStatusCode());

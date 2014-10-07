@@ -20,7 +20,7 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\ArrayPageDescr
  */
 class ListTraitTest extends \PHPUnit_Framework_TestCase
 {
-    private $frontendManager;
+    private $resourceManager;
 
     private $listTrait;
 
@@ -29,18 +29,16 @@ class ListTraitTest extends \PHPUnit_Framework_TestCase
         if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
             $this->markTestSkipped('PHP 5.4 required to use traits');
 
-        $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
 
         $this->listTrait = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\ListTrait')
             ->enableProxyingToOriginalMethods()
             ->getMockForTrait();
 
         $this->listTrait->expects($this->once())
-            ->method('getFrontendManager')
+            ->method('getResourceManager')
             ->with()
-            ->willReturn($this->frontendManager);
+            ->willReturn($this->resourceManager);
 
         $this->listTrait->expects($this->once())
             ->method('handleView')
@@ -53,29 +51,11 @@ class ListTraitTest extends \PHPUnit_Framework_TestCase
             ->willReturn(array('Default', 'list'));
     }
 
-    public function testListArray()
-    {
-        $this->frontendManager->expects($this->once())
-            ->method('getList')
-            ->with(true)
-            ->willReturn($users = User::createArray(16));
-
-        $request = new Request();
-        $request->query->set('page', 2);
-
-        $view = $this->listTrait->cgetAction($request);
-
-        $this->assertTrue($view instanceof View);
-        $this->assertEquals($users, $view->getData());
-        $this->assertEquals(array('Default', 'list'), $view->getSerializationContext()->attributes->get('groups')->get());
-    }
-
     public function testListPageDescription()
     {
         $pageDescription = new ArrayPageDescription($users = User::createArray(16));
-        $this->frontendManager->expects($this->once())
-            ->method('getList')
-            ->with(true)
+        $this->resourceManager->expects($this->once())
+            ->method('getPageDescription')
             ->willReturn($pageDescription);
 
         $this->listTrait->expects($this->once())
