@@ -28,8 +28,11 @@ abstract class AbstractRadRestHandlerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new ContainerBuilder();
-        $this->container->set('frontend_manager', $this->getFrontendManager());
-
+        $resourceManager = new UserRepository();
+        $resourceManager->setFakeUser(User::create(''));
+        $this->container->set('resource_manager', $resourceManager);
+        $this->container->set('form', new UserType());
+        $this->container->set('form_factory', $this->getMock('Symfony\Component\Form\FormFactoryInterface'));
     }
 
     public function testHandleCGet()
@@ -44,18 +47,6 @@ abstract class AbstractRadRestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($apiDoc->getInput());
     }
 
-    public function testHandleCGetDefaultSerialization()
-    {
-        $apiDoc = new ApiDoc(array('resource'=>true));
-        $route = $this->route('/users', 'cget', 'GET', self::ROUTE_TYPE_SWITCHED_SERIALIZATION);
-        $reflMethod = $this->getReflectionMethod($route);
-
-        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
-
-        $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('Default')), $apiDoc->getOutput());
-        $this->assertNull($apiDoc->getInput());
-    }
-
     public function testHandleGet()
     {
         $apiDoc = new ApiDoc(array('resource'=>true));
@@ -65,18 +56,6 @@ abstract class AbstractRadRestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->handler->handle($apiDoc, array(), $route, $reflMethod);
 
         $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('Default')), $apiDoc->getOutput());
-        $this->assertNull($apiDoc->getInput());
-    }
-
-    public function testHandleGetCustomSerialization()
-    {
-        $apiDoc = new ApiDoc(array('resource'=>true));
-        $route = $this->route('/users/{id}', 'get', 'GET', self::ROUTE_TYPE_SWITCHED_SERIALIZATION);
-        $reflMethod = $this->getReflectionMethod($route);
-
-        $this->handler->handle($apiDoc, array(), $route, $reflMethod);
-
-        $this->assertSame(array('class'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User', 'groups'=>array('abc', 'def')), $apiDoc->getOutput());
         $this->assertNull($apiDoc->getInput());
     }
 
@@ -175,15 +154,4 @@ abstract class AbstractRadRestHandlerTest extends \PHPUnit_Framework_TestCase
     }
     const ROUTE_TYPE_DEFAULT = 1;
     const ROUTE_TYPE_OVERRIDDEN = 2;
-    const ROUTE_TYPE_SWITCHED_SERIALIZATION = 3;
-
-    private function getFrontendManager()
-    {
-        $resourceManager = new UserRepository();
-        $resourceManager->fakeUser = User::create('');
-        $authorizationChecker = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface');
-        $form = new UserType();
-        return new FrontendManager($resourceManager, $authorizationChecker, $form);
-    }
-
 }
