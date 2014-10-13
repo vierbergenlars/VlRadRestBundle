@@ -11,11 +11,10 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Doctrine;
 
 use Doctrine\ORM\EntityRepository as DoctrineRepository;
-use vierbergenlars\Bundle\RadRestBundle\Manager\SearchableResourceManagerInterface;
-use vierbergenlars\Bundle\RadRestBundle\Pagination\PageableInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class EntityRepository extends DoctrineRepository implements SearchableResourceManagerInterface, PageableInterface
+class EntityRepository extends DoctrineRepository implements ResourceManagerInterface
 {
     /**
      * @param string $calledMethod Method that was called on this object, to create a nice exception message.
