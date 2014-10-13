@@ -13,7 +13,7 @@ trait DefaultFormTrait
     /**
      * @return FormTypeInterface
      */
-    abstract protected function getFormType();
+    abstract public function getFormType();
 
     /**
      * @return FormFactoryInterface
