@@ -18,6 +18,7 @@ use FOS\RestBundle\Util\Codes;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\DeleteTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class DeleteTraitTest extends \PHPUnit_Framework_TestCase
 {

@@ -15,12 +15,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * @covers vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController
- * @covers vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController
- * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
- * @covers vierbergenlars\Bundle\RadRestBundle\View\View
- * @covers vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables
- * @covers vierbergenlars\Bundle\RadRestBundle\Security\AbstractAuthorizationChecker
+ * @coversNothing
  */
 class ControllerServiceControllerTest extends AbstractControllerTest
 {

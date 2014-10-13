@@ -17,6 +17,7 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\ArrayPageDescr
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\ListTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class ListTraitTest extends \PHPUnit_Framework_TestCase
 {

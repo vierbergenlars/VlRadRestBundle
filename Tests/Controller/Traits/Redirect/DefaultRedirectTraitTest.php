@@ -14,6 +14,7 @@ use vierbergenlars\Bundle\RadRestBundle\View\View;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Redirect\DefaultRedirectTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class DefaultRedirectTraitTest extends \PHPUnit_Framework_TestCase
 {
