@@ -23,7 +23,7 @@ trait DefaultFormTrait
     /**
      * @return ResourceManagerInterface
      */
-    abstract protected function getResourceManager();
+    abstract public function getResourceManager();
 
     /**
      * Creates a new form object
