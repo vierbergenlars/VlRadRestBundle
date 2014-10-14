@@ -48,4 +48,9 @@ abstract class RadRestController extends AbstractController implements Container
     {
         return $this->container->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE);
     }
+
+    protected function getFormFactory()
+    {
+        return $this->container->get('form_factory');
+    }
 }

@@ -19,11 +19,6 @@ class OverriddenMethodController extends RadRestController
         return $this->container->get('resource_manager');
     }
 
-    protected function getFormFactory()
-    {
-        return $this->container->get('form_factory');
-    }
-
     public function getFormType()
     {
         return $this->container->get('form');
