@@ -14,7 +14,7 @@ You are not required to create templates, this bundle ships with very basic defa
 ### Template resolution
 
 To determine which template will be loaded, we look at the controller class and the method.
-`Acme\<Bundle>\Controller\<Controller>Controller::<Action>Action()`
+`<Bundle>\Controller\<Controller>Controller::<Action>Action()`
 
 1. The initial template name is `<Bundle>:<Controller>:<Action>.html.twig`.
    If this template exists, it will be rendered, else we look at the next step.
@@ -51,5 +51,5 @@ The `controller` object helps you with route generation and access control for t
 1. [Setting Up](1-setting_up.md)
 2. [Resource Manager](2-resource_manager.md)
 3. [Authorization Checker](3-authorization_checker.md)
-4. [Services](4-services.md)
+4. [Controllers](4-controllers.md)
 5. Templates
