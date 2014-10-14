@@ -17,7 +17,7 @@ use vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestClassHandler;
  * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestClassHandler
  * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\AbstractRadRestHandler
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController
- * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
+ * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Serialization\DefaultSerializationGroupsTrait
  */
 class RadRestClassHandlerTest extends AbstractRadRestHandlerTest
 {

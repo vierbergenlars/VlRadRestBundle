@@ -12,6 +12,8 @@ namespace vierbergenlars\Bundle\RadRestBundle\Twig;
 
 use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestControllerInterface;
 use vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Manager\SecuredResourceManager;
+use vierbergenlars\Bundle\RadRestBundle\Security\AllowAllAuthorizationChecker;
 
 class ControllerVariables
 {
@@ -38,7 +40,12 @@ class ControllerVariables
      */
     public function getAuthorizationChecker()
     {
-        return $this->controller->getFrontendManager()->getAuthorizationChecker();
+        $resourceManager = $this->controller->getResourceManager();
+        if($resourceManager instanceof SecuredResourceManager) {
+            return $resourceManager->getAuthorizationChecker();
+        } else {
+            return new AllowAllAuthorizationChecker();
+        }
     }
 
     /**

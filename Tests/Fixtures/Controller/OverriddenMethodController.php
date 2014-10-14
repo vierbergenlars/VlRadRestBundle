@@ -14,9 +14,14 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
 
 class OverriddenMethodController extends RadRestController
 {
-    public function getFrontendManager()
+    public function getResourceManager()
     {
-        return $this->get('frontend_manager');
+        return $this->container->get('resource_manager');
+    }
+
+    public function getFormType()
+    {
+        return $this->container->get('form');
     }
 
     public function getAction($id)

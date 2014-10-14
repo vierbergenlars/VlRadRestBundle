@@ -14,12 +14,7 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserController
 use Symfony\Component\Routing\Route;
 
 /**
- * @covers vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController
- * @covers vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController
- * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
- * @covers vierbergenlars\Bundle\RadRestBundle\View\View
- * @covers vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables
- * @covers vierbergenlars\Bundle\RadRestBundle\Security\AbstractAuthorizationChecker
+ * @coversNothing
  */
 class RadRestControllerTest extends AbstractControllerTest
 {
@@ -34,7 +29,6 @@ class RadRestControllerTest extends AbstractControllerTest
     {
         $controller = new UserController();
         $controller->setContainer($this->container);
-        $controller->setFrontendManager($this->frontendManager);
         return $controller;
     }
 }

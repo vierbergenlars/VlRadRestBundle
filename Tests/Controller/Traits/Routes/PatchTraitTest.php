@@ -18,35 +18,52 @@ use FOS\RestBundle\Util\Codes;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\PatchTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class PatchTraitTest extends \PHPUnit_Framework_TestCase
 {
-    private $frontendManager;
+    private $resourceManager;
 
     private $patchTrait;
+
+    private $form;
+
+    private $user;
 
     protected function setUp()
     {
         if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
             $this->markTestSkipped('PHP 5.4 required to use traits');
 
-        $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
 
         $this->patchTrait = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\PatchTrait')
             ->enableProxyingToOriginalMethods()
             ->getMockForTrait();
 
         $this->patchTrait->expects($this->once())
-            ->method('getFrontendManager')
+            ->method('getResourceManager')
             ->with()
-            ->willReturn($this->frontendManager);
+            ->willReturn($this->resourceManager);
+
+        $this->form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->patchTrait->expects($this->once())
+            ->method('createForm')
+            ->with($this->anything(), 'PATCH')
+            ->willReturn($this->form);
 
         $this->patchTrait->expects($this->once())
             ->method('handleView')
             ->with($this->anything())
             ->willReturnArgument(0);
+
+        $this->resourceManager->expects($this->once())
+            ->method('find')
+            ->with(5)
+            ->willReturn($this->user = User::create('abc', 5));
     }
 
     public function testPatchFail()
@@ -58,16 +75,15 @@ class PatchTraitTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->setMethod('PATCH');
 
-        $this->frontendManager->expects($this->once())
-            ->method('editResource')
-            ->with(5, $request, true)
-            ->willReturn($form);
+        $this->patchTrait->expects($this->once())
+            ->method('processForm')
+            ->with($this->form, $request)
+            ->willReturn(false);
 
         $view = $this->patchTrait->patchAction($request, 5);
 
         $this->assertTrue($view instanceof View);
         $this->assertEquals($form, $view->getData());
-        $this->assertEquals('form', $view->getTemplateVar());
         $this->assertEquals(Codes::HTTP_BAD_REQUEST, $view->getStatusCode());
     }
 
@@ -76,10 +92,10 @@ class PatchTraitTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->setMethod('PATCH');
 
-        $this->frontendManager->expects($this->once())
-            ->method('editResource')
-            ->with(5, $request, true)
-            ->willReturn($user = User::create('abcde', 5));
+        $this->patchTrait->expects($this->once())
+            ->method('processForm')
+            ->with($this->form, $request)
+            ->willReturn(true);
 
         $this->patchTrait->expects($this->once())
             ->method('redirectTo')

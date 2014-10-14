@@ -15,25 +15,19 @@ use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
 
 class UserController extends RadRestController
 {
-    private $frontendManager;
-
     public function _redirectTo($nextAction, array $params = array())
     {
         return $this->redirectTo($nextAction, $params);
     }
 
-    public function setFrontendManager(FrontendManager $frontendManager)
+    public function getResourceManager()
     {
-        $this->frontendManager = $frontendManager;
+        return $this->container->get('resource_manager');
     }
 
-    public function getFrontendManager()
+    public function getFormType()
     {
-        if($this->container->has('frontend_manager')) {
-            return $this->get('frontend_manager');
-        } else {
-            return $this->frontendManager;
-        }
+        return $this->container->get('form');
     }
 
     public function getSerializationGroups($action)

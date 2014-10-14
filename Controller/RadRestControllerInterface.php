@@ -10,7 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
+use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
+use Symfony\Component\Form\FormTypeInterface;
 
 interface RadRestControllerInterface
 {
@@ -23,10 +24,16 @@ interface RadRestControllerInterface
     public function getSerializationGroups($action);
 
     /**
-     * Returns the frontend manager used for this controller
-     * @return FrontendManager;
+     * Returns the resource manager of this controller
+     * @return ResourceManagerInterface
      */
-    public function getFrontendManager();
+    public function getResourceManager();
+
+    /**
+     * Returns the form type of this controller
+     * @return FormTypeInterface
+     */
+    public function getFormType();
 
     /**
      * Returns the route name for an action on this controller

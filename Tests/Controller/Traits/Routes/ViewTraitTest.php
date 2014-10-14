@@ -17,10 +17,11 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\ArrayPageDescr
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\ViewTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class ViewTraitTest extends \PHPUnit_Framework_TestCase
 {
-    private $frontendManager;
+    private $resourceManager;
 
     private $viewTrait;
 
@@ -29,18 +30,16 @@ class ViewTraitTest extends \PHPUnit_Framework_TestCase
         if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
             $this->markTestSkipped('PHP 5.4 required to use traits');
 
-        $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
 
         $this->viewTrait = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\ViewTrait')
             ->enableProxyingToOriginalMethods()
             ->getMockForTrait();
 
         $this->viewTrait->expects($this->once())
-            ->method('getFrontendManager')
+            ->method('getResourceManager')
             ->with()
-            ->willReturn($this->frontendManager);
+            ->willReturn($this->resourceManager);
 
         $this->viewTrait->expects($this->once())
             ->method('handleView')
@@ -55,8 +54,8 @@ class ViewTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testView()
     {
-        $this->frontendManager->expects($this->once())
-            ->method('getResource')
+        $this->resourceManager->expects($this->once())
+            ->method('find')
             ->with(5)
             ->willReturn($user = User::create('aaaa', 5));
 

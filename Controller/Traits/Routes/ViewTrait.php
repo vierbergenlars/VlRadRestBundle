@@ -26,7 +26,7 @@ trait ViewTrait
      * @param string $action
      * @return string[] Serialization groups for this action
      */
-    abstract protected function getSerializationGroups($action);
+    abstract public function getSerializationGroups($action);
 
     /**
      * @ApiDoc(resource=true)
@@ -34,9 +34,10 @@ trait ViewTrait
      */
     public function getAction($id)
     {
-        $object = $this->getFrontendManager()->getResource($id);
+        $object = $this->getResourceManager()->find($id);
         $view   = View::create($object);
         $view->getSerializationContext()->setGroups($this->getSerializationGroups('get'));
+
         return $this->handleView($view);
     }
 }

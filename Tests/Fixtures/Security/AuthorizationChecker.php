@@ -54,7 +54,7 @@ class AuthorizationChecker extends AbstractAuthorizationChecker
         return true;
     }
 
-    public function mayCreate()
+    public function mayCreate($object)
     {
         return true;
     }

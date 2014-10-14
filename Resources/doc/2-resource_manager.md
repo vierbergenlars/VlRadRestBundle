@@ -67,7 +67,7 @@ An example of a custom resource manager can be found in [examples/FileResourceMa
 
 The resource manager has 5 methods:
 
- * `findAll()`: returns an array with all resources of that type
+ * `getPageDescription()`: returns an object that enables you to pick slices of the complete result set (`PageDescriptionInterface`)
  * `find($id)`: finds and returns a resource by its primary identifier, or null when there is no resource with that identifier. (The identifier does not have to be numeric, it can be anything as long as it is unique for all resources of that type)
  * `create()`: creates a new, empty object of that type. There are no parameters, modifying the object will happen after it has been created. This does only create a PHP object, it should not save the resource to permanent storage.
  * `update($object)`: Saves the object to permanent storage. Only objects of the type the resource manager is responsible for may be accepted. Passing any other type should result in a LogicException. If the resource cannot be updated, an exception must be thrown.
@@ -77,12 +77,28 @@ If used together with the default controller, the resource object requires a `ge
 
 #### Pagination
 
-A resource manager may implement `vierbergenlars\Bundle\RadRestBundle\Pagination\PaginableInterface`,
-and add a `getPageDescription()` method, which will return a class implementing `PageDescriptionInterface`.
+Pagination is always used by the default controllers.
+A list of 10 items is shown on each page, and you will have to write the pager links yourself. (Note: pagination is done with querystring parameter `page`)
 
-Doing so will enable pagination logic in the default controllers, which will by default display 10 items per page. (Override `AbstractController::getPagination()` to change this).
+If you are using the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle) is installed, you can use the `KnpPaginationTrait` in your controller.
+You have to implement a `getPaginator()` method which will return the KNP paginator.
 
-If the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle) is installed, it will be used for pagination in the default controllers.
+```php
+<?php
+
+use vierbergenlars\Bundle\RadRestBundle\Controller\RadRestController;
+use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Pagination\KnpPaginationTrait;
+
+class UserController extends RadRestController
+{
+    use KnpPaginationTrait;
+
+    protected function getPaginator()
+    {
+        return $this->container->get('knp_paginator');
+    }
+}
+```
 
 ## Links
 
@@ -91,5 +107,5 @@ If the [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle) is in
 1. [Setting Up](1-setting_up.md)
 2. Resource Manager
 3. **[Authorization Checker](3-authorization_checker.md)**
-4. [Services](4-services.md)
+4. [Controllers](4-controllers.md)
 5. [Templates](5-templates.md)
