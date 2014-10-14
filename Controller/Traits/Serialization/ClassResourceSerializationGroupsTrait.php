@@ -22,7 +22,7 @@ trait ClassResourceSerializationGroupsTrait
 {
     public function getSerializationGroups($action)
     {
-        $parts = explode('\\',  get_class());
+        $parts = explode('\\',  get_class($this));
         $className = array_pop($parts);
         $baseName = substr($className, 0, -10);
         $routeBaseName = Container::underscore($baseName);

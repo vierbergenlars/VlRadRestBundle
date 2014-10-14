@@ -22,7 +22,7 @@ trait ClassResourceRoutingTrait
     {
         static $cache = array();
         if(!isset($cache[$action])) {
-            $parts = explode('\\',  get_class());
+            $parts = explode('\\',  get_class($this));
             $className = array_pop($parts);
             $baseName = substr($className, 0, -10);
             $routeBaseName = Container::underscore($baseName);
