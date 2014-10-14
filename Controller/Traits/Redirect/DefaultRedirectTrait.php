@@ -21,7 +21,7 @@ trait DefaultRedirectTrait
      * @param string $action
      * @return string The route name
      */
-    abstract protected function getRouteName($action);
+    abstract public function getRouteName($action);
 
     /**
      * Redirects to another action on the same controller
