@@ -11,10 +11,11 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\ViewHandler;
 
 use vierbergenlars\Bundle\RadRestBundle\View\View;
+use vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables;
 
 /**
  * This trait provides the default implementation for handling views.
- * By default a no-op
+ * By default injects controller variables in the view
  */
 trait DefaultViewHandlerTrait
 {
@@ -24,6 +25,9 @@ trait DefaultViewHandlerTrait
      */
     protected function handleView(View $view)
     {
+        $view->setExtraData(array(
+            'controller' => new ControllerVariables($this),
+        ));
         return $view;
     }
 }
