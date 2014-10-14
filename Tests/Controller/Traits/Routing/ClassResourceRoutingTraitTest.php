@@ -10,6 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller\Traits\Routing;
 
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\ExtendedController;
+
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routing\ClassResourceRoutingTrait
  */
@@ -47,5 +49,12 @@ class ClassResourceRoutingTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('get_user_settings', $controller->getRouteName('cget'));
         $this->assertSame('get_user_setting', $controller->getRouteName('get'));
         $this->assertSame('put_user_setting', $controller->getRouteName('put'));
+    }
+
+    public function testExtendedResourceName()
+    {
+        $controller = new ExtendedController();
+        $this->assertSame('get_extendeds', $controller->getRouteName('cget'));
+        $this->assertSame('get_extended', $controller->getRouteName('get'));
     }
 }

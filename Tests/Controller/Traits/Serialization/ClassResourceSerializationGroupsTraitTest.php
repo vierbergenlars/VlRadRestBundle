@@ -10,6 +10,8 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller\Traits\Serialization;
 
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\ExtendedController;
+
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Serialization\ClassResourceSerializationGroupsTrait
  */
@@ -46,4 +48,12 @@ class ClassResourceSerializationGroupsTraitTest extends \PHPUnit_Framework_TestC
         $this->assertSame(array('list', 'user_setting_list'), $controller->getSerializationGroups('cget'));
         $this->assertSame(array('object', 'user_setting_object'), $controller->getSerializationGroups('get'));
     }
+
+    public function testExtendedResourceName()
+    {
+        $controller = new ExtendedController();
+        $this->assertSame(array('list', 'extended_list'), $controller->getSerializationGroups('cget'));
+        $this->assertSame(array('object', 'extended_object'), $controller->getSerializationGroups('get'));
+    }
+
 }
