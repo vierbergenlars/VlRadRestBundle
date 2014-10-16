@@ -10,7 +10,6 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller\Traits\Form;
 
-
 use Symfony\Component\Form\Forms;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\UserType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
@@ -19,6 +18,7 @@ use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity\User;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Form\DefaultFormTrait
  * @covers vierbergenlars\Bundle\RadRestBundle\View\View
