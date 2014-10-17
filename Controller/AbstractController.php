@@ -11,7 +11,6 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations\View as AView;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\Form;
@@ -27,7 +26,7 @@ use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\ListTrait;
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\PatchTrait;
 use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\ViewTrait;
 
-abstract class AbstractController implements ClassResourceInterface, RadRestControllerInterface
+abstract class AbstractController implements RadRestControllerInterface
 {
     use DefaultsTrait;
     use CreateTrait;
