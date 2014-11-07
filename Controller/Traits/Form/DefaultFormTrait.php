@@ -71,8 +71,11 @@ trait DefaultFormTrait
                 case 'DELETE':
                     $this->getResourceManager()->delete($form->getData());
                     break;
+                // @codeCoverageIgnoreStart
                 default:
+                    // Should never happen
                     return false;
+                // @codeCoverageIgnoreEnd
             }
             return true;
         }

@@ -72,11 +72,11 @@ class ObjectExtension extends \Twig_Extension
                 } else {
                     return '(Object)';
                 }
-            // @codeCoverageIgnoreStart
-            default:
-                return '(Unknown)';
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreStart
         }
+        // Should never happen
+        return '(Unknown)';
+        // @codeCoverageIgnoreEnd
     }
 
     public function getName()
