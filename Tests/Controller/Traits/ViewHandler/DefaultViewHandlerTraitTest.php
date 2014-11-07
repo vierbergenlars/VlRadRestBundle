@@ -15,6 +15,8 @@ use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\ViewHandlerCon
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\ViewHandler\DefaultViewHandlerTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
+ * @covers vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables
  */
 class DefaultViewHandlerTraitTest extends \PHPUnit_Framework_TestCase
 {

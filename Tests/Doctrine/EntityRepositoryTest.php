@@ -87,6 +87,20 @@ class EntityRepositoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException LogicException
+     */
+    public function testCreateObjectPrimitiveType()
+    {
+        $object = 123;
+        $this->em->expects($this->never())
+        ->method('persist');
+        $this->em->expects($this->never())
+        ->method('flush');
+
+        $this->repository->create($object);
+    }
+
+    /**
      * @expectedException Exception
      */
     public function testCreateObjectFailed()

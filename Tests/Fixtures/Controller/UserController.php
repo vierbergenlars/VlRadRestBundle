@@ -20,6 +20,21 @@ class UserController extends RadRestController
         return $this->redirectTo($nextAction, $params);
     }
 
+    public function _getLogger()
+    {
+        return $this->getLogger();
+    }
+
+    public function _getRouter()
+    {
+        return $this->getRouter();
+    }
+
+    public function _getFormFactory()
+    {
+        return $this->getFormFactory();
+    }
+
     public function getResourceManager()
     {
         return $this->container->get('resource_manager');

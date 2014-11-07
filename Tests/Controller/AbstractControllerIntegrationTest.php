@@ -30,7 +30,7 @@ use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Form\CsrfProvider;
 use vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController;
 
-abstract class AbstractControllerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractControllerIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     private $routeCollection;
     protected $router;

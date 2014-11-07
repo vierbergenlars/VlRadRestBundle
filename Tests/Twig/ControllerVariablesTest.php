@@ -60,6 +60,17 @@ class ControllerVariablesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->controllerVariables->getAuthorizationChecker(), $authorizationChecker);
     }
 
+    public function testGetAuthorizationCheckerWithResourceManager()
+    {
+        $resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManager');
+
+        $this->controller->expects($this->once())
+            ->method('getResourceManager')
+            ->willReturn($resourceManager);
+
+        $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Security\AllowAllAuthorizationChecker', $this->controllerVariables->getAuthorizationChecker());
+    }
+
     /**
      * @dataProvider mayProvider
      */
