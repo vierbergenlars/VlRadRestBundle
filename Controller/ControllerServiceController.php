@@ -10,101 +10,87 @@
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller;
 
-use Knp\Component\Pager\Paginator;
+use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\Router;
-use vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager;
-use vierbergenlars\Bundle\RadRestBundle\Pagination\PageDescriptionInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormTypeInterface;
+use vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routing\DefaultServiceRoutingTrait;
 
 /**
  * Base class for RAD Rest service controllers
  */
 class ControllerServiceController extends AbstractController
 {
-    /**
-     * @var FrontendManager
-     */
-    private $frontendManager;
+    use DefaultServiceRoutingTrait;
 
     /**
-     *
+     * @var ResourceManagerInterface
+     */
+    private $resourceManager;
+
+    /**
+     * @var FormFactoryInterface
+     */
+    private $formFactory;
+
+    /**
+     * @var FormTypeInterface
+     */
+    private $formType;
+
+    /**
      * @var LoggerInterface|null
      */
     private $logger;
 
     /**
-     * Required only when using the default redirectTo() method
      * @var Router|null
      */
     private $router;
 
     /**
-     * Required only when using the default redirectTo() method
      * @var string|null
      */
     private $serviceName;
 
-    /**
-     *
-     * @var Paginator|null
-     */
-    private $paginator;
-
-    /**
-     *
-     * @param FrontendManager $frontendManager The frontend manager for this resource
-     * @param LoggerInterface|null $logger
-     * @param Router|null $router Required only when using the default redirectTo() method
-     * @param string|null $serviceName Required only when using the default redirectTo() method
-     */
-    public function __construct(FrontendManager $frontendManager, LoggerInterface $logger = null, Router $router = null, $serviceName = null)
+    public function __construct(ResourceManagerInterface $resourceManager, FormTypeInterface $formType, FormFactoryInterface $formFactory, LoggerInterface $logger = null, RouterInterface $router = null, $serviceName = null)
     {
-        $this->frontendManager = $frontendManager;
+        $this->resourceManager = $resourceManager;
+        $this->formType        = $formType;
+        $this->formFactory     = $formFactory;
         $this->logger          = $logger;
         $this->router          = $router;
         $this->serviceName     = $serviceName;
     }
 
-    public function setPaginator(Paginator $paginator) {
-        $this->paginator = $paginator;
+    public function getResourceManager()
+    {
+        return $this->resourceManager;
     }
 
-    public function getFrontendManager()
+    public function getFormType()
     {
-        return $this->frontendManager;
+        return $this->formType;
     }
 
-    public function getRouteName($action)
+    protected function getFormFactory()
     {
-        // @codeCoverageIgnoreStart
-        if($this->logger !== null) {
-            $this->logger->warning('It is recommended that you override '.__METHOD__.' in your own controllers. The standard implementation has bad performance.', array('sourceController'=>get_class($this)));
-        }
-        // @codeCoverageIgnoreEnd
-
-        if($this->serviceName === null || $this->router === null) {
-            throw new \LogicException('To use the builtin method '.__METHOD__.', the router and service name must be injected during construction.');
-        }
-        $controller = $this->serviceName.':'.$action.'Action';
-        $routes     = $this->router->getRouteCollection()->all();
-        foreach($routes as $routeName => $route)
-        {
-            if($route->hasDefault('_controller')&&$route->getDefault('_controller') === $controller) {
-                return $routeName;
-            }
-        }
-
-        // @codeCoverageIgnoreStart
-        throw new \LogicException('No route found for controller '.$controller);
-        // @codeCoverageIgnoreEnd
+        return $this->formFactory;
     }
 
-    protected function getPagination(PageDescriptionInterface $pageDescription, $page)
+    protected function getLogger()
     {
-        if($this->paginator instanceof Paginator) {
-            return $this->paginator->paginate($pageDescription, $page);
-        } else {
-            return parent::getPagination($pageDescription, $page);
-        }
+        return $this->logger;
+    }
+
+    protected function getRouter()
+    {
+        return $this->router;
+    }
+
+    protected function getServiceName()
+    {
+        return $this->serviceName;
     }
 }

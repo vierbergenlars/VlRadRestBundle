@@ -9,6 +9,7 @@
  */
 
 namespace vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes;
+
 use FOS\RestBundle\Controller\Annotations\View as AView;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,7 @@ trait ListTrait
      * @param string $action
      * @return string[] Serialization groups for this action
      */
-    abstract protected function getSerializationGroups($action);
+    abstract public function getSerializationGroups($action);
 
     /**
      * Paginates the page description for a page
@@ -44,13 +45,11 @@ trait ListTrait
      */
     public function cgetAction(Request $request)
     {
-        $list = $this->getFrontendManager()->getList(true);
-        if(is_array($list)) {
-            $view = View::create($list);
-        } else {
-            $view = View::create($this->getPagination($list, $request->query->get('page', 1)));
-        }
+        $pageDescription = $this->getResourceManager()->getPageDescription();
+        $pagination = $this->getPagination($pageDescription, $request->query->get('page', 1));
+        $view = View::create($pagination);
         $view->getSerializationContext()->setGroups($this->getSerializationGroups('cget'));
+
         return $this->handleView($view);
     }
 }

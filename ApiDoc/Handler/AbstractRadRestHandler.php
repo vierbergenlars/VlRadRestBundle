@@ -45,9 +45,8 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         }
 
         $controllerInst  = $this->getControllerInstance($route);
-        $frontendManager = $controllerInst->getFrontendManager();
-        $resourceManager = $this->getObjectProperty($frontendManager, 'resourceManager');
-        $formType        = $this->getObjectProperty($frontendManager, 'formType');
+        $resourceManager = $controllerInst->getResourceManager();
+        $formType        = $controllerInst->getFormType();
 
         switch($reflMethod->getName()) {
             case 'putAction':
@@ -59,13 +58,13 @@ abstract class AbstractRadRestHandler implements HandlerInterface
                 break;
             case 'getAction':
                 $this->setObjectProperty($annotation, 'output', array(
-                'class'=>get_class($resourceManager->create()),
+                'class'=>get_class($resourceManager->newInstance()),
                 'groups'=>$controllerInst->getSerializationGroups('get'),
                 ));
                 break;
             case 'cgetAction':
                 $this->setObjectProperty($annotation, 'output', array(
-                'class'=>get_class($resourceManager->create()),
+                'class'=>get_class($resourceManager->newInstance()),
                 'groups'=>$controllerInst->getSerializationGroups('cget'),
                 ));
         }
@@ -83,14 +82,4 @@ abstract class AbstractRadRestHandler implements HandlerInterface
         $refl->setValue($object, $value);
     }
 
-    /**
-     * @param object $object
-     * @param string $property
-     */
-    protected function getObjectProperty($object, $property)
-    {
-        $refl = new \ReflectionProperty($object, $property);
-        $refl->setAccessible(true);
-        return $refl->getValue($object);
-    }
 }

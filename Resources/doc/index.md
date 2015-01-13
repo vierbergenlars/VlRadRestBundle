@@ -15,12 +15,11 @@ them. This bundle is just a tool to help you create a REST API rapidly.
 
 2. [The Resource Manager](2-resource_manager.md)
 3. [The Authorization Checker](3-authorization_checker.md)
-4. [Registering services](4-services.md)
+4. [Registering Controllers](4-controllers.md)
 5. [Creating templates](5-templates.md)
 
 
 ## Technical documenation
 
-- [The Frontend Manager](tech-frontend_manager.md)
 - [The Base Controllers](tech-controller.md)
 - [Controller traits](tech-traits.md)

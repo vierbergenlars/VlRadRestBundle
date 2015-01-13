@@ -11,32 +11,49 @@
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Entity;
 
 use vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Pagination\ArrayPageDescription;
 
 class UserRepository implements ResourceManagerInterface
 {
-    public $fakeUser;
-    public function findAll()
+    private $fakeUsers;
+
+    public function setFakeUser($fakeUser)
     {
-        return array($this->fakeUser);
+        $this->fakeUsers = array($fakeUser);
+        return $fakeUser;
     }
-    
+    public function setFakeUsers($fakeUsers)
+    {
+        $this->fakeUsers = $fakeUsers;
+    }
+
+    public function getPageDescription()
+    {
+        return new ArrayPageDescription($this->fakeUsers);
+    }
+
     public function find($id)
     {
-        return $this->fakeUser;
+        return $this->fakeUsers[0];
     }
-    
-    public function create()
+
+    public function newInstance()
     {
-        return $this->fakeUser;
+        return $this->fakeUsers[0];
     }
-    
+
+    public function create($object)
+    {
+
+    }
+
     public function update($object)
     {
-        
+
     }
-    
+
     public function delete($object)
     {
-        
+
     }
 }

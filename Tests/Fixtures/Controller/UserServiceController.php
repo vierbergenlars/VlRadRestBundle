@@ -19,6 +19,26 @@ class UserServiceController extends ControllerServiceController
         return $this->redirectTo($nextAction, $params);
     }
 
+    public function _getLogger()
+    {
+        return $this->getLogger();
+    }
+
+    public function _getRouter()
+    {
+        return $this->getRouter();
+    }
+
+    public function _getFormFactory()
+    {
+        return $this->getFormFactory();
+    }
+
+    public function _getServiceName()
+    {
+        return $this->getServiceName();
+    }
+
     public function getSerializationGroups($action)
     {
         if($action === 'cget') {

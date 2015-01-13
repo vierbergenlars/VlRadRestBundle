@@ -18,74 +18,77 @@ use FOS\RestBundle\Util\Codes;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\CreateTrait
+ * @covers vierbergenlars\Bundle\RadRestBundle\View\View
  */
 class CreateTraitTest extends \PHPUnit_Framework_TestCase
 {
-    private $frontendManager;
+    private $resourceManager;
 
     private $createTrait;
+
+    private $form;
+
+    private $user;
 
     protected function setUp()
     {
         if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
             $this->markTestSkipped('PHP 5.4 required to use traits');
 
-        $this->frontendManager = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
 
         $this->createTrait = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Routes\CreateTrait')
             ->enableProxyingToOriginalMethods()
             ->getMockForTrait();
 
         $this->createTrait->expects($this->once())
-            ->method('getFrontendManager')
+            ->method('getResourceManager')
             ->with()
-            ->willReturn($this->frontendManager);
+            ->willReturn($this->resourceManager);
+
+        $this->form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->createTrait->expects($this->once())
+            ->method('createForm')
+            ->with($this->anything(), 'POST')
+            ->willReturn($this->form);
 
         $this->createTrait->expects($this->once())
             ->method('handleView')
             ->with($this->anything())
             ->willReturnArgument(0);
+
+        $this->resourceManager->expects($this->once())
+            ->method('newInstance')
+            ->with()
+            ->willReturn($this->user = new User());
+
     }
 
     public function testNew()
     {
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->frontendManager->expects($this->once())
-            ->method('createResource')
-            ->with()
-            ->willReturn($form);
-
         $view = $this->createTrait->newAction();
 
         $this->assertTrue($view instanceof View);
-        $this->assertEquals($form, $view->getData());
-        $this->assertEquals('form', $view->getTemplateVar());
+        $this->assertEquals($this->form, $view->getData());
     }
 
     public function testPostFail()
     {
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $request = new Request();
         $request->setMethod('POST');
 
-        $this->frontendManager->expects($this->once())
-            ->method('createResource')
-            ->with($request)
-            ->willReturn($form);
+        $this->createTrait->expects($this->once())
+            ->method('processForm')
+            ->with($this->form, $request)
+            ->willReturn(false);
 
         $view = $this->createTrait->postAction($request);
 
         $this->assertTrue($view instanceof View);
-        $this->assertEquals($form, $view->getData());
-        $this->assertEquals('form', $view->getTemplateVar());
+        $this->assertEquals($this->form, $view->getData());
         $this->assertEquals(Codes::HTTP_BAD_REQUEST, $view->getStatusCode());
     }
 
@@ -94,10 +97,15 @@ class CreateTraitTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->setMethod('POST');
 
-        $this->frontendManager->expects($this->once())
-            ->method('createResource')
-            ->with($request)
-            ->willReturn($user = User::create('abcde', 5));
+        $this->createTrait->expects($this->once())
+            ->method('processForm')
+            ->with($this->form, $request)
+            ->willReturn(true);
+
+        $this->form->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with()
+            ->willReturn(User::create('abc', 5));
 
         $this->createTrait->expects($this->once())
             ->method('redirectTo')
@@ -109,5 +117,4 @@ class CreateTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($redirect, $view);
         $this->assertEquals(Codes::HTTP_CREATED, $view->getStatusCode());
     }
-
 }

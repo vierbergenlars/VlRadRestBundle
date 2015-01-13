@@ -24,13 +24,18 @@ trait CreateTrait
 {
     use AbstractBaseManipulateTrait;
 
+    protected function createCreateForm()
+    {
+        return $this->createForm($this->getResourceManager()->newInstance(), 'POST');
+    }
+
     /**
      * @AView
      */
     public function newAction()
     {
-        $form = $this->getFrontendManager()->createResource();
-        $view = View::create($form)->setTemplateVar('form');
+        $form = $this->createCreateForm();
+        $view = View::create($form);
         return $this->handleView($view);
     }
 
@@ -40,12 +45,11 @@ trait CreateTrait
      */
     public function postAction(Request $request)
     {
-        $ret = $this->getFrontendManager()->createResource($request);
-
-        if($ret instanceof Form) {
-            $view = View::create($ret, Codes::HTTP_BAD_REQUEST)->setTemplateVar('form');
+        $form = $this->createCreateForm();
+        if($this->processForm($form, $request)) {
+            $view = $this->redirectTo('get', array('id' => $form->getData()->getId()))->setStatusCode(Codes::HTTP_CREATED);
         } else {
-            $view = $this->redirectTo('get', array('id'=>$ret->getId()))->setStatusCode(Codes::HTTP_CREATED);
+            $view = View::create($form, Codes::HTTP_BAD_REQUEST);
         }
 
         return $this->handleView($view);

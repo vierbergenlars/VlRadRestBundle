@@ -1,60 +1,112 @@
 <?php
-/**
- * This file is part of the RadRest package.
- *
- * (c) Lars Vierbergen <vierbergenlars@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller;
 
-use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserController;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Container;
+use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserServiceController;
 
 /**
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController
- * @covers vierbergenlars\Bundle\RadRestBundle\Controller\AbstractController
- * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
- * @covers vierbergenlars\Bundle\RadRestBundle\View\View
- * @covers vierbergenlars\Bundle\RadRestBundle\Twig\ControllerVariables
- * @covers vierbergenlars\Bundle\RadRestBundle\Security\AbstractAuthorizationChecker
  */
-class ControllerServiceControllerTest extends AbstractControllerTest
+class ControllerServiceControllerTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
+    private $resourceManager;
+    private $formType;
+    private $formFactory;
+    private $logger;
+    private $router;
+    private $serviceName;
+
+    protected function setUp()
     {
-        parent::setUp();
-        $this->container->register('acme.demo.user.controller')
-        ->setClass('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserServiceController')
-        ->setArguments(array(
-            $this->frontendManager,
+        $this->resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManagerInterface');
+        $this->formType = $this->getMock('Symfony\Component\Form\FormTypeInterface');
+        $this->formFactory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
+        $this->logger = $this->getMock('Psr\Log\LoggerInterface');
+        $this->router = $this->getMock('Symfony\Component\Routing\RouterInterface');
+        $this->serviceName = 'app.user.controller';
+    }
+
+    public function testGetLogger()
+    {
+        $controller = new UserServiceController(
+            $this->resourceManager,
+            $this->formType,
+            $this->formFactory,
+            $this->logger,
+            $this->router,
+            $this->serviceName
+        );
+        $this->assertSame($this->logger, $controller->_getLogger());
+    }
+
+    public function testGetLoggerNull()
+    {
+        $controller = new UserServiceController(
+            $this->resourceManager,
+            $this->formType,
+            $this->formFactory,
             null,
-            new Reference('router'),
-            'acme.demo.user.controller',
-        ));
+            $this->router,
+            $this->serviceName
+        );
+
+        $this->assertNull($controller->_getLogger());
     }
 
-    protected function route($path, $action, $method)
+    public function testGetRouter()
     {
-        $route = new Route($path, array('_controller'=>'acme.demo.user.controller:'.$action.'Action'));
-        $route->setMethods($method);
-        return $route;
+        $controller = new UserServiceController(
+            $this->resourceManager,
+            $this->formType,
+            $this->formFactory,
+            $this->logger,
+            $this->router,
+            $this->serviceName
+        );
+
+        $this->assertSame($this->router, $controller->_getRouter());
     }
 
-    protected function createController()
+    public function testGetRouterNull()
     {
-        return $this->container->get('acme.demo.user.controller');
+        $controller = new UserServiceController(
+            $this->resourceManager,
+            $this->formType,
+            $this->formFactory,
+            $this->logger,
+            null,
+            $this->serviceName
+        );
+
+        $this->assertNull($controller->_getRouter());
     }
 
-    /**
-     * @expectedException LogicException
-     */
-    public function testRedirectToUnmetDependencies()
+    public function testGetFormFactory()
     {
-        $this->container->getDefinition('acme.demo.user.controller')->setArguments(array($this->frontendManager));
-        $this->createController()->_redirectTo('cget');
+        $controller = new UserServiceController(
+            $this->resourceManager,
+            $this->formType,
+            $this->formFactory,
+            $this->logger,
+            $this->router,
+            $this->serviceName
+        );
+
+        $this->assertSame($this->formFactory, $controller->_getFormFactory());
+    }
+
+    public function testGetServiceName()
+    {
+        $controller = new UserServiceController(
+            $this->resourceManager,
+            $this->formType,
+            $this->formFactory,
+            $this->logger,
+            $this->router,
+            $this->serviceName
+        );
+
+        $this->assertSame($this->serviceName, $controller->_getServiceName());
     }
 }

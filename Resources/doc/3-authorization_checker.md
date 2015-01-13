@@ -22,7 +22,7 @@ The class must implement the [`AuthorizationCheckerInterface`](../../Security/Au
 
  * `mayList()`: The user is allowed to retrieve a list of all resources of a type
  * `mayView($object)`: The user is allowed to view the details of the resource `$object`
- * `mayCreate()`: The user is allowed to create a new resource of this type
+ * `mayCreate($object)`: The user is allowed to create this new resource `$object`
  * `mayEdit($object)`: The user is allowed to modify the details of the resource `$object`
  * `mayDelete($object)`: The user is allowed to delete the resource `$object`
 
@@ -44,5 +44,5 @@ Less frequently used methods are `getSecurityContext()`, `getTrustResolver()` an
 1. [Setting Up](1-setting_up.md)
 2. [Resource Manager](2-resource_manager.md)
 3. Authorization Checker
-4. **[Services](4-services.md)**
+4. **[Controllers](4-controllers.md)**
 5. [Templates](5-templates.md)

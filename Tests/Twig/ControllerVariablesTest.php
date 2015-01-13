@@ -37,27 +37,38 @@ class ControllerVariablesTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->controllerVariables->route('cget'), 'get_users');
     }
 
-    private function getFrontendManager($authorizationChecker)
+    private function getResourceManager($authorizationChecker)
     {
-        $fm = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager')
+        $rm = $this->getMockBuilder('vierbergenlars\Bundle\RadRestBundle\Manager\SecuredResourceManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $fm->expects($this->atLeastOnce())
+        $rm->expects($this->atLeastOnce())
             ->method('getAuthorizationChecker')
             ->willReturn($authorizationChecker);
-        return $fm;
+        return $rm;
     }
 
     public function testGetAuthorizationChecker()
     {
         $authorizationChecker = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface');
-        $frontendManager = $this->getFrontendManager($authorizationChecker);
+        $resourceManager = $this->getResourceManager($authorizationChecker);
 
         $this->controller->expects($this->once())
-            ->method('getFrontendManager')
-            ->willReturn($frontendManager);
+            ->method('getResourceManager')
+            ->willReturn($resourceManager);
 
         $this->assertSame($this->controllerVariables->getAuthorizationChecker(), $authorizationChecker);
+    }
+
+    public function testGetAuthorizationCheckerWithResourceManager()
+    {
+        $resourceManager = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Manager\ResourceManager');
+
+        $this->controller->expects($this->once())
+            ->method('getResourceManager')
+            ->willReturn($resourceManager);
+
+        $this->assertInstanceOf('vierbergenlars\Bundle\RadRestBundle\Security\AllowAllAuthorizationChecker', $this->controllerVariables->getAuthorizationChecker());
     }
 
     /**
@@ -66,11 +77,11 @@ class ControllerVariablesTest extends \PHPUnit_Framework_TestCase
     public function testMay($action, $object, $calledMethod)
     {
         $authorizationChecker = $this->getMock('vierbergenlars\Bundle\RadRestBundle\Security\AuthorizationCheckerInterface');
-        $frontendManager = $this->getFrontendManager($authorizationChecker);
-        
+        $resourceManager = $this->getResourceManager($authorizationChecker);
+
         $this->controller->expects($this->once())
-            ->method('getFrontendManager')
-            ->willReturn($frontendManager);
+            ->method('getResourceManager')
+            ->willReturn($resourceManager);
 
         if(!$object) {
             $authorizationChecker->expects($this->once())
@@ -94,9 +105,9 @@ class ControllerVariablesTest extends \PHPUnit_Framework_TestCase
             array('list', null, 'mayList'),
             array('get', new \stdClass(), 'mayView'),
             array('view', new \stdClass(), 'mayView'),
-            array('new', null, 'mayCreate'),
-            array('post', null, 'mayCreate'),
-            array('create', null, 'mayCreate'),
+            array('new', new \stdClass(), 'mayCreate'),
+            array('post', new \stdClass(), 'mayCreate'),
+            array('create', new \stdClass(), 'mayCreate'),
             array('edit', new \stdClass(), 'mayEdit'),
             array('put', new \stdClass(), 'mayEdit'),
             array('remove', new \stdClass(), 'mayDelete'),

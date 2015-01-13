@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Reference;
  * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\RadRestServiceHandler
  * @covers vierbergenlars\Bundle\RadRestBundle\ApiDoc\Handler\AbstractRadRestHandler
  * @covers vierbergenlars\Bundle\RadRestBundle\Controller\ControllerServiceController
- * @covers vierbergenlars\Bundle\RadRestBundle\Manager\FrontendManager
+ * @covers vierbergenlars\Bundle\RadRestBundle\Controller\Traits\Serialization\DefaultSerializationGroupsTrait
  */
 class RadRestServiceHandlerTest extends AbstractRadRestHandlerTest
 {
@@ -27,13 +27,10 @@ class RadRestServiceHandlerTest extends AbstractRadRestHandlerTest
         parent::setUp();
         $this->container->register('controller.user')
         ->setClass('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserServiceController')
-        ->addArgument(new Reference('frontend_manager'));
+        ->setArguments(array(new Reference('resource_manager'), new Reference('form'), new Reference('form_factory')));
         $this->container->register('controller.overridden_method')
         ->setClass('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\OverriddenMethodServiceController')
-        ->addArgument(new Reference('frontend_manager'));
-        $this->container->register('controller.switched_serialization')
-        ->setClass('vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\SwitchedSerializationServiceController')
-        ->addArgument(new Reference('frontend_manager'));
+        ->setArguments(array(new Reference('resource_manager'), new Reference('form'), new Reference('form_factory')));
         $this->handler = new RadRestServiceHandler($this->container);
 
     }

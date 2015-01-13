@@ -26,11 +26,12 @@ interface AuthorizationCheckerInterface
     public function mayList();
 
     /**
-     * Checks authorization to create new objects
+     * Checks authorization to create this new object
      *
+     * @param object $object
      * @return bool
     */
-    public function mayCreate();
+    public function mayCreate($object);
 
     /**
      * Checks authorization to view a specific object

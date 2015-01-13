@@ -12,29 +12,23 @@ namespace vierbergenlars\Bundle\RadRestBundle\Tests\Controller;
 
 use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserController;
 use Symfony\Component\Routing\Route;
-use vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\TraitedController;
 
 /**
  * @coversNothing
  */
-class TraitedRadRestControllerTest extends AbstractControllerTest
+class RadRestControllerIntegrationTest extends AbstractControllerIntegrationTest
 {
-    protected function setUp()
-    {
-        if(PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4)
-            $this->markTestSkipped('PHP 5.4 required to use traits');
-        parent::setUp();
-    }
-
     protected function route($path, $action, $method)
     {
-        $route = new Route($path, array('_controller'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\TraitedController::'.$action.'Action'));
+        $route = new Route($path, array('_controller'=>'vierbergenlars\Bundle\RadRestBundle\Tests\Fixtures\Controller\UserController::'.$action.'Action'));
         $route->setMethods($method);
         return $route;
     }
 
     protected function createController()
     {
-        return new TraitedController($this->container);
+        $controller = new UserController();
+        $controller->setContainer($this->container);
+        return $controller;
     }
 }
